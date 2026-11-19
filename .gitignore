@@ -1,0 +1,26 @@
+# Next.js
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Production
+build/
+dist/
+
+# Tests & Coverage
+coverage/
+
+# Misc
+.DS_Store
+*.log
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment variables
+.env*
+!.env.example
+
+# Local storage fallback
+public/uploads/
