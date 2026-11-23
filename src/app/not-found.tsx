@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="rounded-full bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"
+        className="rounded-md bg-primary text-primary-foreground px-7 py-3 text-sm font-medium hover:bg-primary/90 transition-colors shadow-xs"
       >
         Return to Sanctuary
       </Link>

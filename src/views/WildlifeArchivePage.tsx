@@ -2,12 +2,15 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from '@/lib/router-compat';
-import { ArrowLeft, Expand, Search } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Lightbox } from '../components/lightbox/Lightbox';
 import { ALLOWED_CONSERVATION_STATUSES, filterSpeciesArchive } from '../lib/validation';
 import { Input } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
+import { Button } from '../components/ui/Button';
+import { SpeciesCard } from '../components/wildlife/SpeciesCard';
+import { SpeciesDetailView } from '../components/wildlife/SpeciesDetailView';
 
 export const WildlifeArchivePage: React.FC = () => {
   const { slug } = useParams<{ slug?: string }>();
@@ -56,17 +59,18 @@ export const WildlifeArchivePage: React.FC = () => {
     }
   }, [selectedSpecies]);
 
+  // Mode 1: Individual Species Dossier
   if (slug) {
     if (!selectedSpecies) {
       return (
-        <div className="bg-card text-foreground pt-36 pb-24 px-5 text-center space-y-5">
-          <h1 className="text-3xl font-semibold">Species Dossier Not Found</h1>
+        <div className="bg-background text-foreground pt-36 pb-24 site-container text-center space-y-5">
+          <h1 className="text-3xl font-serif font-bold">Species Dossier Not Found</h1>
           <p className="text-sm text-muted-foreground">
-            This wildlife entry may have been updated or moved.
+            This wildlife record may have been moved or updated.
           </p>
           <Link
             to="/wildlife"
-            className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium"
+            className="inline-flex items-center gap-2 rounded-md bg-primary text-white px-6 py-2.5 text-xs font-semibold uppercase tracking-wider"
           >
             <ArrowLeft className="w-4 h-4" />
             Return to Wildlife Archive
@@ -76,164 +80,52 @@ export const WildlifeArchivePage: React.FC = () => {
     }
 
     return (
-      <div className="bg-card text-foreground pt-20">
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 py-12 lg:py-16">
-          <Link
-            to="/wildlife"
-            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-colors mb-10"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Wildlife Archive
-          </Link>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            <div className="lg:col-span-6">
-              <div className="aspect-[4/3] overflow-hidden bg-muted">
-                <img
-                  src={selectedSpecies.coverImageUrl}
-                  alt={selectedSpecies.commonName}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 space-y-6">
-              <div className="space-y-2">
-                <span className="inline-flex items-center rounded-full bg-muted px-3.5 py-1 text-xs font-medium text-foreground">
-                  {selectedSpecies.conservationStatus}
-                </span>
-                <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.08]">
-                  {selectedSpecies.commonName}
-                </h1>
-                <p className="text-lg italic text-muted-foreground">{selectedSpecies.scientificName}</p>
-                {selectedSpecies.bengaliName && (
-                  <p className="text-lg text-foreground/80" lang="bn">
-                    {selectedSpecies.bengaliName}
-                  </p>
-                )}
-              </div>
-
-              <p className="text-base text-foreground/85 leading-relaxed">
-                {selectedSpecies.description}
-              </p>
-
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-border">
-                <div className="bg-secondary p-4 border border-border">
-                  <dt className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    Habitat &amp; Region
-                  </dt>
-                  <dd className="text-sm font-medium mt-1">
-                    {selectedSpecies.habitat} ({selectedSpecies.habitatRegion})
-                  </dd>
-                </div>
-                <div className="bg-secondary p-4 border border-border">
-                  <dt className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    Conservation Reference
-                  </dt>
-                  <dd className="text-sm font-medium mt-1">{selectedSpecies.conservationSource}</dd>
-                </div>
-                {selectedSpecies.seasonality && (
-                  <div className="bg-secondary p-4 border border-border">
-                    <dt className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                      Field Seasonality
-                    </dt>
-                    <dd className="text-sm mt-1 text-foreground/85">
-                      {selectedSpecies.seasonality}
-                    </dd>
-                  </div>
-                )}
-                {selectedSpecies.dietAndBehavior && (
-                  <div className="bg-secondary p-4 border border-border">
-                    <dt className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                      Behavior &amp; Ecology
-                    </dt>
-                    <dd className="text-sm mt-1 text-foreground/85">
-                      {selectedSpecies.dietAndBehavior}
-                    </dd>
-                  </div>
-                )}
-              </dl>
-
-              {selectedSpecies.keyThreats && (
-                <div className="p-5 bg-muted border border-border space-y-1.5">
-                  <h2 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-medium">
-                    Documented Threats
-                  </h2>
-                  <p className="text-sm text-foreground/85 leading-relaxed">
-                    {selectedSpecies.keyThreats}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {relatedPhotos.length > 0 && (
-            <div className="mt-20 pt-14 border-t border-border">
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-8">
-                Field Photographs of {selectedSpecies.commonName}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-                {relatedPhotos.map((photo, idx) => (
-                  <button
-                    key={photo.id}
-                    type="button"
-                    onClick={() => setLightboxIndex(idx)}
-                    className="group text-left focus:outline-none"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                      <img
-                        src={photo.imageUrl}
-                        alt={photo.title}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                      />
-                      <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full bg-obsidian/80 text-white px-3 py-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Expand className="w-3 h-3" />
-                        Inspect
-                      </span>
-                    </div>
-                    <h3 className="text-base font-semibold mt-3">{photo.title}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {photo.locationName} &middot; {photo.year}
-                    </p>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
+      <>
+        <SpeciesDetailView
+          species={selectedSpecies}
+          relatedPhotos={relatedPhotos}
+          onInspectPhoto={(idx) => setLightboxIndex(idx)}
+        />
         <Lightbox
           photographs={relatedPhotos}
           activeIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
           onChangeIndex={setLightboxIndex}
         />
-      </div>
+      </>
     );
   }
 
+  // Mode 2: Wildlife Archive Index
+  const hasActiveFilters = regionFilter !== 'all' || statusFilter !== 'all' || searchQuery.trim().length > 0;
+
+  const resetFilters = () => {
+    setRegionFilter('all');
+    setStatusFilter('all');
+    setSearchQuery('');
+  };
+
   return (
-    <div className="bg-card text-foreground pt-20">
+    <div className="bg-background text-foreground pt-20">
+      {/* Page Header */}
       <section className="bg-secondary border-b border-border py-16 lg:py-24">
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 space-y-4">
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-medium">
-            Biodiversity Documentation
+        <div className="site-container space-y-4">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
+            Biodiversity Index
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-semibold tracking-tight leading-[1.08]">
+          <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-serif font-bold tracking-tight leading-[1.08]">
             Wildlife Archive
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            Species profiles documented across Bangladesh&apos;s mangroves, wetlands, and forests
-            &mdash; including scientific nomenclature, Bangla names, habitat notes, and conservation
-            status.
+            Curated dossiers on native wildlife documented across Bangladesh with IUCN conservation
+            statuses, habitat classifications, and field ecology notes.
           </p>
         </div>
       </section>
 
-      {/* Filter Controls */}
-      <section className="bg-card border-b border-border">
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Filter Bar */}
+      <section className="bg-card border-b border-border sticky top-20 z-20 shadow-2xs">
+        <div className="site-container py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 flex-1">
             <div className="flex-1 min-w-[220px] max-w-sm">
               <Input
@@ -273,80 +165,48 @@ export const WildlifeArchivePage: React.FC = () => {
                 ))}
               </Select>
             </div>
+
+            {hasActiveFilters && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={resetFilters}
+              >
+                Clear
+              </Button>
+            )}
           </div>
 
-          <p className="text-xs font-mono text-muted-foreground">
-            {filteredSpecies.length} documented {filteredSpecies.length === 1 ? 'species' : 'species'}
+          <p className="text-xs font-mono text-muted-foreground whitespace-nowrap">
+            {filteredSpecies.length} {filteredSpecies.length === 1 ? 'species' : 'species'} indexed
           </p>
         </div>
       </section>
 
       {/* Species Grid */}
-      <section className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 py-14 lg:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredSpecies.map((item) => (
-            <Link
-              key={item.id}
-              to={`/wildlife/${encodeURIComponent(item.slug)}`}
-              className="group bg-card border border-border hover:border-primary/40 transition-colors flex flex-col"
-            >
-              <div className="aspect-[16/10] overflow-hidden bg-muted">
-                <img
-                  src={item.coverImageUrl}
-                  alt={item.commonName}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                />
-              </div>
-              <div className="p-6 flex-1 flex flex-col justify-between gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-muted-foreground">{item.habitatRegion}</span>
-                    <span className="rounded-full bg-muted px-3 py-0.5 text-[11px] font-medium text-foreground">
-                      {item.conservationStatus}
-                    </span>
-                  </div>
-                  <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-                    {item.commonName}
-                  </h2>
-                  <p className="text-sm italic text-muted-foreground">
-                    {item.scientificName}
-                    {item.bengaliName ? ` · ${item.bengaliName}` : ''}
-                  </p>
-                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                    {item.description}
-                  </p>
-                </div>
-                <span className="text-xs font-medium text-foreground group-hover:underline">
-                  Open Species Dossier &rarr;
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Habitats Directory Strip */}
-      <section className="bg-muted border-t border-border py-16 lg:py-24">
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10">
-          <div className="max-w-2xl space-y-2 mb-10">
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-medium">
-              Field Regions
+      <section className="site-container py-14 lg:py-20">
+        {filteredSpecies.length === 0 ? (
+          <div className="py-16 text-center bg-secondary border border-border rounded-xl p-8 space-y-4 max-w-xl mx-auto shadow-xs">
+            <h2 className="text-2xl font-serif font-bold text-foreground">No species match your query</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Try adjusting your search terms or clearing region and status filters.
             </p>
-            <h2 className="text-3xl font-semibold tracking-tight">Key Ecosystems of Bangladesh</h2>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={resetFilters}
+            >
+              Reset Filters
+            </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {locations.map((loc) => (
-              <div key={loc.id} className="bg-card border border-border p-6 space-y-2">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                  {loc.region} &middot; {loc.ecosystem}
-                </p>
-                <h3 className="text-xl font-semibold">{loc.name}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{loc.description}</p>
-              </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredSpecies.map((sp) => (
+              <SpeciesCard key={sp.id} species={sp} />
             ))}
           </div>
-        </div>
+        )}
       </section>
     </div>
   );

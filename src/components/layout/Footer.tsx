@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-obsidian text-white border-t border-white/10">
-      <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 pt-20 pb-12">
+      <div className="site-container pt-20 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-white/10">
           <div className="lg:col-span-5 space-y-5">
             <Link to="/" className="inline-block">

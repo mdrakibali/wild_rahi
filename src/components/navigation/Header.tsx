@@ -52,7 +52,7 @@ export const Header: React.FC = () => {
             : "bg-card/95 backdrop-blur-md text-foreground border-b border-border shadow-xs"
         }`}
       >
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 h-20 flex items-center justify-between gap-6">
+        <div className="site-container h-20 flex items-center justify-between gap-6">
           <Link
             to="/"
             className="group inline-flex flex-col leading-none focus:outline-none"

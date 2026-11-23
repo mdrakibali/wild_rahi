@@ -59,7 +59,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile
         />
       </div>
 
-      <div className="relative z-10 max-w-[1280px] w-full mx-auto px-5 sm:px-8 lg:px-10 pt-32 pb-12 sm:pb-16 lg:pb-20">
+      <div className="relative z-10 site-container pt-32 pb-12 sm:pb-16 lg:pb-20">
         <div className="max-w-3xl space-y-5">
           <p className="hero-stagger text-xs sm:text-sm uppercase tracking-[0.2em] text-white/75 font-medium">
             {profile.brandName} &mdash; {profile.location}
@@ -76,14 +76,14 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile
           <div className="hero-stagger pt-3 flex flex-wrap items-center gap-3.5">
             <Link
               to="/photography"
-              className="inline-flex items-center gap-2.5 rounded-full bg-card text-obsidian px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-muted transition-colors"
+              className="inline-flex items-center gap-2.5 rounded-md bg-card text-obsidian px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-muted transition-colors shadow-sm"
             >
               Explore Photography
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/about"
-              className="inline-flex items-center gap-2 rounded-full border border-white/35 text-white px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-card/10 hover:border-white/70 transition-colors"
+              className="inline-flex items-center gap-2 rounded-md border border-white/35 text-white px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-card/10 hover:border-white/70 transition-colors"
             >
               Discover My Story
             </Link>

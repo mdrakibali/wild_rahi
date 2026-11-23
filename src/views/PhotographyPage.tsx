@@ -2,12 +2,14 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from '@/lib/router-compat';
-import { Expand, Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Lightbox } from '../components/lightbox/Lightbox';
-import { filterPhotographs, formatExifMetadata, getAspectRatioClass } from '../lib/validation';
+import { filterPhotographs } from '../lib/validation';
 import { Input } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
+import { Button } from '../components/ui/Button';
+import { PhotoCard } from '../components/photography/PhotoCard';
 
 export const PhotographyPage: React.FC = () => {
   const { photographs, collections, locations } = usePortfolio();
@@ -70,34 +72,33 @@ export const PhotographyPage: React.FC = () => {
     collectionId !== 'all' || locationSlug !== 'all' || speciesQuery.trim().length > 0;
 
   return (
-    <div className="bg-card text-foreground pt-20">
+    <div className="bg-background text-foreground pt-20">
       {/* Page Header */}
       <section className="bg-secondary border-b border-border py-16 lg:py-24">
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 space-y-4">
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-medium">
+        <div className="site-container space-y-4">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
             Curated Archive
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-semibold tracking-tight leading-[1.08]">
+          <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-serif font-bold tracking-tight leading-[1.08]">
             Wildlife Photography
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            Natural-light plates documenting Bangladesh&apos;s birds, mammals, reptiles, insects, and
-            wild landscapes. Select any photograph to view full frame with field notes and camera
-            settings.
+            Natural-light plates documenting Bangladesh&apos;s wildlife across mangroves, riverine chars,
+            and tropical rainforests. Select any plate to inspect full frame with EXIF data.
           </p>
         </div>
       </section>
 
       {/* Filter Bar */}
-      <section className="bg-card border-b border-border sticky top-20 z-20">
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 py-4 space-y-4">
+      <section className="bg-card border-b border-border sticky top-20 z-20 shadow-2xs">
+        <div className="site-container py-4 space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => updateCollection('all')}
-              className={`rounded-full px-4 py-2 text-xs sm:text-sm font-medium transition-colors ${
+              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer ${
                 collectionId === 'all'
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-white shadow-xs'
                   : 'bg-secondary text-foreground hover:bg-muted'
               }`}
             >
@@ -108,9 +109,9 @@ export const PhotographyPage: React.FC = () => {
                 key={col.id}
                 type="button"
                 onClick={() => updateCollection(col.id)}
-                className={`rounded-full px-4 py-2 text-xs sm:text-sm font-medium transition-colors ${
+                className={`rounded-md px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer ${
                   collectionId === col.id
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-white shadow-xs'
                     : 'bg-secondary text-foreground hover:bg-muted'
                 }`}
               >
@@ -119,7 +120,7 @@ export const PhotographyPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-border/60">
             <div className="flex flex-wrap items-center gap-3 flex-1">
               <div className="flex-1 min-w-[220px] max-w-sm">
                 <Input
@@ -146,88 +147,48 @@ export const PhotographyPage: React.FC = () => {
               </div>
 
               {hasActiveFilters && (
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={resetFilters}
-                  className="inline-flex items-center gap-1 rounded-full border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
                 >
-                  <X className="w-3.5 h-3.5" />
-                  Clear filters
-                </button>
+                  Clear Filters
+                </Button>
               )}
             </div>
 
             <p className="text-xs font-mono text-muted-foreground">
-              {filteredPhotos.length} {filteredPhotos.length === 1 ? 'photograph' : 'photographs'}
+              {filteredPhotos.length} {filteredPhotos.length === 1 ? 'plate' : 'plates'}
             </p>
           </div>
         </div>
       </section>
 
       {/* Gallery Grid */}
-      <section className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 py-14 lg:py-20">
+      <section className="site-container py-14 lg:py-20">
         {filteredPhotos.length === 0 ? (
-          <div className="py-20 text-center space-y-4 bg-secondary border border-border p-8">
-            <h2 className="text-2xl font-semibold">No matching plates found</h2>
-            <p className="text-sm text-muted-foreground">
+          <div className="py-20 text-center space-y-4 bg-secondary border border-border rounded-xl p-8 max-w-xl mx-auto shadow-xs">
+            <h2 className="text-2xl font-serif font-bold text-foreground">No matching plates found</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Try clearing your filters or searching another species or habitat.
             </p>
-            <button
+            <Button
               type="button"
+              variant="primary"
               onClick={resetFilters}
-              className="inline-flex items-center rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium"
             >
-              Show All Photographs
-            </button>
+              Show All Plates
+            </Button>
           </div>
         ) : (
           <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
             {filteredPhotos.map((photo, index) => (
-              <article
+              <PhotoCard
                 key={photo.id}
-                className="break-inside-avoid group bg-card border-b border-border pb-6"
-              >
-                <button
-                  type="button"
-                  onClick={() => setLightboxIndex(index)}
-                  className="block w-full text-left focus:outline-none"
-                  aria-label={`Inspect ${photo.title} in lightbox`}
-                >
-                  <div
-                    className={`relative overflow-hidden bg-muted ${getAspectRatioClass(
-                      photo.aspectRatio
-                    )}`}
-                  >
-                    <img
-                      src={photo.imageUrl}
-                      alt={photo.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                    />
-                    <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-obsidian/80 text-white px-3 py-1.5 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Expand className="w-3.5 h-3.5" />
-                      Inspect
-                    </span>
-                  </div>
-
-                  <div className="pt-4 space-y-1.5">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <h2 className="text-lg font-semibold tracking-tight text-foreground group-hover:opacity-75 transition-opacity">
-                        {photo.title}
-                      </h2>
-                      <span className="text-xs font-mono text-muted-foreground shrink-0">{photo.year}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {photo.speciesName} &middot; {photo.locationName}
-                    </p>
-                    {formatExifMetadata(photo) && (
-                      <p className="text-[11px] font-mono text-muted-foreground/80 pt-1">
-                        {formatExifMetadata(photo)}
-                      </p>
-                    )}
-                  </div>
-                </button>
-              </article>
+                photo={photo}
+                onInspect={() => setLightboxIndex(index)}
+              />
             ))}
           </div>
         )}

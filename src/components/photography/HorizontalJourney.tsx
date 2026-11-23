@@ -60,7 +60,7 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
       ref={sectionRef}
       className="bg-obsidian text-white py-20 lg:py-0 lg:min-h-screen lg:flex lg:flex-col lg:justify-center overflow-hidden"
     >
-      <div className="max-w-[1280px] w-full mx-auto px-5 sm:px-8 lg:px-10 mb-10 lg:mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div className="site-container mb-10 lg:mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-2.5 max-w-xl">
           <p className="text-xs uppercase tracking-[0.2em] text-white/60 font-medium">
             Featured Visual Sequence

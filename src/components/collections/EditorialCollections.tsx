@@ -18,7 +18,7 @@ export const EditorialCollections: React.FC<EditorialCollectionsProps> = ({
 
   return (
     <section className="bg-card text-foreground py-24 lg:py-32 border-t border-border">
-      <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10">
+      <div className="site-container">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
           <div className="max-w-2xl space-y-3">
             <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-medium">

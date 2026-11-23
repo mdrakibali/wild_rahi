@@ -182,7 +182,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
             className="shrink-0 border-t border-white/10 bg-obsidian px-4 sm:px-8 py-4 space-y-3"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="max-w-[1280px] mx-auto flex flex-col lg:flex-row lg:items-end justify-between gap-3">
+            <div className="site-container flex flex-col lg:flex-row lg:items-end justify-between gap-3">
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <h3 className="text-base sm:text-lg font-medium text-white">
@@ -232,7 +232,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
 
             {/* Toggleable Thumbnail Strip */}
             {showThumbnails && photographs.length > 1 && (
-              <div className="max-w-[1280px] mx-auto pt-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
+              <div className="site-container pt-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
                 {photographs.map((item, idx) => {
                   const selected = idx === activeIndex;
                   return (
