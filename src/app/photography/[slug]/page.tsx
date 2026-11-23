@@ -1,10 +1,10 @@
-import { Suspense } from 'react';
-import { PhotographyPage } from '@/views/PhotographyPage';
+import { PhotoDetailPage } from '@/views/PhotoDetailPage';
 
-export default function Page() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-white" />}>
-      <PhotographyPage />
-    </Suspense>
-  );
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params;
+  return <PhotoDetailPage slug={slug} />;
 }

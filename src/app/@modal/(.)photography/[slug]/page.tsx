@@ -8,3 +8,4 @@ export default async function InterceptedPhotoPage({ params }: InterceptedPhotoP
   const { slug } = await params;
   return <PhotoModal slug={slug} />;
 }
+

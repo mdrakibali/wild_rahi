@@ -1,22 +1,29 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
 import { Expand } from 'lucide-react';
 import type { Photograph } from '../../types/portfolio';
 import { formatExifMetadata } from '../../lib/validation';
 
 interface PhotoCardProps {
   photo: Photograph;
-  onInspect: () => void;
+  onInspect?: () => void;
   className?: string;
 }
 
 export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, className = '' }) => {
   const exif = formatExifMetadata(photo);
+  const targetHref = `/photography/${encodeURIComponent(photo.slug || photo.id)}`;
 
   return (
     <div className={`group relative rounded-md overflow-hidden cursor-pointer block w-full h-full bg-secondary ${className}`}>
-      <button
-        type="button"
-        onClick={onInspect}
+      <Link
+        href={targetHref}
+        scroll={false}
+        onClick={() => {
+          if (onInspect) onInspect();
+        }}
         className="block w-full h-full text-left focus:outline-none cursor-pointer relative"
         aria-label={`Inspect ${photo.title} in lightbox`}
       >
@@ -72,7 +79,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, classNam
             {photo.speciesName || 'Wildlife'}
           </p>
         </div>
-      </button>
+      </Link>
     </div>
   );
 };

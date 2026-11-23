@@ -251,3 +251,4 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
     </AnimatePresence>
   );
 };
+

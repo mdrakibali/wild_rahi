@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from '@/lib/router-compat';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Lightbox } from '../components/lightbox/Lightbox';
 import { PhotoCard } from '../components/photography/PhotoCard';
 
 export const PhotographyPage: React.FC = () => {
@@ -13,7 +12,6 @@ export const PhotographyPage: React.FC = () => {
   const [collectionId, setCollectionId] = useState<string>(
     searchParams.get('collection') || 'all'
   );
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     document.title = 'Wildlife Gallery — Wild Rahi';
@@ -121,23 +119,13 @@ export const PhotographyPage: React.FC = () => {
 
               return (
                 <div key={photo.id} className={spanClass}>
-                  <PhotoCard
-                    photo={photo}
-                    onInspect={() => setLightboxIndex(index)}
-                  />
+                  <PhotoCard photo={photo} />
                 </div>
               );
             })}
           </div>
         )}
       </section>
-
-      <Lightbox
-        photographs={filteredPhotos}
-        activeIndex={lightboxIndex}
-        onClose={() => setLightboxIndex(null)}
-        onChangeIndex={setLightboxIndex}
-      />
     </div>
   );
 };
