@@ -1,5 +1,24 @@
 import { AdminPage, type AdminTab } from '@/views/AdminPage';
 
+export function generateStaticParams() {
+  return [
+    { tab: 'overview' },
+    { tab: 'photographs' },
+    { tab: 'photos' },
+    { tab: 'articles' },
+    { tab: 'stories' },
+    { tab: 'videos' },
+    { tab: 'collections' },
+    { tab: 'wildlife' },
+    { tab: 'species' },
+    { tab: 'content' },
+    { tab: 'locations' },
+    { tab: 'profile' },
+    { tab: 'enquiries' },
+    { tab: 'settings' },
+  ];
+}
+
 interface TabPageProps {
   params: Promise<{ tab: string }>;
 }

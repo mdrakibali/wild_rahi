@@ -12,14 +12,14 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     <Link
       to={`/articles/${encodeURIComponent(article.slug)}`}
       lang={article.language}
-      className="group flex flex-col border border-border bg-card rounded-lg overflow-hidden hover:border-primary/40 transition-all shadow-xs hover:shadow-md"
+      className="group flex flex-col border border-border bg-card rounded-2xl overflow-hidden hover:border-foreground/40 transition-all shadow-xs hover:shadow-md"
     >
-      <div className="aspect-[16/10] overflow-hidden bg-muted">
+      <div className="aspect-[16/10] overflow-hidden bg-muted rounded-2xl m-3 mb-0">
         <img
           src={article.coverImageUrl}
           alt={article.title}
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         />
       </div>
       <div className="p-6 flex-1 flex flex-col justify-between gap-5">
@@ -45,4 +45,3 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     </Link>
   );
 };
-

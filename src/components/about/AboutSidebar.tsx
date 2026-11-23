@@ -9,7 +9,7 @@ export const AboutSidebar: React.FC<AboutSidebarProps> = ({ profile }) => {
   return (
     <aside className="lg:col-span-5 space-y-6">
       {profile.equipmentNote && (
-        <div className="bg-secondary border border-border p-7 space-y-2.5">
+        <div className="bg-secondary border border-border rounded-2xl p-7 space-y-2.5">
           <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-semibold">
             Field Equipment
           </p>
@@ -20,7 +20,7 @@ export const AboutSidebar: React.FC<AboutSidebarProps> = ({ profile }) => {
       )}
 
       {profile.achievementsNote && (
-        <div className="bg-secondary border border-border p-7 space-y-2.5">
+        <div className="bg-secondary border border-border rounded-2xl p-7 space-y-2.5">
           <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-semibold">
             Collaborations &amp; Exhibitions
           </p>
@@ -31,7 +31,7 @@ export const AboutSidebar: React.FC<AboutSidebarProps> = ({ profile }) => {
       )}
 
       {profile.printSpecsNote && (
-        <div className="bg-secondary border border-border p-7 space-y-2.5">
+        <div className="bg-secondary border border-border rounded-2xl p-7 space-y-2.5">
           <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-semibold">
             Archival Fine-Art Prints
           </p>
@@ -42,7 +42,7 @@ export const AboutSidebar: React.FC<AboutSidebarProps> = ({ profile }) => {
       )}
 
       {profile.licensingNote && (
-        <div className="bg-secondary border border-border p-7 space-y-2.5">
+        <div className="bg-secondary border border-border rounded-2xl p-7 space-y-2.5">
           <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-semibold">
             Editorial &amp; Conservation Licensing
           </p>
@@ -54,4 +54,3 @@ export const AboutSidebar: React.FC<AboutSidebarProps> = ({ profile }) => {
     </aside>
   );
 };
-

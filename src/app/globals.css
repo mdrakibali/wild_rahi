@@ -6,39 +6,39 @@
   --font-bangla: "Hind Siliguri", "Baloo Da 2", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Shadcn Semantic Color Tokens with Nature/Earthy Editorial Nuance */
-  --color-background: #FBFBFA;
-  --color-foreground: #141716;
+  /* Shadcn Monochrome Light and Dark Tokens */
+  --color-background: #FAFAFA;
+  --color-foreground: #111111;
   --color-card: #FFFFFF;
-  --color-card-foreground: #141716;
+  --color-card-foreground: #111111;
   --color-popover: #FFFFFF;
-  --color-popover-foreground: #141716;
-  --color-primary: #122820;
-  --color-primary-foreground: #F7FAF8;
-  --color-secondary: #F3EFE8;
-  --color-secondary-foreground: #19201D;
-  --color-muted: #EFEBE3;
-  --color-muted-foreground: #636765;
-  --color-accent: #C78229;
+  --color-popover-foreground: #111111;
+  --color-primary: #111111;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #F4F4F5;
+  --color-secondary-foreground: #18181B;
+  --color-muted: #F4F4F5;
+  --color-muted-foreground: #71717A;
+  --color-accent: #18181B;
   --color-accent-foreground: #FFFFFF;
-  --color-destructive: #C93B3B;
+  --color-destructive: #111111;
   --color-destructive-foreground: #FFFFFF;
-  --color-border: #E5E1D8;
-  --color-input: #E5E1D8;
-  --color-ring: #122820;
+  --color-border: #E4E4E7;
+  --color-input: #E4E4E7;
+  --color-ring: #111111;
 
   /* Editorial & Darkroom Specifics */
-  --color-obsidian: #080C0A;
-  --color-surface-dark: #101814;
-  --color-card-dark: #151F1A;
-  --color-border-dark: #22322B;
-  --color-muted-dark: #7C8881;
+  --color-obsidian: #09090B;
+  --color-surface-dark: #121214;
+  --color-card-dark: #18181B;
+  --color-border-dark: #27272A;
+  --color-muted-dark: #71717A;
 
   /* Backward Compatibility Aliases */
   --color-canvas: #FFFFFF;
-  --color-surface: #F3EFE8;
-  --color-soft: #EFEBE3;
-  --color-ink: #141716;
+  --color-surface: #F4F4F5;
+  --color-soft: #F4F4F5;
+  --color-ink: #111111;
 }
 
 /* Reusable site container for clean responsive layout */

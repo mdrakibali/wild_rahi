@@ -10,7 +10,7 @@ interface VideoCardProps {
 
 export const VideoCard: React.FC<VideoCardProps> = ({ video, onPlay }) => {
   return (
-    <article className="group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition-all flex flex-col shadow-xs hover:shadow-md">
+    <article className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-foreground/40 transition-all flex flex-col shadow-xs hover:shadow-md">
       <button
         type="button"
         onClick={onPlay}
@@ -28,7 +28,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, onPlay }) => {
             <Play className="w-5 h-5 ml-0.5 fill-current" />
           </span>
         </div>
-        <span className="absolute top-3 left-3 rounded-md bg-obsidian/85 backdrop-blur-xs text-white px-2.5 py-0.5 text-[10px] font-mono tracking-wider">
+        <span className="absolute top-3 left-3 rounded-full bg-obsidian/85 backdrop-blur-xs text-white px-3 py-1 text-[10px] font-mono tracking-wider">
           {PLATFORM_LABELS[video.platform]}
         </span>
       </button>
@@ -49,4 +49,3 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, onPlay }) => {
     </article>
   );
 };
-

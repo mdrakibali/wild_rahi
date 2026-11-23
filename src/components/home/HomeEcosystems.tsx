@@ -25,7 +25,7 @@ export const HomeEcosystems: React.FC<HomeEcosystemsProps> = ({ locations }) => 
           </div>
           <Link
             to="/wildlife"
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-primary hover:text-white transition-colors self-start md:self-auto shadow-2xs"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-primary hover:text-white transition-colors self-start md:self-auto shadow-2xs"
           >
             Explore Habitats
             <ArrowRight className="w-4 h-4" />
@@ -37,14 +37,14 @@ export const HomeEcosystems: React.FC<HomeEcosystemsProps> = ({ locations }) => 
             <Link
               key={loc.id}
               to={`/photography?location=${encodeURIComponent(loc.slug)}`}
-              className="group bg-card border border-border rounded-lg overflow-hidden flex flex-col hover:border-primary/40 transition-all shadow-xs hover:shadow-md"
+              className="group bg-card border border-border rounded-2xl overflow-hidden flex flex-col hover:border-foreground/40 transition-all shadow-xs hover:shadow-md"
             >
-              <div className="aspect-[16/10] overflow-hidden bg-muted">
+              <div className="aspect-[16/10] overflow-hidden bg-muted rounded-2xl m-3 mb-0">
                 <img
                   src={loc.coverImageUrl}
                   alt={loc.name}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 />
               </div>
               <div className="p-6 flex-1 flex flex-col justify-between gap-4">
@@ -71,4 +71,3 @@ export const HomeEcosystems: React.FC<HomeEcosystemsProps> = ({ locations }) => 
     </section>
   );
 };
-

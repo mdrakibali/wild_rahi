@@ -26,7 +26,7 @@ export const HomeCategories: React.FC<HomeCategoriesProps> = ({
           </div>
           <Link
             to="/photography"
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-primary hover:text-white transition-colors self-start md:self-auto shadow-2xs"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-primary hover:text-white transition-colors self-start md:self-auto shadow-2xs"
           >
             Open Full Gallery
             <ArrowRight className="w-4 h-4" />
@@ -40,16 +40,16 @@ export const HomeCategories: React.FC<HomeCategoriesProps> = ({
               <Link
                 key={cat.id}
                 to={`/photography?collection=${encodeURIComponent(cat.id)}`}
-                className="group block bg-card border border-border rounded-lg overflow-hidden transition-all hover:border-primary/40 shadow-xs hover:shadow-md"
+                className="group block bg-card border border-border rounded-2xl overflow-hidden transition-all hover:border-foreground/40 shadow-xs hover:shadow-md"
               >
-                <div className="aspect-[4/5] overflow-hidden bg-muted relative">
+                <div className="aspect-[4/5] overflow-hidden bg-muted relative rounded-2xl m-3 mb-0">
                   <img
                     src={cat.coverImageUrl}
                     alt={cat.title}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                   />
-                  <div className="absolute top-3 right-3 bg-obsidian/75 backdrop-blur-xs text-white text-[11px] font-mono px-2.5 py-0.5 rounded-full">
+                  <div className="absolute top-3 right-3 bg-obsidian/75 backdrop-blur-xs text-white text-[11px] font-mono px-3 py-1 rounded-full">
                     {count} {count === 1 ? 'plate' : 'plates'}
                   </div>
                 </div>
@@ -69,4 +69,3 @@ export const HomeCategories: React.FC<HomeCategoriesProps> = ({
     </section>
   );
 };
-

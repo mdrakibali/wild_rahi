@@ -10,7 +10,7 @@ interface PhotoCardProps {
 
 export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect }) => {
   return (
-    <article className="break-inside-avoid group bg-card border-b border-border pb-6">
+    <article className="break-inside-avoid group bg-card border border-border rounded-2xl p-3 sm:p-4 hover:border-foreground/40 transition-all shadow-xs hover:shadow-md mb-6">
       <button
         type="button"
         onClick={onInspect}
@@ -18,7 +18,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect }) => {
         aria-label={`Inspect ${photo.title} in lightbox`}
       >
         <div
-          className={`relative rounded-lg overflow-hidden bg-muted ${getAspectRatioClass(
+          className={`relative rounded-2xl overflow-hidden bg-muted ${getAspectRatioClass(
             photo.aspectRatio
           )}`}
         >
@@ -26,9 +26,9 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect }) => {
             src={photo.imageUrl}
             alt={photo.title}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           />
-          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-md bg-obsidian/80 backdrop-blur-xs text-white px-3 py-1.5 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-obsidian/80 backdrop-blur-xs text-white px-3.5 py-1.5 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
             <Expand className="w-3.5 h-3.5" />
             Inspect
           </span>
@@ -54,4 +54,3 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect }) => {
     </article>
   );
 };
-

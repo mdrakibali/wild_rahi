@@ -11,14 +11,14 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species }) => {
   return (
     <Link
       to={`/wildlife/${encodeURIComponent(species.slug)}`}
-      className="group bg-card border border-border rounded-lg overflow-hidden flex flex-col hover:border-primary/40 transition-all shadow-xs hover:shadow-md"
+      className="group bg-card border border-border rounded-2xl overflow-hidden flex flex-col hover:border-foreground/40 transition-all shadow-xs hover:shadow-md"
     >
-      <div className="aspect-[4/3] overflow-hidden bg-muted relative">
+      <div className="aspect-[4/3] overflow-hidden bg-muted relative rounded-2xl m-3 mb-0">
         <img
           src={species.coverImageUrl}
           alt={species.commonName}
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         />
         <div className="absolute top-3 left-3">
           <Badge variant="conservation" status={species.conservationStatus}>
@@ -51,4 +51,3 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species }) => {
     </Link>
   );
 };
-
