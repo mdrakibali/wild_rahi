@@ -56,6 +56,8 @@ export interface Photograph {
   shutterSpeed: string;
   iso: string;
   year: string;
+  month?: string;
+  createdAt?: string;
   featured: boolean;
   inHorizontalJourney: boolean;
   published: boolean;

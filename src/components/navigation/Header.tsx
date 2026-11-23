@@ -7,12 +7,11 @@ import React, { useEffect, useState } from "react";
 import { usePortfolio } from "../../context/PortfolioContext";
 
 const NAV_ITEMS = [
-  { label: "Photography", to: "/photography" },
-  { label: "Wildlife", to: "/wildlife" },
+  { label: "Gallery", to: "/gallery" },
+  { label: "Categories", to: "/collections" },
   { label: "Videos", to: "/videos" },
-  { label: "Articles", to: "/articles" },
-  { label: "Conservation", to: "/conservation" },
   { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
 ];
 
 export const Header: React.FC = () => {

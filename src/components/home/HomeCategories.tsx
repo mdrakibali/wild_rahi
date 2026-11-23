@@ -63,7 +63,7 @@ export const HomeCategories: React.FC<HomeCategoriesProps> = ({
             </div>
 
             <Link
-              to="/photography"
+              to="/gallery"
               className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-secondary transition-colors"
             >
               Open Gallery
@@ -82,7 +82,7 @@ export const HomeCategories: React.FC<HomeCategoriesProps> = ({
             return (
               <Link
                 key={cat.id}
-                to={`/photography?collection=${encodeURIComponent(cat.id)}`}
+                to={`/gallery?collection=${encodeURIComponent(cat.id)}`}
                 className="shrink-0 w-[72vw] sm:w-[45vw] lg:w-auto snap-start group block bg-card border border-border rounded-md overflow-hidden"
               >
                 <div className="aspect-[4/5] overflow-hidden bg-muted relative">

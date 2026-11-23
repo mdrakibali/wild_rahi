@@ -1,5 +1,7 @@
 "use client";
 
+import { Link } from "@/lib/router-compat";
+import { ArrowRight } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { usePortfolio } from "../context/PortfolioContext";
 import { countPhotosByCollection } from "../lib/validation";
@@ -7,17 +9,14 @@ import type { VideoItem } from "../types/portfolio";
 
 // High-impact visual sections for the streamlined homepage
 import { CinematicHero } from "../components/hero/CinematicHero";
-import { HomeArticles } from "../components/home/HomeArticles";
 import { HomeCategories } from "../components/home/HomeCategories";
-import { HomeEcosystems } from "../components/home/HomeEcosystems";
 import { HomeVideos } from "../components/home/HomeVideos";
 import { Lightbox } from "../components/lightbox/Lightbox";
 import { HorizontalJourney } from "../components/photography/HorizontalJourney";
 import { VideoModal } from "../components/videos/VideoModal";
 
 export const HomePage: React.FC = () => {
-  const { photographs, collections, locations, articles, videos, profile } =
-    usePortfolio();
+  const { photographs, collections, videos, profile } = usePortfolio();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
@@ -52,13 +51,6 @@ export const HomePage: React.FC = () => {
     return (feat.length >= 3 ? feat : pub).slice(0, 4);
   }, [videos]);
 
-  const latestArticles = useMemo(() => {
-    return articles
-      .filter((a) => a.published)
-      .sort((a, b) => b.publishedDate.localeCompare(a.publishedDate))
-      .slice(0, 3);
-  }, [articles]);
-
   return (
     <div className="bg-background text-foreground">
       {/* 1. Cinematic Hero */}
@@ -76,17 +68,43 @@ export const HomePage: React.FC = () => {
         onSelectPhoto={(index) => setLightboxIndex(index)}
       />
 
-      {/* 4. Habitats & Ecosystems */}
-      <HomeEcosystems locations={locations} />
-
-      {/* 5. Field Video Footage */}
+      {/* 4. Field Video Footage */}
       <HomeVideos
         videos={featuredVideos}
         onSelectVideo={(vid) => setActiveVideo(vid)}
       />
 
-      {/* 6. Journal & Field Notes */}
-      <HomeArticles articles={latestArticles} />
+      {/* 5. Pure Photography Portfolio Teaser & Gallery CTA */}
+      <section className="bg-secondary border-t border-border py-16 lg:py-24">
+        <div className="site-container flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="max-w-xl space-y-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+              Wildlife Portfolio Archive
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-foreground">
+              Witness the Untamed Wilderness of Bangladesh
+            </h2>
+            <p className="text-base text-foreground/85 leading-relaxed">
+              Explore natural-light plates captured through patient field work across rivers, wetlands, and rainforests.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3.5">
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 text-xs font-semibold uppercase tracking-wider hover:bg-primary/90 transition-colors"
+            >
+              Browse Gallery
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/about"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-secondary transition-colors"
+            >
+              About the Photographer
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Modals */}
       <Lightbox

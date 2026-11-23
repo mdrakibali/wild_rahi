@@ -50,36 +50,18 @@ export const Footer: React.FC = () => {
             </p>
             <ul className="space-y-2.5 text-sm text-white/80">
               <li>
-                <Link to="/photography" className="hover:text-white transition-colors">
-                  Photography
+                <Link to="/gallery" className="hover:text-white transition-colors">
+                  Gallery
                 </Link>
               </li>
               <li>
-                <Link to="/wildlife" className="hover:text-white transition-colors">
-                  Wildlife Archive
+                <Link to="/collections" className="hover:text-white transition-colors">
+                  Categories
                 </Link>
               </li>
               <li>
                 <Link to="/videos" className="hover:text-white transition-colors">
                   Video Showcase
-                </Link>
-              </li>
-              <li>
-                <Link to="/articles" className="hover:text-white transition-colors">
-                  Articles &amp; Essays
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div className="lg:col-span-2 space-y-3.5">
-            <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-semibold">
-              Practice
-            </p>
-            <ul className="space-y-2.5 text-sm text-white/80">
-              <li>
-                <Link to="/conservation" className="hover:text-white transition-colors">
-                  Conservation Ethics
                 </Link>
               </li>
               <li>
@@ -89,7 +71,25 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link to="/contact" className="hover:text-white transition-colors">
-                  Contact &amp; Licensing
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="lg:col-span-2 space-y-3.5">
+            <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-semibold">
+              Studio
+            </p>
+            <ul className="space-y-2.5 text-sm text-white/80">
+              <li>
+                <Link to="/about" className="hover:text-white transition-colors">
+                  Biography &amp; Gear
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-white transition-colors">
+                  Print &amp; Licensing
                 </Link>
               </li>
               <li>
