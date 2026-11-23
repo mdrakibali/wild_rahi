@@ -76,6 +76,9 @@ export interface Collection {
   sortOrder: number;
 }
 
+// Backward-compatible alias for Albums
+export type Album = Collection;
+
 export interface Species {
   id: string;
   slug: string;

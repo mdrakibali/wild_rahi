@@ -15,10 +15,12 @@ interface PhotoCardProps {
 export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, className = '' }) => {
   const { openPhotoModal } = usePortfolio();
   const exif = formatExifMetadata(photo);
-  const targetHref = `/photography/${encodeURIComponent(photo.slug || photo.id)}`;
+  const targetHref = `/gallery/${encodeURIComponent(photo.slug || photo.id)}`;
 
   return (
-    <div className={`group relative rounded-md overflow-hidden cursor-pointer block w-full h-full bg-secondary ${className}`}>
+    <div
+      className={`group relative rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer block w-full h-full bg-muted shadow-xs hover:shadow-xl transition-all duration-300 ${className}`}
+    >
       <a
         href={targetHref}
         onClick={(e) => {
@@ -32,16 +34,16 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, classNam
         aria-label={`Inspect ${photo.title} in lightbox`}
       >
         {/* Photo Image Frame filling entire grid cell */}
-        <div className="relative rounded-md overflow-hidden bg-muted w-full h-full min-h-65 sm:min-h-75">
+        <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-muted w-full h-full">
           <img
             src={photo.imageUrl}
             alt={photo.title}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            className="w-full h-full object-cover rounded-xl sm:rounded-2xl transition-transform duration-500 ease-out group-hover:scale-105"
           />
 
-          {/* Desktop Hover Overlay - Cinematic & Minimalist */}
-          <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 sm:p-5 text-white">
+          {/* Hover Overlay - Clean Cinematic & Minimalist */}
+          <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-3.5 sm:p-5 text-white">
             <div className="flex justify-end">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-xs font-medium text-white/90 border border-white/20">
                 <Expand className="w-3 h-3" />
@@ -50,7 +52,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, classNam
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-base sm:text-lg font-serif font-bold tracking-tight text-white leading-snug">
+              <h3 className="text-sm sm:text-base lg:text-lg font-serif font-bold tracking-tight text-white leading-snug drop-shadow-sm">
                 {photo.title}
               </h3>
               <p className="text-xs text-white/80 font-medium flex items-center gap-1.5">
@@ -69,19 +71,6 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, classNam
               )}
             </div>
           </div>
-        </div>
-
-        {/* Minimal Mobile Caption below image */}
-        <div className="sm:hidden p-2.5 bg-card border-t border-border">
-          <div className="flex items-baseline justify-between gap-2">
-            <h3 className="text-xs font-serif font-semibold text-foreground truncate">
-              {photo.title}
-            </h3>
-            <span className="text-[10px] font-mono text-muted-foreground shrink-0">{photo.year}</span>
-          </div>
-          <p className="text-[11px] text-muted-foreground truncate">
-            {photo.speciesName || 'Wildlife'}
-          </p>
         </div>
       </a>
     </div>

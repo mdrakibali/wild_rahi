@@ -33,10 +33,10 @@ export const EditorialCollections: React.FC<EditorialCollectionsProps> = ({
  </p>
  </div>
  <Link
- to="/photography"
+ to="/albums"
  className="inline-flex items-center gap-2 rounded-md border border-border px-6 py-2.5 text-sm font-medium text-foreground hover:bg-primary hover:text-white transition-colors self-start md:self-auto"
  >
- View All Galleries
+ View All Albums
  <ArrowRight className="w-4 h-4" />
  </Link>
  </div>
@@ -48,7 +48,7 @@ export const EditorialCollections: React.FC<EditorialCollectionsProps> = ({
  return (
  <Link
  key={collection.id}
- to={`/photography?collection=${encodeURIComponent(collection.id)}`}
+ to={`/albums/${encodeURIComponent(collection.slug || collection.id)}`}
  className={`group block ${isWide ? 'md:col-span-7' : 'md:col-span-5'}`}
  >
  <div

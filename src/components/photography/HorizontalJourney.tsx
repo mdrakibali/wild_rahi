@@ -87,7 +87,7 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
             className="shrink-0 w-[84vw] sm:w-[68vw] lg:w-[46vw] xl:w-[40vw] snap-center group"
           >
             <a
-              href={`/photography/${encodeURIComponent(photo.slug || photo.id)}`}
+              href={`/gallery/${encodeURIComponent(photo.slug || photo.id)}`}
               onClick={(e) => {
                 if (!e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0) {
                   e.preventDefault();
@@ -98,14 +98,14 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
               className="block w-full text-left focus:outline-none cursor-pointer"
               aria-label={`Open ${photo.title} in lightbox`}
             >
-              <div className="relative overflow-hidden bg-surface-dark aspect-[16/10] rounded-md">
+              <div className="relative overflow-hidden bg-surface-dark aspect-[16/10] rounded-xl">
                 <img
                   src={photo.imageUrl}
                   alt={photo.title}
                   loading="lazy"
-                  className="w-full h-full object-cover rounded-md"
+                  className="w-full h-full object-cover rounded-xl transition-transform duration-500 ease-out group-hover:scale-105"
                 />
-                <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-md bg-obsidian/80 text-white px-3 py-1 text-xs font-medium opacity-90 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-black/70 backdrop-blur-md text-white px-3 py-1 text-xs font-medium opacity-90 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity border border-white/20">
                   <Expand className="w-3.5 h-3.5" />
                   View Plate
                 </span>

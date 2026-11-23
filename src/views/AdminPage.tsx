@@ -78,7 +78,7 @@ const ARTICLE_DRAFT_STORAGE_KEY = 'wildrahi_article_autosave_v1';
 const NAV_TABS: Array<{ id: AdminTab; label: string; icon: React.ComponentType<{ className?: string }> }> = [
  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
  { id: 'photographs', label: 'Photos', icon: Camera },
- { id: 'collections', label: 'Categories', icon: FolderOpen },
+ { id: 'collections', label: 'Albums', icon: FolderOpen },
  { id: 'videos', label: 'Videos', icon: Video },
  { id: 'content', label: 'About & Bio', icon: Globe },
  { id: 'enquiries', label: 'Messages', icon: Inbox },
@@ -1894,7 +1894,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  Gallery Taxonomy
  </p>
  <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight mt-1 text-foreground">
- Categories &amp; Collections
+ Albums &amp; Series
  </h2>
  </div>
 
@@ -1904,7 +1904,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  >
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div>
- <label className={labelCls}>Category Title *</label>
+ <label className={labelCls}>Album Title *</label>
  <input
  className={inputCls}
  value={collectionDraft.title}
@@ -1938,7 +1938,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  disabled={busy}
  className="rounded-md bg-primary text-white hover:bg-primary/90 px-6 py-2.5 text-sm font-medium"
  >
- Save Category
+ Save Album
  </button>
  </form>
 

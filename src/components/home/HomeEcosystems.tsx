@@ -36,7 +36,7 @@ export const HomeEcosystems: React.FC<HomeEcosystemsProps> = ({ locations }) => 
           {locations.slice(0, 3).map((loc) => (
             <Link
               key={loc.id}
-              to={`/photography?location=${encodeURIComponent(loc.slug)}`}
+              to="/gallery"
               className="bg-card border border-border rounded-md overflow-hidden flex flex-col"
             >
               <div className="aspect-[16/10] overflow-hidden bg-muted">

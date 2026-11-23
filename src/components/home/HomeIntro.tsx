@@ -29,7 +29,7 @@ export const HomeIntro: React.FC<HomeIntroProps> = ({ profile }) => {
           </p>
           <div className="pt-2 flex flex-wrap items-center gap-3.5">
             <Link
-              to="/photography"
+              to="/gallery"
               className="inline-flex items-center gap-2 rounded-md bg-primary text-white px-6 py-2.5 text-xs font-semibold uppercase tracking-wider hover:bg-primary/90 transition-colors shadow-xs"
             >
               Browse the Archive

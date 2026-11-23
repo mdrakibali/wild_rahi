@@ -5,7 +5,7 @@ import { useSearchParams } from '@/lib/router-compat';
 import { usePortfolio } from '../context/PortfolioContext';
 import { PhotoCard } from '../components/photography/PhotoCard';
 
-export const PhotographyPage: React.FC = () => {
+export const GalleryPage: React.FC = () => {
   const { photographs, collections } = usePortfolio();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -108,14 +108,22 @@ export const PhotographyPage: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 auto-rows-[280px] sm:auto-rows-[320px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5 auto-rows-[200px] sm:auto-rows-[230px] md:auto-rows-[260px] lg:auto-rows-[280px] grid-flow-dense">
             {filteredPhotos.map((photo, index) => {
-              // Asymmetric / Editorial 4-column span pattern:
-              // Featured photos or every 5th item spans 2 columns in row 1
-              const isWide = photo.featured || index % 5 === 0;
-              const spanClass = isWide
-                ? 'col-span-1 sm:col-span-2 lg:col-span-2 row-span-1'
-                : 'col-span-1 row-span-1';
+              // Tight mosaic tessellation matching Image 2
+              const isTall = photo.aspectRatio === '3:4' || index % 7 === 2;
+              const isWide =
+                photo.featured ||
+                photo.aspectRatio === '16:9' ||
+                index % 6 === 0 ||
+                index % 6 === 4;
+
+              let spanClass = 'col-span-1 row-span-1';
+              if (isTall) {
+                spanClass = 'col-span-1 row-span-1 sm:row-span-2';
+              } else if (isWide) {
+                spanClass = 'col-span-1 sm:col-span-2 row-span-1';
+              }
 
               return (
                 <div key={photo.id} className={spanClass}>

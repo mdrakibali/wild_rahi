@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
-import { PhotographyPage } from '@/views/PhotographyPage';
+import { GalleryPage } from '@/views/GalleryPage';
 
-export default function GalleryPage() {
+export default function Page() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-background" />}>
-      <PhotographyPage />
+      <GalleryPage />
     </Suspense>
   );
 }
