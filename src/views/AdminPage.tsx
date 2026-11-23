@@ -16,6 +16,8 @@ import {
   Inbox,
   LayoutDashboard,
   LogOut,
+  Menu,
+  X,
   MapPin,
   Plus,
   Save,
@@ -180,6 +182,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
   } = usePortfolio();
 
   const [activeTab, setActiveTab] = useState<AdminTab>(initialTab || 'overview');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [toast, setToast] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -609,10 +612,110 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
   const labelCls = 'block text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold mb-1.5';
 
   return (
-    <div className="min-h-screen bg-secondary text-foreground flex flex-col lg:flex-row">
-      {/* Sidebar */}
-      <aside className="lg:w-64 shrink-0 bg-card border-b lg:border-b-0 lg:border-r border-border flex flex-col">
-        <div className="p-5 sm:p-6 border-b border-border flex items-center justify-between lg:block">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-secondary text-foreground flex flex-col lg:flex-row">
+      {/* Mobile Top Header (Sticky) */}
+      <header className="sticky top-0 z-40 bg-card border-b border-border px-4 py-3 flex items-center justify-between lg:hidden shrink-0">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen((prev) => !prev)}
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border bg-secondary text-foreground hover:bg-muted"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileNavOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </button>
+          <div>
+            <p className="text-sm font-semibold tracking-tight leading-none">Wild Rahi</p>
+            <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mt-0.5">
+              Admin Studio
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-medium uppercase tracking-wider px-2.5 py-1 rounded-full bg-secondary border border-border text-foreground">
+            {NAV_TABS.find((t) => t.id === activeTab)?.label || 'Overview'}
+          </span>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground hover:bg-secondary"
+          >
+            View
+            <ArrowUpRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </header>
+
+      {/* Mobile Navigation Drawer */}
+      {mobileNavOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex animate-fade-in">
+          <div
+            className="fixed inset-0 bg-obsidian/60 backdrop-blur-xs"
+            onClick={() => setMobileNavOpen(false)}
+          />
+          <div className="relative w-72 max-w-[80vw] h-full bg-card border-r border-border p-5 flex flex-col justify-between z-10 shadow-2xl">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <div>
+                  <p className="text-base font-semibold tracking-tight">Wild Rahi</p>
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Admin Studio</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMobileNavOpen(false)}
+                  className="p-1 rounded-full hover:bg-secondary text-muted-foreground"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <nav className="flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-180px)]">
+                {NAV_TABS.map((tab) => {
+                  const Icon = tab.icon;
+                  const active = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveTab(tab.id);
+                        setMobileNavOpen(false);
+                      }}
+                      className={`inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 text-xs font-semibold tracking-wide transition-all text-left ${
+                        active
+                          ? 'bg-primary text-primary-foreground shadow-xs'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 shrink-0" />
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+
+            <div className="pt-4 border-t border-border flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs font-medium truncate">{adminUser?.name || 'Admin'}</p>
+                <p className="text-[11px] text-muted-foreground truncate">{adminUser?.email}</p>
+              </div>
+              <button
+                type="button"
+                onClick={signOutAdmin}
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-border hover:bg-secondary text-muted-foreground hover:text-foreground"
+                title="Sign out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Fixed Sticky Sidebar */}
+      <aside className="hidden lg:flex lg:w-64 shrink-0 h-screen sticky top-0 flex-col bg-card border-r border-border overflow-y-auto">
+        <div className="p-5 sm:p-6 border-b border-border flex items-center justify-between">
           <div>
             <p className="text-lg font-semibold tracking-tight leading-none">Wild Rahi</p>
             <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mt-1">
@@ -621,14 +724,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           </div>
           <Link
             to="/"
-            className="lg:mt-3 inline-flex items-center gap-1 rounded-md border border-border hover:bg-secondary px-3 py-1 text-xs font-medium text-foreground hover:bg-secondary"
+            className="inline-flex items-center gap-1 rounded-full border border-border hover:bg-secondary px-3 py-1 text-xs font-medium text-foreground hover:bg-secondary"
           >
-            View Site
+            View
             <ArrowUpRight className="w-3 h-3" />
           </Link>
         </div>
 
-        <nav className="p-3 flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar flex-1">
+        <nav className="p-3 flex flex-col gap-1 flex-1 overflow-y-auto">
           {NAV_TABS.map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -637,7 +740,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`shrink-0 inline-flex items-center gap-2.5 rounded-md px-3.5 py-2.5 text-xs font-semibold tracking-wide transition-all text-left ${
+                className={`shrink-0 inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 text-xs font-semibold tracking-wide transition-all text-left ${
                   active
                     ? 'bg-primary text-primary-foreground shadow-xs'
                     : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
@@ -650,7 +753,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           })}
         </nav>
 
-        <div className="p-4 border-t border-border hidden lg:flex items-center justify-between gap-2">
+        <div className="p-4 border-t border-border flex items-center justify-between gap-2">
           <div className="min-w-0">
             <p className="text-xs font-medium truncate">{adminUser?.name || 'Admin'}</p>
             <p className="text-[11px] text-muted-foreground truncate">{adminUser?.email}</p>
@@ -658,7 +761,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           <button
             type="button"
             onClick={signOutAdmin}
-            className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-border hover:bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border hover:bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary"
             title="Sign out"
             aria-label="Sign out"
           >
@@ -667,8 +770,8 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
         </div>
       </aside>
 
-      {/* Main Workspace */}
-      <div className="flex-1 min-w-0 p-5 sm:p-8 lg:p-10 max-w-[1280px]">
+      {/* Main Workspace (Independent Scrolling on Desktop) */}
+      <main className="flex-1 min-w-0 lg:h-screen lg:overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
         {toast && (
           <div
             role="status"
@@ -710,7 +813,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 </h2>
               </div>
 
-              <label className="inline-flex items-center gap-2 rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-5 py-2.5 text-xs font-medium cursor-pointer hover:bg-primary/90 self-start">
+              <label className="inline-flex items-center gap-2 rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-5 py-2.5 text-xs font-medium cursor-pointer hover:bg-primary/90 self-start">
                 <Upload className="w-3.5 h-3.5" />
                 Upload Multiple Photos
                 <input
@@ -725,7 +828,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
 
             <form
               onSubmit={handleSavePhoto}
-              className="bg-card border border-border rounded-lg p-6 sm:p-7 space-y-5 shadow-xs"
+              className="bg-card border border-border rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-serif font-bold text-foreground">
@@ -738,7 +841,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       setEditingPhotoId(null);
                       setPhotoDraft(emptyPhoto(collections, locations, photographs.length));
                     }}
-                    className="rounded-md border border-border hover:bg-secondary px-3.5 py-1 text-xs"
+                    className="rounded-full border border-border hover:bg-secondary px-3.5 py-1 text-xs"
                   >
                     + New Plate
                   </button>
@@ -839,7 +942,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   />
                 </div>
                 <div className="md:col-span-3">
-                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
+                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
                     <Upload className="w-3.5 h-3.5" />
                     Upload Photo
                     <input
@@ -942,7 +1045,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex items-center gap-2 rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {editingPhotoId ? 'Update Photograph' : 'Save Photograph'}
@@ -976,7 +1079,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       type="button"
                       onClick={() => handleMovePhoto(index, -1)}
                       disabled={index === 0 || busy}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary hover:bg-secondary disabled:opacity-30"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary hover:bg-secondary disabled:opacity-30"
                       aria-label="Move up"
                     >
                       <ArrowUp className="w-3.5 h-3.5" />
@@ -985,7 +1088,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       type="button"
                       onClick={() => handleMovePhoto(index, 1)}
                       disabled={index === photographs.length - 1 || busy}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary hover:bg-secondary disabled:opacity-30"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary hover:bg-secondary disabled:opacity-30"
                       aria-label="Move down"
                     >
                       <ArrowDown className="w-3.5 h-3.5" />
@@ -997,14 +1100,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         setPhotoDraft(photo);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
+                      className="rounded-full border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => setDeleteTarget({ type: 'photograph', id: photo.id, name: photo.title })}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600 hover:bg-red-50"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary text-red-600 hover:bg-red-50"
                       aria-label="Delete photograph"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1035,7 +1138,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 <button
                   type="button"
                   onClick={handleRestoreAutosavedArticle}
-                  className="rounded-md border border-border hover:bg-secondary bg-card px-4 py-2 text-xs font-medium hover:bg-muted"
+                  className="rounded-full border border-border hover:bg-secondary bg-card px-4 py-2 text-xs font-medium hover:bg-muted"
                 >
                   Restore Draft
                 </button>
@@ -1046,7 +1149,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     setArticleDraft(emptyArticle());
                     setArticleTagsText('');
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-4 py-2 text-xs font-medium"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-4 py-2 text-xs font-medium"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   New Article
@@ -1054,7 +1157,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-6 sm:p-7 space-y-5 shadow-xs">
+            <div className="bg-card border border-border rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                 <div className="md:col-span-6">
                   <label className={labelCls}>Article Title *</label>
@@ -1193,7 +1296,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   />
                 </div>
                 <div className="md:col-span-3">
-                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
+                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
                     <Upload className="w-3.5 h-3.5" />
                     Upload Cover
                     <input
@@ -1272,7 +1375,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     type="button"
                     disabled={busy}
                     onClick={() => handleSaveArticle(false)}
-                    className="rounded-md border border-border hover:bg-secondary px-5 py-2.5 text-sm font-medium hover:bg-secondary disabled:opacity-50"
+                    className="rounded-full border border-border hover:bg-secondary px-5 py-2.5 text-sm font-medium hover:bg-secondary disabled:opacity-50"
                   >
                     Save as Draft
                   </button>
@@ -1280,7 +1383,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     type="button"
                     disabled={busy}
                     onClick={() => handleSaveArticle(true)}
-                    className="inline-flex items-center gap-2 rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
                   >
                     <Save className="w-4 h-4" />
                     Publish Article
@@ -1322,7 +1425,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   <div className="flex items-center gap-2 shrink-0">
                     <Link
                       to={`/articles/${encodeURIComponent(art.slug)}`}
-                      className="rounded-md border border-border hover:bg-secondary px-3 py-1.5 text-xs hover:bg-secondary"
+                      className="rounded-full border border-border hover:bg-secondary px-3 py-1.5 text-xs hover:bg-secondary"
                     >
                       View
                     </Link>
@@ -1334,14 +1437,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         setArticleTagsText((art.tags || []).join(', '));
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
+                      className="rounded-full border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => setDeleteTarget({ type: 'article', id: art.id, name: art.title })}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600 hover:bg-red-50"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary text-red-600 hover:bg-red-50"
                       aria-label="Delete article"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1367,7 +1470,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
 
             <form
               onSubmit={handleSaveVideo}
-              className="bg-card border border-border rounded-lg p-6 sm:p-7 space-y-5 shadow-xs"
+              className="bg-card border border-border rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-serif font-bold text-foreground">
@@ -1380,7 +1483,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       setEditingVideoId(null);
                       setVideoDraft(emptyVideo(videos.length));
                     }}
-                    className="rounded-md border border-border hover:bg-secondary px-3.5 py-1 text-xs"
+                    className="rounded-full border border-border hover:bg-secondary px-3.5 py-1 text-xs"
                   >
                     + New Video
                   </button>
@@ -1496,7 +1599,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   />
                 </div>
                 <div className="md:col-span-3">
-                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
+                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
                     <Upload className="w-3.5 h-3.5" />
                     Upload Thumbnail
                     <input
@@ -1550,7 +1653,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex items-center gap-2 rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {editingVideoId ? 'Update Video' : 'Save Video'}
@@ -1590,14 +1693,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         setVideoDraft(vid);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
+                      className="rounded-full border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => setDeleteTarget({ type: 'video', id: vid.id, name: vid.title })}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600 hover:bg-red-50"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary text-red-600 hover:bg-red-50"
                       aria-label="Delete video"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1623,7 +1726,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
 
             <form
               onSubmit={handleSaveCollection}
-              className="bg-card border border-border rounded-lg p-6 sm:p-7 space-y-4 shadow-xs"
+              className="bg-card border border-border rounded-2xl p-6 sm:p-7 space-y-4 shadow-xs"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -1659,7 +1762,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium"
+                className="rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium"
               >
                 Save Category
               </button>
@@ -1683,14 +1786,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     <button
                       type="button"
                       onClick={() => setCollectionDraft(col)}
-                      className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs"
+                      className="rounded-full border border-border hover:bg-secondary px-3.5 py-1.5 text-xs"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => setDeleteTarget({ type: 'category', id: col.id, name: col.title })}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary text-red-600"
                       aria-label="Delete category"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1714,7 +1817,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   Species &amp; Habitats
                 </h2>
               </div>
-              <div className="inline-flex rounded-md border border-border hover:bg-secondary bg-card p-1">
+              <div className="inline-flex rounded-full border border-border hover:bg-secondary bg-card p-1">
                 <button
                   type="button"
                   onClick={() => setWildlifeSubTab('species')}
@@ -1740,7 +1843,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <>
                 <form
                   onSubmit={handleSaveSpecies}
-                  className="bg-card border border-border rounded-lg p-6 sm:p-7 space-y-4 shadow-xs"
+                  className="bg-card border border-border rounded-2xl p-6 sm:p-7 space-y-4 shadow-xs"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -1828,7 +1931,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   <button
                     type="submit"
                     disabled={busy}
-                    className="rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium"
+                    className="rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium"
                   >
                     Save Species Dossier
                   </button>
@@ -1853,14 +1956,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         <button
                           type="button"
                           onClick={() => setSpeciesDraft(sp)}
-                          className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs"
+                          className="rounded-full border border-border hover:bg-secondary px-3.5 py-1.5 text-xs"
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => setDeleteTarget({ type: 'species', id: sp.id, name: sp.commonName })}
-                          className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600"
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary text-red-600"
                           aria-label="Delete species"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1874,7 +1977,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <>
                 <form
                   onSubmit={handleSaveLocation}
-                  className="bg-card border border-border rounded-lg p-6 sm:p-7 space-y-4 shadow-xs"
+                  className="bg-card border border-border rounded-2xl p-6 sm:p-7 space-y-4 shadow-xs"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -1932,7 +2035,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   <button
                     type="submit"
                     disabled={busy}
-                    className="rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium"
+                    className="rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-6 py-2.5 text-sm font-medium"
                   >
                     Save Habitat
                   </button>
@@ -1951,14 +2054,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         <button
                           type="button"
                           onClick={() => setLocationDraft(loc)}
-                          className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs"
+                          className="rounded-full border border-border hover:bg-secondary px-3.5 py-1.5 text-xs"
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => setDeleteTarget({ type: 'habitat', id: loc.id, name: loc.name })}
-                          className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600"
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary text-red-600"
                           aria-label="Delete habitat"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1984,7 +2087,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               </h2>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-6 sm:p-7 space-y-5 shadow-xs">
+            <div className="bg-card border border-border rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className={labelCls}>Hero Headline</label>
@@ -2088,7 +2191,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex items-center gap-2 rounded-md bg-primary text-white shadow-xs hover:bg-primary/90 px-7 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-full bg-primary text-white shadow-xs hover:bg-primary/90 px-7 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 Save Website Content
@@ -2120,7 +2223,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   return (
                     <div
                       key={enq.id}
-                      className="bg-card border border-border rounded-lg p-6 sm:p-7 space-y-4 shadow-xs"
+                      className="bg-card border border-border rounded-2xl p-6 sm:p-7 space-y-4 shadow-xs"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                         <div>
@@ -2148,7 +2251,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                               );
                               notify('Enquiry status updated.');
                             }}
-                            className="rounded-md border border-border hover:bg-secondary bg-secondary px-3.5 py-1.5 text-xs font-medium capitalize"
+                            className="rounded-full border border-border hover:bg-secondary bg-secondary px-3.5 py-1.5 text-xs font-medium capitalize"
                           >
                             <option value="new">New</option>
                             <option value="reviewed">Reviewed</option>
@@ -2158,7 +2261,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                           <button
                             type="button"
                             onClick={() => setDeleteTarget({ type: 'enquiry', id: enq.id, name: `${enq.name} (${enq.subject})` })}
-                            className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600"
+                            className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary text-red-600"
                             aria-label="Delete enquiry"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -2185,7 +2288,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                             await updateEnquiry(enq.id, enq.status, notesVal);
                             notify('Notes saved.');
                           }}
-                          className="rounded-md border border-border hover:bg-secondary px-5 py-2 text-xs font-medium hover:bg-secondary"
+                          className="rounded-full border border-border hover:bg-secondary px-5 py-2 text-xs font-medium hover:bg-secondary"
                         >
                           Save Note
                         </button>
@@ -2238,7 +2341,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
             }
           }}
         />
-      </div>
+      </main>
     </div>
   );
 };

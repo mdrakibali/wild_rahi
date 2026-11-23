@@ -5,7 +5,8 @@ import { Button } from './Button';
 export interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
-  message: string;
+  message?: string;
+  description?: string;
   itemName?: string;
   confirmText?: string;
   cancelText?: string;
@@ -19,6 +20,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   title,
   message,
+  description,
   itemName,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
@@ -27,6 +29,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onConfirm,
   onClose,
 }) => {
+  const displayText = message || description || '';
   useEffect(() => {
     if (!isOpen) return;
 
@@ -82,7 +85,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
               {title}
             </h3>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {message}
+              {displayText}
             </p>
 
             {itemName && (

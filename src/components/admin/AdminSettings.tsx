@@ -76,7 +76,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* PostgreSQL Storage Status & Export */}
-        <div className="bg-card border border-border rounded-lg p-6 sm:p-8 space-y-5 shadow-xs">
+        <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-5 shadow-xs">
           <div className="flex items-center gap-2.5">
             <Database className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-serif font-bold text-foreground">PostgreSQL &amp; Archive Backup</h3>
@@ -125,7 +125,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
         </div>
 
         {/* Password Security */}
-        <div className="bg-card border border-border rounded-lg p-6 sm:p-8 space-y-5 shadow-xs">
+        <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-5 shadow-xs">
           <div className="flex items-center gap-2.5">
             <KeyRound className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-serif font-bold text-foreground">Admin Credentials</h3>

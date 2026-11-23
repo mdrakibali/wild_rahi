@@ -70,11 +70,11 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   if (submitted) {
     return (
       <div
-        className={`p-8 rounded-lg border ${
+        className={`p-8 rounded-2xl border ${
           isLight
             ? 'bg-card border-border text-foreground'
             : 'bg-card-dark border-border-dark text-white'
-        } space-y-4`}
+        } space-y-4 shadow-sm`}
       >
         <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground">
           <Check className="w-5 h-5" />
@@ -100,7 +100,7 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`p-7 sm:p-8 rounded-lg border ${
+      className={`p-7 sm:p-8 rounded-2xl border ${
         isLight
           ? 'bg-card border-border text-foreground shadow-xs'
           : 'bg-card-dark border-border-dark text-white'

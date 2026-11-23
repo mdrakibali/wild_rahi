@@ -1,17 +1,20 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef } from 'react';
-import { Link } from '@/lib/router-compat';
-import gsap from 'gsap';
-import { ArrowDown, ArrowRight } from 'lucide-react';
-import type { Photograph, SiteProfile } from '../../types/portfolio';
+import { Link } from "@/lib/router-compat";
+import gsap from "gsap";
+import { ArrowRight } from "lucide-react";
+import React, { useEffect, useRef } from "react";
+import type { Photograph, SiteProfile } from "../../types/portfolio";
 
 interface CinematicHeroProps {
   heroPhoto?: Photograph | null;
   profile: SiteProfile;
 }
 
-export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile }) => {
+export const CinematicHero: React.FC<CinematicHeroProps> = ({
+  heroPhoto,
+  profile,
+}) => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
@@ -21,14 +24,21 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile
         gsap.fromTo(
           imageRef.current,
           { scale: 1.07, opacity: 0.72 },
-          { scale: 1, opacity: 1, duration: 1.5, ease: 'power3.out' }
+          { scale: 1, opacity: 1, duration: 1.5, ease: "power3.out" },
         );
       }
 
       gsap.fromTo(
-        '.hero-stagger',
+        ".hero-stagger",
         { y: 26, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, stagger: 0.1, ease: 'power3.out', delay: 0.15 }
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          stagger: 0.1,
+          ease: "power3.out",
+          delay: 0.15,
+        },
       );
     }, sectionRef);
 
@@ -54,7 +64,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, rgba(11,11,11,0.48) 0%, rgba(11,11,11,0.18) 38%, rgba(11,11,11,0.72) 78%, rgba(11,11,11,0.94) 100%)',
+              "linear-gradient(180deg, rgba(11,11,11,0.48) 0%, rgba(11,11,11,0.18) 38%, rgba(11,11,11,0.72) 78%, rgba(11,11,11,0.94) 100%)",
           }}
         />
       </div>
@@ -66,7 +76,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile
           </p>
 
           <h1 className="hero-stagger text-4xl sm:text-6xl lg:text-[68px] font-semibold tracking-tight leading-[1.06] text-white">
-            {profile.heroHeadline || 'Wild Bangladesh, Quietly Witnessed'}
+            {profile.heroHeadline || "Wild Bangladesh, Quietly Witnessed"}
           </h1>
 
           <p className="hero-stagger text-base sm:text-lg lg:text-xl text-white/80 max-w-2xl leading-relaxed font-normal">
@@ -88,30 +98,6 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile
               Discover My Story
             </Link>
           </div>
-        </div>
-
-        <div className="hero-stagger mt-12 sm:mt-16 pt-6 border-t border-white/15 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs sm:text-sm text-white/70">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            {heroPhoto ? (
-              <>
-                <span className="text-white font-medium">{heroPhoto.speciesName}</span>
-                <span aria-hidden="true">&middot;</span>
-                <span>{heroPhoto.locationName}</span>
-                <span aria-hidden="true">&middot;</span>
-                <span>{heroPhoto.year}</span>
-              </>
-            ) : (
-              <span className="text-white/80">{profile.location || 'Bangladesh'}</span>
-            )}
-          </div>
-
-          <a
-            href="#introduction"
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-white/75 hover:text-white transition-colors self-start sm:self-auto"
-          >
-            Scroll to explore
-            <ArrowDown className="w-3.5 h-3.5" />
-          </a>
         </div>
       </div>
     </section>

@@ -142,7 +142,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               key={item.label}
               type="button"
               onClick={() => onNavigateTab(item.tab)}
-              className="text-left bg-card border border-border hover:border-primary/50 p-5 rounded-lg transition-all space-y-3 shadow-xs hover:shadow-sm cursor-pointer group"
+              className="text-left bg-card border border-border hover:border-foreground/50 p-5 rounded-2xl transition-all space-y-3 shadow-xs hover:shadow-sm cursor-pointer group"
             >
               <div className="flex items-center justify-between text-muted-foreground group-hover:text-primary transition-colors">
                 <span className="text-xs font-medium uppercase tracking-wider">{item.label}</span>
@@ -159,7 +159,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
 
       {/* Recent Content Updates + Latest Enquiries */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-7 bg-card border border-border rounded-lg p-6 space-y-4 shadow-xs">
+        <div className="lg:col-span-7 bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-serif font-bold text-foreground">Recent Articles &amp; Drafts</h3>
             <button
@@ -190,7 +190,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
           </div>
         </div>
 
-        <div className="lg:col-span-5 bg-card border border-border rounded-lg p-6 space-y-4 shadow-xs">
+        <div className="lg:col-span-5 bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-serif font-bold text-foreground">Latest Enquiries</h3>
             <button

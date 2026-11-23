@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from '@/lib/router-compat';
-import { ArrowRight } from 'lucide-react';
-import type { Collection } from '../../types/portfolio';
+import { Link } from "@/lib/router-compat";
+import { ArrowRight } from "lucide-react";
+import React from "react";
+import type { Collection } from "../../types/portfolio";
 
 interface HomeCategoriesProps {
   collections: Collection[];
@@ -33,7 +33,7 @@ export const HomeCategories: React.FC<HomeCategoriesProps> = ({
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {collections.slice(0, 4).map((cat) => {
             const count = countsByCollection[cat.id] ?? 0;
             return (
@@ -50,7 +50,7 @@ export const HomeCategories: React.FC<HomeCategoriesProps> = ({
                     className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                   />
                   <div className="absolute top-3 right-3 bg-obsidian/75 backdrop-blur-xs text-white text-[11px] font-mono px-3 py-1 rounded-full">
-                    {count} {count === 1 ? 'plate' : 'plates'}
+                    {count} {count === 1 ? "plate" : "plates"}
                   </div>
                 </div>
                 <div className="p-5 space-y-1.5">
