@@ -30,16 +30,16 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="bg-[#FFFFFF] text-[#171717]">
+    <html lang="en" className="bg-background text-foreground">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#FFFFFF] text-[#171717] antialiased selection:bg-[#171717] selection:text-[#FFFFFF]">
+      <body className="bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground min-h-screen">
         <PortfolioProvider>
           <AppShell>{children}</AppShell>
         </PortfolioProvider>

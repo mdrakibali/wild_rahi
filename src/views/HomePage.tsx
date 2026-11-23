@@ -1,31 +1,35 @@
-'use client';
+"use client";
 
-import React, { useMemo, useState } from 'react';
-import { Link } from '@/lib/router-compat';
-import { ArrowRight, ArrowUpRight, Play } from 'lucide-react';
-import { usePortfolio } from '../context/PortfolioContext';
-import { CinematicHero } from '../components/hero/CinematicHero';
-import { HorizontalJourney } from '../components/photography/HorizontalJourney';
-import { EditorialCollections } from '../components/collections/EditorialCollections';
-import { Lightbox } from '../components/lightbox/Lightbox';
-import { VideoModal } from '../components/videos/VideoModal';
-import { countPhotosByCollection } from '../lib/validation';
-import { PLATFORM_LABELS } from '../lib/videoEmbed';
-import type { VideoItem } from '../types/portfolio';
+import { Link } from "@/lib/router-compat";
+import { ArrowRight, ArrowUpRight, Play } from "lucide-react";
+import React, { useMemo, useState } from "react";
+import { EditorialCollections } from "../components/collections/EditorialCollections";
+import { CinematicHero } from "../components/hero/CinematicHero";
+import { Lightbox } from "../components/lightbox/Lightbox";
+import { HorizontalJourney } from "../components/photography/HorizontalJourney";
+import { VideoModal } from "../components/videos/VideoModal";
+import { usePortfolio } from "../context/PortfolioContext";
+import { countPhotosByCollection } from "../lib/validation";
+import { PLATFORM_LABELS } from "../lib/videoEmbed";
+import type { VideoItem } from "../types/portfolio";
 
 export const HomePage: React.FC = () => {
-  const { photographs, collections, locations, articles, videos, profile } = usePortfolio();
+  const { photographs, collections, locations, articles, videos, profile } =
+    usePortfolio();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   const publishedPhotos = useMemo(
-    () => photographs.filter((p) => p.published).sort((a, b) => a.sortOrder - b.sortOrder),
-    [photographs]
+    () =>
+      photographs
+        .filter((p) => p.published)
+        .sort((a, b) => a.sortOrder - b.sortOrder),
+    [photographs],
   );
 
   const heroPhoto = useMemo(
     () => publishedPhotos.find((p) => p.featured) || publishedPhotos[0],
-    [publishedPhotos]
+    [publishedPhotos],
   );
 
   const journeyPhotos = useMemo(() => {
@@ -35,11 +39,13 @@ export const HomePage: React.FC = () => {
 
   const countsByCollection = useMemo(
     () => countPhotosByCollection(publishedPhotos),
-    [publishedPhotos]
+    [publishedPhotos],
   );
 
   const featuredVideos = useMemo(() => {
-    const pub = videos.filter((v) => v.published).sort((a, b) => a.sortOrder - b.sortOrder);
+    const pub = videos
+      .filter((v) => v.published)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
     const feat = pub.filter((v) => v.featured);
     return (feat.length >= 3 ? feat : pub).slice(0, 4);
   }, [videos]);
@@ -57,14 +63,18 @@ export const HomePage: React.FC = () => {
       <CinematicHero heroPhoto={heroPhoto} profile={profile} />
 
       {/* 2. Short Introduction (#FFFFFF) */}
-      <section id="introduction" className="bg-[#FFFFFF] text-[#171717] py-24 lg:py-32">
+      <section
+        id="introduction"
+        className="bg-[#FFFFFF] text-[#171717] py-24 lg:py-32"
+      >
         <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           <div className="lg:col-span-4 space-y-3">
             <p className="text-xs uppercase tracking-[0.18em] text-[#686868] font-medium">
               Field Philosophy
             </p>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-[1.14]">
-              {profile.introHeading || 'Observing Wild Bangladesh With Patience'}
+              {profile.introHeading ||
+                "Observing Wild Bangladesh With Patience"}
             </h2>
           </div>
 
@@ -121,7 +131,7 @@ export const HomePage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {collections.slice(0, 5).map((cat) => {
               const count = countsByCollection[cat.id] ?? 0;
               return (
@@ -143,7 +153,9 @@ export const HomePage: React.FC = () => {
                       <h3 className="text-lg font-semibold tracking-tight text-[#171717]">
                         {cat.title}
                       </h3>
-                      <span className="text-xs font-mono text-[#686868]">{count}</span>
+                      <span className="text-xs font-mono text-[#686868]">
+                        {count}
+                      </span>
                     </div>
                     <p className="text-xs text-[#686868] leading-relaxed line-clamp-2">
                       {cat.description}
@@ -157,7 +169,10 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 5. Featured Photography Collections (#FFFFFF) */}
-      <EditorialCollections collections={collections} countsByCollection={countsByCollection} />
+      <EditorialCollections
+        collections={collections}
+        countsByCollection={countsByCollection}
+      />
 
       {/* 6. Bangladesh Through My Lens (#F0F0EC) */}
       <section className="bg-[#F0F0EC] text-[#171717] py-24 lg:py-32 border-t border-[#E7E7E2]">
@@ -171,8 +186,9 @@ export const HomePage: React.FC = () => {
                 Bangladesh Through My Lens
               </h2>
               <p className="text-base text-[#686868] leading-relaxed">
-                From tidal mangrove creeks to monsoon haor basins and northeastern semi-evergreen
-                hills &mdash; each landscape shapes the behavior of the species living within it.
+                From tidal mangrove creeks to monsoon haor basins and
+                northeastern semi-evergreen hills &mdash; each landscape shapes
+                the behavior of the species living within it.
               </p>
             </div>
             <Link
@@ -207,7 +223,9 @@ export const HomePage: React.FC = () => {
                     <h3 className="text-xl font-semibold tracking-tight text-[#171717]">
                       {loc.name}
                     </h3>
-                    <p className="text-sm text-[#686868] leading-relaxed">{loc.description}</p>
+                    <p className="text-sm text-[#686868] leading-relaxed">
+                      {loc.description}
+                    </p>
                   </div>
                   <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#171717] group-hover:underline">
                     View habitat plates
@@ -232,8 +250,8 @@ export const HomePage: React.FC = () => {
                 Video Showcase
               </h2>
               <p className="text-base text-[#FFFFFF]/70 leading-relaxed">
-                Short wildlife dispatches, bird behavior studies, and habitat reels published across
-                YouTube, Facebook, Instagram, and TikTok.
+                Short wildlife dispatches, bird behavior studies, and habitat
+                reels published across YouTube, Facebook, Instagram, and TikTok.
               </p>
             </div>
             <Link
@@ -300,8 +318,8 @@ export const HomePage: React.FC = () => {
                 Latest Articles &amp; Field Notes
               </h2>
               <p className="text-base text-[#686868] leading-relaxed">
-                Long-form field essays, biodiversity observations, and ethical photography notes
-                written in English and Bangla.
+                Long-form field essays, biodiversity observations, and ethical
+                photography notes written in English and Bangla.
               </p>
             </div>
             <Link
@@ -334,7 +352,7 @@ export const HomePage: React.FC = () => {
                     <div className="flex items-center justify-between gap-2 text-xs text-[#686868]">
                       <span>{article.category}</span>
                       <span className="rounded-full bg-[#F0F0EC] text-[#171717] px-2.5 py-0.5 text-[11px] font-medium">
-                        {article.language === 'bn' ? 'বাংলা' : 'English'}
+                        {article.language === "bn" ? "বাংলা" : "English"}
                       </span>
                     </div>
                     <h3 className="text-xl font-semibold tracking-tight text-[#171717] leading-snug group-hover:opacity-75 transition-opacity">
@@ -346,9 +364,12 @@ export const HomePage: React.FC = () => {
                   </div>
                   <div className="pt-4 border-t border-[#E7E7E2] flex items-center justify-between text-xs text-[#686868]">
                     <span>
-                      {article.publishedDate} &middot; {article.readTimeMinutes} min read
+                      {article.publishedDate} &middot; {article.readTimeMinutes}{" "}
+                      min read
                     </span>
-                    <span className="font-medium text-[#171717]">Read &rarr;</span>
+                    <span className="font-medium text-[#171717]">
+                      Read &rarr;
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -364,7 +385,8 @@ export const HomePage: React.FC = () => {
             Conservation Commitment
           </p>
           <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight leading-[1.12]">
-            {profile.conservationHeadline || 'Every Photograph Is a Record of What Must Endure'}
+            {profile.conservationHeadline ||
+              "Every Photograph Is a Record of What Must Endure"}
           </h2>
           <p className="text-base sm:text-lg text-[#FFFFFF]/75 max-w-2xl mx-auto leading-relaxed">
             {profile.conservationStatement}
@@ -449,8 +471,9 @@ export const HomePage: React.FC = () => {
               Collaborate With Wild Rahi
             </h2>
             <p className="text-base text-[#686868] leading-relaxed">
-              Available for editorial photography commissions, conservation documentation, fine-art
-              archival prints, and wildlife licensing across Bangladesh and South Asia.
+              Available for editorial photography commissions, conservation
+              documentation, fine-art archival prints, and wildlife licensing
+              across Bangladesh and South Asia.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3.5 shrink-0">

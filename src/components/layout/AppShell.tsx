@@ -10,11 +10,10 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
   const isAdminRoute = pathname.startsWith('/admin');
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFFFFF] text-[#171717]">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       {!isAdminRoute && <Header />}
       <main className="flex-1">{children}</main>
       {!isAdminRoute && <Footer />}
     </div>
   );
 };
-

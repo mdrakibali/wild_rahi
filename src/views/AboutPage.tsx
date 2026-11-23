@@ -13,7 +13,7 @@ export const AboutPage: React.FC = () => {
   }, [profile.photographerName]);
 
   return (
-    <div className="bg-[#FFFFFF] text-[#171717] pt-20">
+    <div className="bg-canvas text-[#171717] pt-20">
       {/* Intro Split */}
       <section className="bg-[#F7F7F4] border-b border-[#E7E7E2] py-16 lg:py-24">
         <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
