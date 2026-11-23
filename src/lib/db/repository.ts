@@ -180,6 +180,7 @@ export class DatabaseRepository {
             tiktokUrl: social.tiktok || '',
             bioHeadline: social.bioHeadline || DEFAULT_PROFILE.bioHeadline,
             location: social.location || DEFAULT_PROFILE.location,
+            born: social.born || DEFAULT_PROFILE.born,
             equipmentNote: social.equipmentNote || DEFAULT_PROFILE.equipmentNote,
             journeyNote: social.journeyNote || DEFAULT_PROFILE.journeyNote,
             whyWildlifeMatters: social.whyWildlifeMatters || DEFAULT_PROFILE.whyWildlifeMatters,

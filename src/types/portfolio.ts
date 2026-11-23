@@ -148,6 +148,7 @@ export interface VideoItem {
 export interface SiteProfile {
   photographerName: string;
   brandName: string;
+  born?: string;
   location: string;
   locationBase?: string;
   fieldExperienceYears?: string;

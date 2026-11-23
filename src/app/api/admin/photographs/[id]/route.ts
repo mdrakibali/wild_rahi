@@ -25,6 +25,7 @@ export async function PUT(
       imageUrl: body.imageUrl,
       thumbnailUrl: body.thumbnailUrl || body.imageUrl,
       storagePath: body.storagePath || null,
+      categoryId: body.collectionId || body.categoryId || null,
       camera: body.camera || '',
       lens: body.lens || '',
       settings: {

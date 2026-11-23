@@ -2,27 +2,17 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from '@/lib/router-compat';
-import { Columns, LayoutGrid, Search } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Lightbox } from '../components/lightbox/Lightbox';
-import { filterPhotographs } from '../lib/validation';
-import { Input } from '../components/ui/Input';
-import { Select } from '../components/ui/Select';
-import { Button } from '../components/ui/Button';
 import { PhotoCard } from '../components/photography/PhotoCard';
 
 export const PhotographyPage: React.FC = () => {
-  const { photographs, collections, locations } = usePortfolio();
+  const { photographs, collections } = usePortfolio();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [collectionId, setCollectionId] = useState<string>(
     searchParams.get('collection') || 'all'
   );
-  const [locationSlug, setLocationSlug] = useState<string>(
-    searchParams.get('location') || 'all'
-  );
-  const [speciesQuery, setSpeciesQuery] = useState<string>(searchParams.get('q') || '');
-  const [viewMode, setViewMode] = useState<'grid' | 'large'>('grid');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -31,20 +21,15 @@ export const PhotographyPage: React.FC = () => {
 
   useEffect(() => {
     const c = searchParams.get('collection');
-    const l = searchParams.get('location');
     if (c) setCollectionId(c);
-    if (l) setLocationSlug(l);
   }, [searchParams]);
 
-  const filteredPhotos = useMemo(
-    () =>
-      filterPhotographs(photographs, {
-        collectionId,
-        locationSlug,
-        speciesQuery,
-      }),
-    [photographs, collectionId, locationSlug, speciesQuery]
-  );
+  // Pure category-based filtering (no search or location required)
+  const filteredPhotos = useMemo(() => {
+    const published = photographs.filter((p) => p.published);
+    if (collectionId === 'all') return published;
+    return published.filter((p) => p.collectionId === collectionId);
+  }, [photographs, collectionId]);
 
   const updateCollection = (next: string) => {
     setCollectionId(next);
@@ -54,31 +39,13 @@ export const PhotographyPage: React.FC = () => {
     setSearchParams(params, { replace: true });
   };
 
-  const updateLocation = (next: string) => {
-    setLocationSlug(next);
-    const params = new URLSearchParams(searchParams);
-    if (next === 'all') params.delete('location');
-    else params.set('location', next);
-    setSearchParams(params, { replace: true });
-  };
-
-  const resetFilters = () => {
-    setCollectionId('all');
-    setLocationSlug('all');
-    setSpeciesQuery('');
-    setSearchParams({}, { replace: true });
-  };
-
-  const hasActiveFilters =
-    collectionId !== 'all' || locationSlug !== 'all' || speciesQuery.trim().length > 0;
-
   return (
     <div className="bg-background text-foreground pt-20">
       {/* Page Header */}
-      <section className="bg-secondary border-b border-border py-16 lg:py-24">
+      <section className="bg-secondary border-b border-border py-14 lg:py-20">
         <div className="site-container space-y-4">
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-            Fine Art Gallery
+            Fine Art Portfolio
           </p>
           <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-serif font-bold tracking-tight leading-[1.08]">
             Wildlife Gallery
@@ -89,20 +56,20 @@ export const PhotographyPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Filter Bar */}
+      {/* Category Filter Bar Only */}
       <section className="bg-card border-b border-border sticky top-20 z-20">
-        <div className="site-container py-4 space-y-4">
+        <div className="site-container py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => updateCollection('all')}
               className={`rounded-md px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer ${
                 collectionId === 'all'
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-foreground hover:bg-muted'
               }`}
             >
-              All Categories
+              All Plates
             </button>
             {collections.map((col) => (
               <button
@@ -111,7 +78,7 @@ export const PhotographyPage: React.FC = () => {
                 onClick={() => updateCollection(col.id)}
                 className={`rounded-md px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer ${
                   collectionId === col.id
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-secondary text-foreground hover:bg-muted'
                 }`}
               >
@@ -120,114 +87,47 @@ export const PhotographyPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-border/60">
-            <div className="flex flex-wrap items-center gap-3 flex-1">
-              <div className="flex-1 min-w-[220px] max-w-sm">
-                <Input
-                  icon={<Search className="w-4 h-4" />}
-                  placeholder="Search species, title, or location..."
-                  value={speciesQuery}
-                  onChange={(e) => setSpeciesQuery(e.target.value)}
-                />
-              </div>
-
-              <div className="w-48">
-                <Select
-                  aria-label="Filter by location"
-                  value={locationSlug}
-                  onChange={(e) => updateLocation(e.target.value)}
-                >
-                  <option value="all">All Locations</option>
-                  {locations.map((loc) => (
-                    <option key={loc.id} value={loc.slug}>
-                      {loc.name}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-
-              {hasActiveFilters && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={resetFilters}
-                >
-                  Clear Filters
-                </Button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-4">
-              {/* Density Toggle (3 cols vs 2 cols) */}
-              <div className="hidden sm:flex items-center gap-1 bg-secondary border border-border rounded-md p-0.5">
-                <button
-                  type="button"
-                  onClick={() => setViewMode('grid')}
-                  className={`p-1.5 rounded text-xs transition-colors cursor-pointer ${
-                    viewMode === 'grid'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  title="Masonry Gallery Grid (3 Columns)"
-                  aria-label="3-Column Gallery Grid"
-                >
-                  <LayoutGrid className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('large')}
-                  className={`p-1.5 rounded text-xs transition-colors cursor-pointer ${
-                    viewMode === 'large'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  title="Large Plate View (2 Columns)"
-                  aria-label="2-Column Large Plate View"
-                >
-                  <Columns className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <p className="text-xs font-mono text-muted-foreground">
-                {filteredPhotos.length} {filteredPhotos.length === 1 ? 'plate' : 'plates'}
-              </p>
-            </div>
-          </div>
+          <p className="text-xs font-mono text-muted-foreground">
+            {filteredPhotos.length} {filteredPhotos.length === 1 ? 'plate' : 'plates'}
+          </p>
         </div>
       </section>
 
-      {/* Gallery Grid - Fine Art Minimalist Flow */}
-      <section className="site-container py-12 lg:py-16">
+      {/* 4-Column Dynamic CSS Grid (Col 4, Row 1 Bento Style) */}
+      <section className="site-container py-10 lg:py-16">
         {filteredPhotos.length === 0 ? (
           <div className="py-20 text-center space-y-4 bg-secondary border border-border rounded-md p-8 max-w-xl mx-auto">
-            <h2 className="text-2xl font-serif font-bold text-foreground">No matching plates found</h2>
+            <h2 className="text-2xl font-serif font-bold text-foreground">No plates found in this category</h2>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Try clearing your filters or searching another species or location.
+              Select another category or view all plates.
             </p>
-            <Button
+            <button
               type="button"
-              variant="primary"
-              onClick={resetFilters}
+              onClick={() => updateCollection('all')}
+              className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 px-5 py-2 text-xs font-semibold uppercase tracking-wider cursor-pointer"
             >
               Show All Plates
-            </Button>
+            </button>
           </div>
         ) : (
-          <div
-            className={
-              viewMode === 'grid'
-                ? 'columns-1 sm:columns-2 lg:columns-3 gap-4 sm:gap-6 space-y-4 sm:space-y-6'
-                : 'columns-1 md:columns-2 gap-6 sm:gap-8 space-y-6 sm:space-y-8 max-w-5xl mx-auto'
-            }
-          >
-            {filteredPhotos.map((photo, index) => (
-              <PhotoCard
-                key={photo.id}
-                photo={photo}
-                onInspect={() => setLightboxIndex(index)}
-              />
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 auto-rows-[280px] sm:auto-rows-[320px]">
+            {filteredPhotos.map((photo, index) => {
+              // Asymmetric / Editorial 4-column span pattern:
+              // Featured photos or every 5th item spans 2 columns in row 1
+              const isWide = photo.featured || index % 5 === 0;
+              const spanClass = isWide
+                ? 'col-span-1 sm:col-span-2 lg:col-span-2 row-span-1'
+                : 'col-span-1 row-span-1';
+
+              return (
+                <div key={photo.id} className={spanClass}>
+                  <PhotoCard
+                    photo={photo}
+                    onInspect={() => setLightboxIndex(index)}
+                  />
+                </div>
+              );
+            })}
           </div>
         )}
       </section>

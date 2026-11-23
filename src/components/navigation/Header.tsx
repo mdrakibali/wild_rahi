@@ -8,7 +8,6 @@ import { usePortfolio } from "../../context/PortfolioContext";
 
 const NAV_ITEMS = [
   { label: "Gallery", to: "/gallery" },
-  { label: "Categories", to: "/collections" },
   { label: "Videos", to: "/videos" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },

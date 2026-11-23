@@ -26,6 +26,7 @@ export async function PUT(request: Request) {
         tiktok: body.tiktokUrl || '',
         bioHeadline: body.bioHeadline || '',
         location: body.location || '',
+        born: body.born || '',
         equipmentNote: body.equipmentNote || '',
         journeyNote: body.journeyNote || '',
         whyWildlifeMatters: body.whyWildlifeMatters || '',
