@@ -66,7 +66,13 @@ export class DatabaseRepository {
         aperture: (p.settings as Record<string, string>)?.aperture || '',
         shutterSpeed: (p.settings as Record<string, string>)?.shutterSpeed || '',
         iso: (p.settings as Record<string, string>)?.iso || '',
-        year: p.photographedAt ? new Date(p.photographedAt).getFullYear().toString() : '2025',
+        year: p.photographedAt
+          ? `${new Date(p.photographedAt).toLocaleString('en-US', { month: 'short' })} ${new Date(p.photographedAt).getFullYear()}`
+          : 'Feb 2026',
+        month: p.photographedAt
+          ? new Date(p.photographedAt).toLocaleString('en-US', { month: 'long', year: 'numeric' })
+          : 'February 2026',
+        createdAt: p.createdAt ? p.createdAt.toISOString() : undefined,
         featured: p.isFeatured,
         inHorizontalJourney: p.isFeatured,
         published: p.status === 'published',

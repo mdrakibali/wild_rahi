@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from '@/lib/router-compat';
 import {
  ArrowDown,
+ Calendar,
  ArrowUp,
  ArrowUpRight,
  Camera,
@@ -75,10 +76,8 @@ const ARTICLE_DRAFT_STORAGE_KEY = 'wildrahi_article_autosave_v1';
 const NAV_TABS: Array<{ id: AdminTab; label: string; icon: React.ComponentType<{ className?: string }> }> = [
  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
  { id: 'photographs', label: 'Photos', icon: Camera },
- { id: 'articles', label: 'Articles', icon: FileText },
- { id: 'videos', label: 'Videos', icon: Video },
  { id: 'collections', label: 'Categories', icon: FolderOpen },
- { id: 'wildlife', label: 'Species', icon: MapPin },
+ { id: 'videos', label: 'Videos', icon: Video },
  { id: 'content', label: 'About & Bio', icon: Globe },
  { id: 'enquiries', label: 'Messages', icon: Inbox },
  { id: 'settings', label: 'Settings', icon: Database },
@@ -101,7 +100,7 @@ const emptyPhoto = (collections: Collection[], locations: HabitatLocation[], cou
  aperture: '',
  shutterSpeed: '',
  iso: '',
- year: String(new Date().getFullYear()),
+ year: `${new Date().toLocaleString('en-US', { month: 'short' })} ${new Date().getFullYear()}`,
  featured: false,
  inHorizontalJourney: false,
  published: true,
@@ -191,6 +190,22 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  emptyPhoto(collections, locations, photographs.length)
  );
  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+ const [photoMonthFilter, setPhotoMonthFilter] = useState('all');
+
+ const availableMonths = useMemo(() => {
+ const months = new Set<string>();
+ photographs.forEach((p) => {
+ if (p.year) {
+ months.add(p.year.trim());
+ }
+ });
+ return Array.from(months);
+ }, [photographs]);
+
+ const filteredPhotographs = useMemo(() => {
+ if (photoMonthFilter === 'all') return photographs;
+ return photographs.filter((p) => (p.year || '').trim() === photoMonthFilter);
+ }, [photographs, photoMonthFilter]);
 
  // Article Form State
  const [articleDraft, setArticleDraft] = useState<Article>(emptyArticle);
@@ -905,10 +920,11 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
 
  <div>
- <label className={labelCls}>Year</label>
+ <label className={labelCls}>Month &amp; Year</label>
  <input
  className={inputCls}
  value={photoDraft.year}
+ placeholder="e.g. Feb 2026 or 2026"
  onChange={(e) => setPhotoDraft((p) => ({ ...p, year: e.target.value }))}
  />
  </div>
@@ -1145,9 +1161,40 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </button>
  </form>
 
- {/* Photograph List with Reorder Controls */}
- <div className="bg-card border border-border divide-y divide-border">
- {photographs.map((photo, index) => (
+ {/* Photograph List with Monthly Filter */}
+ <div className="space-y-4">
+ <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-border p-4 rounded-md">
+ <div className="flex items-center gap-2">
+ <Calendar className="w-4 h-4 text-muted-foreground" />
+ <span className="text-sm font-semibold text-foreground">Archive Filter:</span>
+ <span className="text-xs text-muted-foreground">
+ Showing {filteredPhotographs.length} of {photographs.length} photos
+ </span>
+ </div>
+ <div className="w-full sm:w-64">
+ <Select
+ value={photoMonthFilter}
+ onChange={(e) => setPhotoMonthFilter(e.target.value)}
+ options={[
+ { value: 'all', label: `All Months (${photographs.length})` },
+ ...availableMonths.map((m) => ({
+ value: m,
+ label: `${m} (${photographs.filter((p) => (p.year || '').trim() === m).length})`,
+ })),
+ ]}
+ />
+ </div>
+ </div>
+
+ <div className="bg-card border border-border divide-y divide-border rounded-md overflow-hidden">
+ {filteredPhotographs.length === 0 ? (
+ <div className="p-8 text-center text-sm text-muted-foreground">
+ No photographs found for the selected month filter.
+ </div>
+ ) : (
+ filteredPhotographs.map((photo) => {
+ const origIndex = photographs.findIndex((p) => p.id === photo.id);
+ return (
  <div
  key={photo.id}
  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
@@ -1156,33 +1203,45 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  <img
  src={photo.imageUrl}
  alt={photo.title}
- className="w-20 h-14 object-cover bg-muted shrink-0"
+ className="w-20 h-14 object-cover rounded bg-muted shrink-0"
  />
- <div className="min-w-0">
+ <div className="min-w-0 space-y-1">
  <p className="text-sm font-semibold truncate">{photo.title}</p>
- <p className="text-xs text-muted-foreground truncate">
- {photo.speciesName} &middot; {photo.locationName} &middot;{' '}
+ <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+ <span className="inline-flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 rounded bg-secondary text-foreground">
+ <Calendar className="w-3 h-3 text-muted-foreground" />
+ {photo.year || 'Undated'}
+ </span>
+ <span>&middot;</span>
+ <span>{photo.speciesName || 'Wildlife'}</span>
+ <span>&middot;</span>
+ <span>{photo.locationName || 'Bangladesh'}</span>
+ <span>&middot;</span>
+ <span className={photo.published ? 'text-primary font-medium' : 'text-muted-foreground'}>
  {photo.published ? 'Published' : 'Draft'}
- {photo.featured ? ' · Featured' : ''}
- </p>
+ </span>
+ {photo.featured && <span className="text-amber-500 font-medium">&middot; Featured</span>}
+ </div>
  </div>
  </div>
  <div className="flex items-center gap-2 shrink-0">
  <button
  type="button"
- onClick={() => handleMovePhoto(index, -1)}
- disabled={index === 0 || busy}
- className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary hover:bg-secondary disabled:opacity-30"
+ onClick={() => handleMovePhoto(origIndex, -1)}
+ disabled={origIndex <= 0 || busy || photoMonthFilter !== 'all'}
+ className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary disabled:opacity-30 cursor-pointer"
  aria-label="Move up"
+ title={photoMonthFilter !== 'all' ? 'Clear filter to reorder' : 'Move up'}
  >
  <ArrowUp className="w-3.5 h-3.5" />
  </button>
  <button
  type="button"
- onClick={() => handleMovePhoto(index, 1)}
- disabled={index === photographs.length - 1 || busy}
- className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary hover:bg-secondary disabled:opacity-30"
+ onClick={() => handleMovePhoto(origIndex, 1)}
+ disabled={origIndex >= photographs.length - 1 || busy || photoMonthFilter !== 'all'}
+ className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary disabled:opacity-30 cursor-pointer"
  aria-label="Move down"
+ title={photoMonthFilter !== 'all' ? 'Clear filter to reorder' : 'Move down'}
  >
  <ArrowDown className="w-3.5 h-3.5" />
  </button>
@@ -1193,21 +1252,24 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  setPhotoDraft(photo);
  window.scrollTo({ top: 0, behavior: 'smooth' });
  }}
- className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
+ className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium cursor-pointer"
  >
  Edit
  </button>
  <button
  type="button"
  onClick={() => setDeleteTarget({ type: 'photograph', id: photo.id, name: photo.title })}
- className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600 hover:bg-red-50"
+ className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600 hover:bg-red-50 cursor-pointer"
  aria-label="Delete photograph"
  >
  <Trash2 className="w-3.5 h-3.5" />
  </button>
  </div>
  </div>
- ))}
+ );
+ })
+ )}
+ </div>
  </div>
  </div>
  )}

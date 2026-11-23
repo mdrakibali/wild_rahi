@@ -26,7 +26,7 @@ export const PhotographyPage: React.FC = () => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    document.title = 'Photography Gallery — Wild Rahi';
+    document.title = 'Wildlife Gallery — Wild Rahi';
   }, []);
 
   useEffect(() => {
@@ -78,14 +78,13 @@ export const PhotographyPage: React.FC = () => {
       <section className="bg-secondary border-b border-border py-16 lg:py-24">
         <div className="site-container space-y-4">
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-            Curated Archive
+            Fine Art Gallery
           </p>
           <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-serif font-bold tracking-tight leading-[1.08]">
-            Wildlife Photography
+            Wildlife Gallery
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            Natural-light plates documenting Bangladesh&apos;s wildlife across Sundarbans, wetlands,
-            tea gardens, and rainforests. Select any plate to inspect full frame with EXIF data.
+            High-resolution natural-light wildlife plates. Click any image to view full screen with lens and camera details.
           </p>
         </div>
       </section>
