@@ -26,23 +26,23 @@ export const SafeImage: React.FC<SafeImageProps> = ({
   if (!src || failed) {
     return (
       <div
-        className={`flex flex-col items-center justify-center bg-[#151515] text-[#9E9E9E] border border-[#262626] p-6 text-center ${containerClassName || className}`}
+        className={`flex flex-col items-center justify-center bg-surface-dark text-muted-foreground border border-white/10 p-6 text-center ${containerClassName || className}`}
         role="img"
         aria-label={alt}
       >
         <Camera className="w-6 h-6 mb-3 opacity-60" strokeWidth={1.25} aria-hidden="true" />
-        <p className="font-serif text-lg text-[#E5E5E5]">{fallbackTitle || alt}</p>
-        <p className="font-mono text-xs text-[#8A8A8A] mt-1">Archival Plate</p>
+        <p className="font-serif text-lg text-white/90">{fallbackTitle || alt}</p>
+        <p className="font-mono text-xs text-muted-foreground mt-1">Archival Plate</p>
       </div>
     );
   }
 
   return (
-    <div className={`relative overflow-hidden bg-[#151515] ${containerClassName}`}>
+    <div className={`relative overflow-hidden bg-surface-dark ${containerClassName}`}>
       {!loaded && (
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[#151515]"
+          className="absolute inset-0 bg-surface-dark"
         />
       )}
       <img

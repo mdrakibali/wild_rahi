@@ -37,7 +37,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.22 }}
-          className="fixed inset-0 z-50 bg-[#0B0B0B]/92 backdrop-blur-xs flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-50 bg-obsidian/92 backdrop-blur-xs flex items-center justify-center p-4 sm:p-8"
           role="dialog"
           aria-modal="true"
           aria-label={`Video player: ${video.title}`}
@@ -48,23 +48,23 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.24 }}
-            className="w-full max-w-4xl bg-[#0B0B0B] text-[#FFFFFF] border border-[#FFFFFF]/15 overflow-hidden max-h-[92vh] flex flex-col"
+            className="w-full max-w-4xl bg-obsidian text-white border border-white/15 overflow-hidden max-h-[92vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="px-5 sm:px-7 py-4 border-b border-[#FFFFFF]/12 flex items-center justify-between gap-4">
+            <div className="px-5 sm:px-7 py-4 border-b border-white/12 flex items-center justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-[11px] uppercase tracking-[0.16em] text-[#FFFFFF]/60">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-white/60">
                   {parsed.platformLabel} &middot; {video.category}
                 </p>
-                <h3 className="text-lg sm:text-xl font-semibold text-[#FFFFFF] truncate mt-0.5">
+                <h3 className="text-lg sm:text-xl font-semibold text-white truncate mt-0.5">
                   {video.title}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#FFFFFF]/25 px-4 py-1.5 text-xs font-medium text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#0B0B0B] transition-colors"
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-white/25 px-4 py-1.5 text-xs font-medium text-white hover:bg-card hover:text-obsidian transition-colors"
                 aria-label="Close video modal"
               >
                 <X className="w-4 h-4" />
@@ -73,7 +73,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
             </div>
 
             {/* Player Frame */}
-            <div className="bg-[#000000] flex items-center justify-center overflow-hidden">
+            <div className="bg-black flex items-center justify-center overflow-hidden">
               {parsed.canEmbed && parsed.embedUrl ? (
                 <div
                   className={
@@ -94,7 +94,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
                 </div>
               ) : (
                 <div className="p-10 text-center space-y-4 max-w-lg">
-                  <p className="text-sm text-[#FFFFFF]/80 leading-relaxed">
+                  <p className="text-sm text-white/80 leading-relaxed">
                     {parsed.limitationNote ||
                       'This platform link opens directly on the source platform for playback.'}
                   </p>
@@ -102,7 +102,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
                     href={video.videoUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#FFFFFF] text-[#0B0B0B] px-6 py-2.5 text-sm font-medium hover:bg-[#F0F0EC] transition-colors"
+                    className="inline-flex items-center gap-2 rounded-full bg-card text-obsidian px-6 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
                   >
                     {parsed.fallbackLabel}
                     <ExternalLink className="w-4 h-4" />
@@ -112,13 +112,13 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
             </div>
 
             {/* Footer details + honest external fallback */}
-            <div className="px-5 sm:px-7 py-5 border-t border-[#FFFFFF]/12 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="px-5 sm:px-7 py-5 border-t border-white/12 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1 max-w-2xl">
                 {video.description && (
-                  <p className="text-sm text-[#FFFFFF]/75 leading-relaxed">{video.description}</p>
+                  <p className="text-sm text-white/75 leading-relaxed">{video.description}</p>
                 )}
                 {parsed.limitationNote && parsed.canEmbed && (
-                  <p className="text-xs text-[#FFFFFF]/50">{parsed.limitationNote}</p>
+                  <p className="text-xs text-white/50">{parsed.limitationNote}</p>
                 )}
               </div>
 
@@ -126,7 +126,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
                 href={video.videoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full border border-[#FFFFFF]/30 px-5 py-2 text-xs sm:text-sm font-medium text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#0B0B0B] transition-colors self-start sm:self-center"
+                className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-5 py-2 text-xs sm:text-sm font-medium text-white hover:bg-card hover:text-obsidian transition-colors self-start sm:self-center"
               >
                 {parsed.fallbackLabel}
                 <ExternalLink className="w-3.5 h-3.5" />

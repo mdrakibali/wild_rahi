@@ -58,18 +58,18 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="bg-[#0B0B0B] text-[#FFFFFF] py-20 lg:py-0 lg:min-h-screen lg:flex lg:flex-col lg:justify-center overflow-hidden"
+      className="bg-obsidian text-white py-20 lg:py-0 lg:min-h-screen lg:flex lg:flex-col lg:justify-center overflow-hidden"
     >
       <div className="max-w-[1280px] w-full mx-auto px-5 sm:px-8 lg:px-10 mb-10 lg:mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-2.5 max-w-xl">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/60 font-medium">
+          <p className="text-xs uppercase tracking-[0.2em] text-white/60 font-medium">
             Featured Visual Sequence
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-semibold tracking-tight leading-[1.12]">
             A Horizontal Journey Through Wild Habitats
           </h2>
         </div>
-        <p className="text-sm text-[#FFFFFF]/65 max-w-sm">
+        <p className="text-sm text-white/65 max-w-sm">
           Select any plate to inspect full-resolution detail, habitat context, and field camera
           notes.
         </p>
@@ -90,28 +90,28 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
               className="block w-full text-left focus:outline-none"
               aria-label={`Open ${photo.title} in lightbox`}
             >
-              <div className="relative overflow-hidden bg-[#151515] aspect-[16/10]">
+              <div className="relative overflow-hidden bg-surface-dark aspect-[16/10]">
                 <img
                   src={photo.imageUrl}
                   alt={photo.title}
                   loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 />
-                <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-[#0B0B0B]/80 text-[#FFFFFF] px-3.5 py-1.5 text-xs font-medium opacity-90 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-obsidian/80 text-white px-3.5 py-1.5 text-xs font-medium opacity-90 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                   <Expand className="w-3.5 h-3.5" />
                   View Plate
                 </span>
               </div>
               <div className="pt-4 flex items-baseline justify-between gap-4">
                 <div>
-                  <h3 className="text-lg sm:text-xl font-medium text-[#FFFFFF] tracking-tight">
+                  <h3 className="text-lg sm:text-xl font-medium text-white tracking-tight">
                     {photo.title}
                   </h3>
-                  <p className="text-sm text-[#FFFFFF]/65 mt-0.5">
+                  <p className="text-sm text-white/65 mt-0.5">
                     {photo.speciesName} &middot; {photo.locationName}
                   </p>
                 </div>
-                <span className="text-xs font-mono text-[#FFFFFF]/45 shrink-0">
+                <span className="text-xs font-mono text-white/45 shrink-0">
                   {String(index + 1).padStart(2, '0')} / {String(photographs.length).padStart(2, '0')}
                 </span>
               </div>

@@ -85,7 +85,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.22 }}
-          className="fixed inset-0 z-50 bg-[#070707]/97 text-[#FFFFFF] flex flex-col select-none"
+          className="fixed inset-0 z-50 bg-obsidian/95 text-white flex flex-col select-none"
           role="dialog"
           aria-modal="true"
           aria-label={`Photograph viewer: ${activePhoto.title}`}
@@ -93,16 +93,16 @@ export const Lightbox: React.FC<LightboxProps> = ({
         >
           {/* Top Bar */}
           <div
-            className="shrink-0 px-4 sm:px-8 h-16 flex items-center justify-between border-b border-[#FFFFFF]/10"
+            className="shrink-0 px-4 sm:px-8 h-16 flex items-center justify-between border-b border-white/10"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-3 text-xs sm:text-sm text-[#FFFFFF]/70">
-              <span className="font-mono text-[#FFFFFF]">
+            <div className="flex items-center gap-3 text-xs sm:text-sm text-white/70">
+              <span className="font-mono text-white">
                 {String(activeIndex + 1).padStart(2, '0')} /{' '}
                 {String(photographs.length).padStart(2, '0')}
               </span>
               <span aria-hidden="true">&middot;</span>
-              <span className="truncate max-w-[180px] sm:max-w-md text-[#FFFFFF]/90 font-medium">
+              <span className="truncate max-w-[180px] sm:max-w-md text-white/90 font-medium">
                 {activePhoto.title}
               </span>
             </div>
@@ -114,8 +114,8 @@ export const Lightbox: React.FC<LightboxProps> = ({
                   onClick={() => setShowThumbnails((prev) => !prev)}
                   className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
                     showThumbnails
-                      ? 'border-[#FFFFFF]/40 bg-[#FFFFFF]/15 text-[#FFFFFF]'
-                      : 'border-[#FFFFFF]/20 text-[#FFFFFF]/75 hover:text-[#FFFFFF]'
+                      ? 'border-white/40 bg-card/15 text-white'
+                      : 'border-white/20 text-white/75 hover:text-white'
                   }`}
                   aria-pressed={showThumbnails}
                 >
@@ -127,7 +127,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#FFFFFF]/25 px-3.5 py-1.5 text-xs font-medium text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#0B0B0B] transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/25 px-3.5 py-1.5 text-xs font-medium text-white hover:bg-card hover:text-obsidian transition-colors"
                 aria-label="Close lightbox"
               >
                 <X className="w-4 h-4" />
@@ -146,7 +146,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
               <button
                 type="button"
                 onClick={handlePrev}
-                className="hidden sm:inline-flex items-center justify-center w-11 h-11 rounded-full border border-[#FFFFFF]/25 bg-[#0B0B0B]/70 text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#0B0B0B] transition-colors absolute left-5 z-10"
+                className="hidden sm:inline-flex items-center justify-center w-11 h-11 rounded-full border border-white/25 bg-obsidian/70 text-white hover:bg-card hover:text-obsidian transition-colors absolute left-5 z-10"
                 aria-label="Previous photograph"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -169,7 +169,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
               <button
                 type="button"
                 onClick={handleNext}
-                className="hidden sm:inline-flex items-center justify-center w-11 h-11 rounded-full border border-[#FFFFFF]/25 bg-[#0B0B0B]/70 text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#0B0B0B] transition-colors absolute right-5 z-10"
+                className="hidden sm:inline-flex items-center justify-center w-11 h-11 rounded-full border border-white/25 bg-obsidian/70 text-white hover:bg-card hover:text-obsidian transition-colors absolute right-5 z-10"
                 aria-label="Next photograph"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -179,22 +179,22 @@ export const Lightbox: React.FC<LightboxProps> = ({
 
           {/* Clean Metadata Strip Below Image */}
           <div
-            className="shrink-0 border-t border-[#FFFFFF]/10 bg-[#0B0B0B] px-4 sm:px-8 py-4 space-y-3"
+            className="shrink-0 border-t border-white/10 bg-obsidian px-4 sm:px-8 py-4 space-y-3"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="max-w-[1280px] mx-auto flex flex-col lg:flex-row lg:items-end justify-between gap-3">
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <h3 className="text-base sm:text-lg font-medium text-[#FFFFFF]">
+                  <h3 className="text-base sm:text-lg font-medium text-white">
                     {activePhoto.title}
                   </h3>
-                  <span className="text-xs sm:text-sm text-[#FFFFFF]/70">
+                  <span className="text-xs sm:text-sm text-white/70">
                     {activePhoto.speciesName} &middot; {activePhoto.locationName} &middot;{' '}
                     {activePhoto.year}
                   </span>
                 </div>
                 {activePhoto.caption && (
-                  <p className="text-xs sm:text-sm text-[#FFFFFF]/65 max-w-3xl leading-relaxed">
+                  <p className="text-xs sm:text-sm text-white/65 max-w-3xl leading-relaxed">
                     {activePhoto.caption}
                   </p>
                 )}
@@ -202,7 +202,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
 
               <div className="flex items-center justify-between lg:justify-end gap-4">
                 {formatExifMetadata(activePhoto) && (
-                  <p className="text-[11px] font-mono text-[#FFFFFF]/55">
+                  <p className="text-[11px] font-mono text-white/55">
                     {formatExifMetadata(activePhoto)}
                   </p>
                 )}
@@ -212,7 +212,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
                     <button
                       type="button"
                       onClick={handlePrev}
-                      className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#FFFFFF]/25 text-[#FFFFFF]"
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/25 text-white"
                       aria-label="Previous photograph"
                     >
                       <ChevronLeft className="w-4 h-4" />
@@ -220,7 +220,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
                     <button
                       type="button"
                       onClick={handleNext}
-                      className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#FFFFFF]/25 text-[#FFFFFF]"
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/25 text-white"
                       aria-label="Next photograph"
                     >
                       <ChevronRight className="w-4 h-4" />
@@ -242,7 +242,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
                       onClick={() => onChangeIndex(idx)}
                       className={`shrink-0 w-16 h-11 overflow-hidden border transition-opacity ${
                         selected
-                          ? 'border-[#FFFFFF] opacity-100'
+                          ? 'border-white opacity-100'
                           : 'border-transparent opacity-45 hover:opacity-80'
                       }`}
                       aria-label={`View ${item.title}`}

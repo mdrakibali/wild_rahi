@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { Database, Download, KeyRound } from 'lucide-react';
 import type { DatabaseInfo } from '../../types/portfolio';
+import { Input } from '../ui/Input';
+import { Button } from '../ui/Button';
 
 interface AdminSettingsProps {
   databaseInfo: DatabaseInfo | null;
@@ -64,137 +66,126 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+        <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-semibold">
           Infrastructure &amp; Security
         </p>
-        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
+        <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight mt-1 text-foreground">
           Database &amp; Account Settings
         </h2>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* MongoDB Storage Status & Export */}
-        <div className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 sm:p-8 space-y-5">
+        {/* PostgreSQL Storage Status & Export */}
+        <div className="bg-card border border-border rounded-lg p-6 sm:p-8 space-y-5 shadow-xs">
           <div className="flex items-center gap-2.5">
-            <Database className="w-5 h-5 text-[#171717]" />
-            <h3 className="text-lg font-semibold">MongoDB Persistence &amp; Backup</h3>
+            <Database className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-serif font-bold text-foreground">PostgreSQL &amp; Archive Backup</h3>
           </div>
 
-          <p className="text-sm text-[#686868] leading-relaxed">
-            Wild Rahi uses Mongoose with MongoDB when <code className="font-mono text-xs">MONGODB_URI</code> is
-            configured in your environment, and automatically uses a persistent MongoDB-compatible
-            local store during preview so zero changes are lost.
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Wild Rahi is powered by PostgreSQL via Drizzle ORM configured through <code className="font-mono text-xs bg-secondary px-1.5 py-0.5 rounded">DATABASE_URL</code>, ensuring relational integrity and high-performance querying for your portfolio archive.
           </p>
 
           {databaseInfo && (
-            <dl className="grid grid-cols-2 gap-3 text-xs bg-[#F7F7F4] border border-[#E7E7E2] p-4">
+            <dl className="grid grid-cols-2 gap-3 text-xs bg-secondary/50 border border-border rounded-md p-4">
               <div>
-                <dt className="text-[#686868]">Active Engine</dt>
-                <dd className="font-semibold text-[#171717] mt-0.5">
-                  {databaseInfo.engine === 'mongodb' ? 'MongoDB (Mongoose)' : 'Local Persistent Store'}
+                <dt className="text-muted-foreground">Active Engine</dt>
+                <dd className="font-semibold text-foreground mt-0.5">
+                  PostgreSQL (Drizzle ORM)
                 </dd>
               </div>
               <div>
-                <dt className="text-[#686868]">Database Name</dt>
-                <dd className="font-mono text-[#171717] mt-0.5">{databaseInfo.databaseName}</dd>
+                <dt className="text-muted-foreground">Database State</dt>
+                <dd className="font-mono text-foreground mt-0.5">{databaseInfo.databaseName || 'Connected'}</dd>
               </div>
               <div>
-                <dt className="text-[#686868]">Photographs / Articles</dt>
-                <dd className="font-mono text-[#171717] mt-0.5">
+                <dt className="text-muted-foreground">Photographs / Articles</dt>
+                <dd className="font-mono text-foreground mt-0.5">
                   {databaseInfo.collections.photographs} / {databaseInfo.collections.articles}
                 </dd>
               </div>
               <div>
-                <dt className="text-[#686868]">Videos / Enquiries</dt>
-                <dd className="font-mono text-[#171717] mt-0.5">
+                <dt className="text-muted-foreground">Videos / Enquiries</dt>
+                <dd className="font-mono text-foreground mt-0.5">
                   {databaseInfo.collections.videos} / {databaseInfo.collections.enquiries}
                 </dd>
               </div>
             </dl>
           )}
 
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={handleExport}
-            disabled={exporting}
-            className="inline-flex items-center gap-2 rounded-full bg-[#171717] text-[#FFFFFF] px-6 py-2.5 text-sm font-medium hover:bg-[#333333] transition-colors disabled:opacity-50"
+            loading={exporting}
+            icon={<Download className="w-4 h-4" />}
           >
-            <Download className="w-4 h-4" />
-            {exporting ? 'Preparing JSON Backup...' : 'Download Full JSON Archive Backup'}
-          </button>
+            Download Full JSON Archive Backup
+          </Button>
         </div>
 
         {/* Password Security */}
-        <div className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 sm:p-8 space-y-5">
+        <div className="bg-card border border-border rounded-lg p-6 sm:p-8 space-y-5 shadow-xs">
           <div className="flex items-center gap-2.5">
-            <KeyRound className="w-5 h-5 text-[#171717]" />
-            <h3 className="text-lg font-semibold">Change Admin Password</h3>
+            <KeyRound className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-serif font-bold text-foreground">Admin Credentials</h3>
           </div>
 
           {usingDefaultCredentials && (
-            <p className="text-xs bg-[#F7F7F4] border border-[#E7E7E2] p-3.5 text-[#171717]">
-              You are currently using the initial setup password. Set a private password below
-              before publishing live.
-            </p>
+            <div className="bg-amber-500/10 border border-amber-500/20 rounded-md p-3.5 text-xs text-amber-800 dark:text-amber-300">
+              You are currently using the default seed password. We strongly recommend changing it
+              to protect your studio archive.
+            </div>
           )}
 
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs uppercase tracking-[0.14em] text-[#686868] mb-1.5">
-                Current Password
-              </label>
-              <input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-                className="w-full bg-[#FFFFFF] border border-[#E7E7E2] px-3.5 py-2.5 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs uppercase tracking-[0.14em] text-[#686868] mb-1.5">
-                New Password (min 8 chars)
-              </label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                className="w-full bg-[#FFFFFF] border border-[#E7E7E2] px-3.5 py-2.5 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs uppercase tracking-[0.14em] text-[#686868] mb-1.5">
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="w-full bg-[#FFFFFF] border border-[#E7E7E2] px-3.5 py-2.5 text-sm"
-              />
-            </div>
+            <Input
+              type="password"
+              label="Current Password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              placeholder="Enter current password"
+              required
+            />
+
+            <Input
+              type="password"
+              label="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Minimum 8 characters"
+              required
+              helperText="Must be at least 8 characters long."
+            />
+
+            <Input
+              type="password"
+              label="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter new password"
+              required
+            />
 
             {feedback && (
               <p
-                className={`text-xs px-3.5 py-2.5 border ${
+                className={`text-xs px-3.5 py-2.5 rounded-md font-medium ${
                   feedback.type === 'ok'
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                    : 'bg-red-50 border-red-200 text-red-700'
+                    ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/20'
+                    : 'bg-destructive/10 text-destructive border border-destructive/20'
                 }`}
               >
                 {feedback.text}
               </p>
             )}
 
-            <button
+            <Button
               type="submit"
-              disabled={saving}
-              className="rounded-full bg-[#171717] text-[#FFFFFF] px-6 py-2.5 text-sm font-medium hover:bg-[#333333] transition-colors disabled:opacity-50"
+              variant="primary"
+              loading={saving}
             >
-              {saving ? 'Updating...' : 'Update Password'}
-            </button>
+              Update Password
+            </Button>
           </form>
         </div>
       </div>

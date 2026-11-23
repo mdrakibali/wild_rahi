@@ -17,24 +17,24 @@ export const EditorialCollections: React.FC<EditorialCollectionsProps> = ({
   const featured = collections.slice(0, 4);
 
   return (
-    <section className="bg-[#FFFFFF] text-[#171717] py-24 lg:py-32 border-t border-[#E7E7E2]">
+    <section className="bg-card text-foreground py-24 lg:py-32 border-t border-border">
       <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
           <div className="max-w-2xl space-y-3">
-            <p className="text-xs uppercase tracking-[0.18em] text-[#686868] font-medium">
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-medium">
               Curated Portfolios
             </p>
             <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-semibold tracking-tight leading-[1.14]">
               Featured Photography Collections
             </h2>
-            <p className="text-base text-[#686868] leading-relaxed">
+            <p className="text-base text-muted-foreground leading-relaxed">
               Long-term visual series organized by ecological group and landscape rhythm across
               Bangladesh.
             </p>
           </div>
           <Link
             to="/photography"
-            className="inline-flex items-center gap-2 rounded-full border border-[#171717]/20 px-6 py-2.5 text-sm font-medium text-[#171717] hover:bg-[#171717] hover:text-[#FFFFFF] transition-colors self-start md:self-auto"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground hover:bg-primary hover:text-white transition-colors self-start md:self-auto"
           >
             View All Galleries
             <ArrowRight className="w-4 h-4" />
@@ -52,7 +52,7 @@ export const EditorialCollections: React.FC<EditorialCollectionsProps> = ({
                 className={`group block ${isWide ? 'md:col-span-7' : 'md:col-span-5'}`}
               >
                 <div
-                  className={`overflow-hidden bg-[#F0F0EC] ${
+                  className={`overflow-hidden bg-muted ${
                     isWide ? 'aspect-[16/10]' : 'aspect-[4/3]'
                   }`}
                 >
@@ -65,14 +65,14 @@ export const EditorialCollections: React.FC<EditorialCollectionsProps> = ({
                 </div>
                 <div className="pt-5 flex items-start justify-between gap-4">
                   <div className="space-y-1.5">
-                    <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#171717] group-hover:opacity-75 transition-opacity">
+                    <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground group-hover:opacity-75 transition-opacity">
                       {collection.title}
                     </h3>
-                    <p className="text-sm text-[#686868] leading-relaxed max-w-lg">
+                    <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
                       {collection.description}
                     </p>
                   </div>
-                  <span className="shrink-0 text-xs font-mono text-[#686868] pt-1.5">
+                  <span className="shrink-0 text-xs font-mono text-muted-foreground pt-1.5">
                     {count} {count === 1 ? 'plate' : 'plates'}
                   </span>
                 </div>

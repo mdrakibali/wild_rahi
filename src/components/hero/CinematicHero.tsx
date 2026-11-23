@@ -38,7 +38,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[92vh] lg:min-h-screen w-full bg-[#0B0B0B] text-[#FFFFFF] flex flex-col justify-end overflow-hidden"
+      className="relative min-h-[92vh] lg:min-h-screen w-full bg-obsidian text-white flex flex-col justify-end overflow-hidden"
     >
       <div className="absolute inset-0">
         {heroPhoto?.imageUrl && (
@@ -61,53 +61,53 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ heroPhoto, profile
 
       <div className="relative z-10 max-w-[1280px] w-full mx-auto px-5 sm:px-8 lg:px-10 pt-32 pb-12 sm:pb-16 lg:pb-20">
         <div className="max-w-3xl space-y-5">
-          <p className="hero-stagger text-xs sm:text-sm uppercase tracking-[0.2em] text-[#FFFFFF]/75 font-medium">
+          <p className="hero-stagger text-xs sm:text-sm uppercase tracking-[0.2em] text-white/75 font-medium">
             {profile.brandName} &mdash; {profile.location}
           </p>
 
-          <h1 className="hero-stagger text-4xl sm:text-6xl lg:text-[68px] font-semibold tracking-tight leading-[1.06] text-[#FFFFFF]">
+          <h1 className="hero-stagger text-4xl sm:text-6xl lg:text-[68px] font-semibold tracking-tight leading-[1.06] text-white">
             {profile.heroHeadline || 'Wild Bangladesh, Quietly Witnessed'}
           </h1>
 
-          <p className="hero-stagger text-base sm:text-lg lg:text-xl text-[#FFFFFF]/80 max-w-2xl leading-relaxed font-normal">
+          <p className="hero-stagger text-base sm:text-lg lg:text-xl text-white/80 max-w-2xl leading-relaxed font-normal">
             {profile.heroSubheadline}
           </p>
 
           <div className="hero-stagger pt-3 flex flex-wrap items-center gap-3.5">
             <Link
               to="/photography"
-              className="inline-flex items-center gap-2.5 rounded-full bg-[#FFFFFF] text-[#0B0B0B] px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-[#F0F0EC] transition-colors"
+              className="inline-flex items-center gap-2.5 rounded-full bg-card text-obsidian px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-muted transition-colors"
             >
               Explore Photography
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/about"
-              className="inline-flex items-center gap-2 rounded-full border border-[#FFFFFF]/35 text-[#FFFFFF] px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-[#FFFFFF]/10 hover:border-[#FFFFFF]/70 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-white/35 text-white px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-card/10 hover:border-white/70 transition-colors"
             >
               Discover My Story
             </Link>
           </div>
         </div>
 
-        <div className="hero-stagger mt-12 sm:mt-16 pt-6 border-t border-[#FFFFFF]/15 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs sm:text-sm text-[#FFFFFF]/70">
+        <div className="hero-stagger mt-12 sm:mt-16 pt-6 border-t border-white/15 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs sm:text-sm text-white/70">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             {heroPhoto ? (
               <>
-                <span className="text-[#FFFFFF] font-medium">{heroPhoto.speciesName}</span>
+                <span className="text-white font-medium">{heroPhoto.speciesName}</span>
                 <span aria-hidden="true">&middot;</span>
                 <span>{heroPhoto.locationName}</span>
                 <span aria-hidden="true">&middot;</span>
                 <span>{heroPhoto.year}</span>
               </>
             ) : (
-              <span className="text-[#FFFFFF]/80">{profile.location || 'Bangladesh'}</span>
+              <span className="text-white/80">{profile.location || 'Bangladesh'}</span>
             )}
           </div>
 
           <a
             href="#introduction"
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[#FFFFFF]/75 hover:text-[#FFFFFF] transition-colors self-start sm:self-auto"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-white/75 hover:text-white transition-colors self-start sm:self-auto"
           >
             Scroll to explore
             <ArrowDown className="w-3.5 h-3.5" />

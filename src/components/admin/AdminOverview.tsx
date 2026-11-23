@@ -18,6 +18,8 @@ import type {
   Species,
   VideoItem,
 } from '../../types/portfolio';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
 
 interface AdminOverviewProps {
   photographs: Photograph[];
@@ -48,35 +50,35 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
 
   const stats = [
     {
-      label: 'Total Photographs',
+      label: 'Photographs',
       value: photographs.length,
       sub: `${publishedPhotos} published`,
       icon: Camera,
       tab: 'photographs',
     },
     {
-      label: 'Published Articles',
+      label: 'Articles',
       value: publishedArticles,
       sub: `${draftArticles} in draft`,
       icon: FileText,
       tab: 'articles',
     },
     {
-      label: 'Published Videos',
+      label: 'Videos',
       value: publishedVideos,
-      sub: `${videos.length} total links`,
+      sub: `${videos.length} links`,
       icon: Video,
       tab: 'videos',
     },
     {
-      label: 'Gallery Categories',
+      label: 'Categories',
       value: collections.length,
-      sub: `${species.length} species dossiers`,
+      sub: `${species.length} species`,
       icon: FolderOpen,
       tab: 'collections',
     },
     {
-      label: 'Enquiries Inbox',
+      label: 'Enquiries',
       value: enquiries.length,
       sub: `${unreadEnquiries} unread`,
       icon: Inbox,
@@ -92,39 +94,42 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+          <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-semibold">
             Studio Overview
           </p>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight mt-1 text-foreground">
             Editorial &amp; Archive Summary
           </h2>
         </div>
 
         <div className="flex flex-wrap gap-2.5">
-          <button
+          <Button
             type="button"
+            variant="primary"
+            size="sm"
             onClick={() => onNavigateTab('photographs')}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#171717] text-[#FFFFFF] px-4 py-2 text-xs font-medium hover:bg-[#333333] transition-colors"
+            icon={<Plus className="w-3.5 h-3.5" />}
           >
-            <Plus className="w-3.5 h-3.5" />
             Upload Photos
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onNavigateTab('articles')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#171717]/20 bg-[#FFFFFF] text-[#171717] px-4 py-2 text-xs font-medium hover:bg-[#F0F0EC] transition-colors"
+            icon={<Plus className="w-3.5 h-3.5" />}
           >
-            <Plus className="w-3.5 h-3.5" />
             Write Article
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onNavigateTab('videos')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#171717]/20 bg-[#FFFFFF] text-[#171717] px-4 py-2 text-xs font-medium hover:bg-[#F0F0EC] transition-colors"
+            icon={<Plus className="w-3.5 h-3.5" />}
           >
-            <Plus className="w-3.5 h-3.5" />
             Add Video Link
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -137,15 +142,15 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               key={item.label}
               type="button"
               onClick={() => onNavigateTab(item.tab)}
-              className="text-left bg-[#FFFFFF] border border-[#E7E7E2] hover:border-[#171717]/40 p-5 transition-colors space-y-3"
+              className="text-left bg-card border border-border hover:border-primary/50 p-5 rounded-lg transition-all space-y-3 shadow-xs hover:shadow-sm cursor-pointer group"
             >
-              <div className="flex items-center justify-between text-[#686868]">
-                <span className="text-xs font-medium">{item.label}</span>
+              <div className="flex items-center justify-between text-muted-foreground group-hover:text-primary transition-colors">
+                <span className="text-xs font-medium uppercase tracking-wider">{item.label}</span>
                 <Icon className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-3xl font-semibold tracking-tight text-[#171717]">{item.value}</p>
-                <p className="text-xs text-[#686868] mt-0.5">{item.sub}</p>
+                <p className="text-3xl font-semibold tracking-tight text-foreground">{item.value}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{item.sub}</p>
               </div>
             </button>
           );
@@ -154,81 +159,73 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
 
       {/* Recent Content Updates + Latest Enquiries */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-4">
+        <div className="lg:col-span-7 bg-card border border-border rounded-lg p-6 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-semibold">Recent Articles &amp; Drafts</h3>
+            <h3 className="text-base font-serif font-bold text-foreground">Recent Articles &amp; Drafts</h3>
             <button
               type="button"
               onClick={() => onNavigateTab('articles')}
-              className="text-xs font-medium text-[#686868] hover:text-[#171717]"
+              className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
             >
               Manage all &rarr;
             </button>
           </div>
-          <div className="divide-y divide-[#E7E7E2]">
+          <div className="divide-y divide-border">
             {recentArticles.map((art) => (
               <div key={art.id} className="py-3 flex items-center justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-[#171717] truncate" lang={art.language}>
+                  <p className="text-sm font-medium text-foreground truncate" lang={art.language}>
                     {art.title}
                   </p>
-                  <p className="text-xs text-[#686868]">
+                  <p className="text-xs text-muted-foreground">
                     {art.category} &middot; {art.language === 'bn' ? 'বাংলা' : 'English'} &middot;{' '}
                     {art.publishedDate}
                   </p>
                 </div>
-                <span
-                  className={`shrink-0 rounded-full px-3 py-0.5 text-[11px] font-medium ${
-                    art.published
-                      ? 'bg-[#171717] text-[#FFFFFF]'
-                      : 'bg-[#F0F0EC] text-[#686868]'
-                  }`}
-                >
+                <Badge variant={art.published ? 'default' : 'secondary'}>
                   {art.published ? 'Published' : 'Draft'}
-                </span>
+                </Badge>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="lg:col-span-5 bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-4">
+        <div className="lg:col-span-5 bg-card border border-border rounded-lg p-6 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-semibold">Latest Enquiries</h3>
+            <h3 className="text-base font-serif font-bold text-foreground">Latest Enquiries</h3>
             <button
               type="button"
               onClick={() => onNavigateTab('enquiries')}
-              className="text-xs font-medium text-[#686868] hover:text-[#171717]"
+              className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
             >
               Open inbox &rarr;
             </button>
           </div>
           {enquiries.length === 0 ? (
-            <p className="text-sm text-[#686868] py-6">
+            <p className="text-sm text-muted-foreground py-6">
               No enquiries received yet. Submissions from the Contact page will appear here.
             </p>
           ) : (
-            <div className="divide-y divide-[#E7E7E2]">
+            <div className="divide-y divide-border">
               {enquiries.slice(0, 4).map((enq) => (
                 <div key={enq.id} className="py-3 space-y-1">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-[#171717] truncate">{enq.name}</p>
-                    <span className="rounded-full bg-[#F0F0EC] px-2.5 py-0.5 text-[11px] text-[#171717] capitalize">
+                    <p className="text-sm font-medium text-foreground truncate">{enq.name}</p>
+                    <Badge variant="outline">
                       {enq.status}
-                    </span>
+                    </Badge>
                   </div>
-                  <p className="text-xs text-[#686868] truncate">{enq.subject}</p>
+                  <p className="text-xs text-muted-foreground truncate">{enq.subject}</p>
                 </div>
               ))}
             </div>
           )}
 
           {databaseInfo && (
-            <div className="pt-4 border-t border-[#E7E7E2] text-xs text-[#686868]">
-              Database Engine:{' '}
-              <strong className="text-[#171717]">
-                {databaseInfo.engine === 'mongodb'
-                  ? `MongoDB (${databaseInfo.databaseName})`
-                  : 'MongoDB-Compatible Persistent Local Store'}
+            <div className="pt-4 border-t border-border text-xs text-muted-foreground">
+              Storage Engine:{' '}
+              <strong className="text-foreground font-semibold">
+                PostgreSQL (Drizzle ORM)
               </strong>
             </div>
           )}

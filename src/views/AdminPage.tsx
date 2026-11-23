@@ -286,7 +286,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
 
   if (!authReady) {
     return (
-      <div className="min-h-screen bg-[#F7F7F4] text-[#171717] flex items-center justify-center text-sm text-[#686868]">
+      <div className="min-h-screen bg-secondary text-foreground flex items-center justify-center text-sm text-muted-foreground">
         Verifying Wild Rahi studio session...
       </div>
     );
@@ -594,23 +594,23 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
   };
 
   const inputCls =
-    'w-full bg-[#FFFFFF] border border-[#E7E7E2] px-3.5 py-2 text-sm text-[#171717] focus:outline-none focus:border-[#171717]';
-  const labelCls = 'block text-xs uppercase tracking-[0.12em] text-[#686868] font-medium mb-1';
+    'w-full bg-card border border-border px-3.5 py-2 text-sm text-foreground focus:outline-none focus:border-primary';
+  const labelCls = 'block text-xs uppercase tracking-[0.12em] text-muted-foreground font-medium mb-1';
 
   return (
-    <div className="min-h-screen bg-[#F7F7F4] text-[#171717] flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-secondary text-foreground flex flex-col lg:flex-row">
       {/* Sidebar */}
-      <aside className="lg:w-64 shrink-0 bg-[#FFFFFF] border-b lg:border-b-0 lg:border-r border-[#E7E7E2] flex flex-col">
-        <div className="p-5 sm:p-6 border-b border-[#E7E7E2] flex items-center justify-between lg:block">
+      <aside className="lg:w-64 shrink-0 bg-card border-b lg:border-b-0 lg:border-r border-border flex flex-col">
+        <div className="p-5 sm:p-6 border-b border-border flex items-center justify-between lg:block">
           <div>
             <p className="text-lg font-semibold tracking-tight leading-none">Wild Rahi</p>
-            <p className="text-[11px] uppercase tracking-[0.15em] text-[#686868] mt-1">
+            <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mt-1">
               Admin Studio
             </p>
           </div>
           <Link
             to="/"
-            className="lg:mt-3 inline-flex items-center gap-1 rounded-full border border-[#E7E7E2] px-3 py-1 text-xs font-medium text-[#171717] hover:bg-[#F7F7F4]"
+            className="lg:mt-3 inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground hover:bg-secondary"
           >
             View Site
             <ArrowUpRight className="w-3 h-3" />
@@ -628,8 +628,8 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 onClick={() => setActiveTab(tab.id)}
                 className={`shrink-0 inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 text-sm font-medium transition-colors text-left ${
                   active
-                    ? 'bg-[#171717] text-[#FFFFFF]'
-                    : 'text-[#686868] hover:text-[#171717] hover:bg-[#F7F7F4]'
+                    ? 'bg-primary text-white'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -639,15 +639,15 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           })}
         </nav>
 
-        <div className="p-4 border-t border-[#E7E7E2] hidden lg:flex items-center justify-between gap-2">
+        <div className="p-4 border-t border-border hidden lg:flex items-center justify-between gap-2">
           <div className="min-w-0">
             <p className="text-xs font-medium truncate">{adminUser?.name || 'Admin'}</p>
-            <p className="text-[11px] text-[#686868] truncate">{adminUser?.email}</p>
+            <p className="text-[11px] text-muted-foreground truncate">{adminUser?.email}</p>
           </div>
           <button
             type="button"
             onClick={signOutAdmin}
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#E7E7E2] text-[#686868] hover:text-[#171717] hover:bg-[#F7F7F4]"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
             title="Sign out"
             aria-label="Sign out"
           >
@@ -663,7 +663,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
             role="status"
             className={`mb-6 px-4 py-3 border text-sm flex items-center gap-2 ${
               toast.type === 'ok'
-                ? 'bg-[#171717] text-[#FFFFFF] border-[#171717]'
+                ? 'bg-primary text-white border-primary'
                 : 'bg-red-50 text-red-800 border-red-200'
             }`}
           >
@@ -691,7 +691,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           <div className="space-y-8">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-medium">
                   Gallery Archive
                 </p>
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
@@ -699,7 +699,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 </h2>
               </div>
 
-              <label className="inline-flex items-center gap-2 rounded-full bg-[#171717] text-[#FFFFFF] px-5 py-2.5 text-xs font-medium cursor-pointer hover:bg-[#333333] self-start">
+              <label className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-5 py-2.5 text-xs font-medium cursor-pointer hover:bg-primary/90 self-start">
                 <Upload className="w-3.5 h-3.5" />
                 Upload Multiple Photos
                 <input
@@ -714,7 +714,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
 
             <form
               onSubmit={handleSavePhoto}
-              className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-5"
+              className="bg-card border border-border p-6 space-y-5"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold">
@@ -727,7 +727,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       setEditingPhotoId(null);
                       setPhotoDraft(emptyPhoto(collections, locations, photographs.length));
                     }}
-                    className="rounded-full border border-[#E7E7E2] px-3.5 py-1 text-xs"
+                    className="rounded-full border border-border px-3.5 py-1 text-xs"
                   >
                     + New Plate
                   </button>
@@ -828,7 +828,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   />
                 </div>
                 <div className="md:col-span-3">
-                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-[#171717]/25 px-4 py-2 text-xs font-medium cursor-pointer hover:bg-[#F7F7F4]">
+                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
                     <Upload className="w-3.5 h-3.5" />
                     Upload Photo
                     <input
@@ -931,7 +931,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex items-center gap-2 rounded-full bg-[#171717] text-[#FFFFFF] px-6 py-2.5 text-sm font-medium hover:bg-[#333333] disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {editingPhotoId ? 'Update Photograph' : 'Save Photograph'}
@@ -939,7 +939,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
             </form>
 
             {/* Photograph List with Reorder Controls */}
-            <div className="bg-[#FFFFFF] border border-[#E7E7E2] divide-y divide-[#E7E7E2]">
+            <div className="bg-card border border-border divide-y divide-border">
               {photographs.map((photo, index) => (
                 <div
                   key={photo.id}
@@ -949,11 +949,11 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     <img
                       src={photo.imageUrl}
                       alt={photo.title}
-                      className="w-20 h-14 object-cover bg-[#F0F0EC] shrink-0"
+                      className="w-20 h-14 object-cover bg-muted shrink-0"
                     />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold truncate">{photo.title}</p>
-                      <p className="text-xs text-[#686868] truncate">
+                      <p className="text-xs text-muted-foreground truncate">
                         {photo.speciesName} &middot; {photo.locationName} &middot;{' '}
                         {photo.published ? 'Published' : 'Draft'}
                         {photo.featured ? ' · Featured' : ''}
@@ -965,7 +965,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       type="button"
                       onClick={() => handleMovePhoto(index, -1)}
                       disabled={index === 0 || busy}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] hover:bg-[#F7F7F4] disabled:opacity-30"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary disabled:opacity-30"
                       aria-label="Move up"
                     >
                       <ArrowUp className="w-3.5 h-3.5" />
@@ -974,7 +974,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       type="button"
                       onClick={() => handleMovePhoto(index, 1)}
                       disabled={index === photographs.length - 1 || busy}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] hover:bg-[#F7F7F4] disabled:opacity-30"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border hover:bg-secondary disabled:opacity-30"
                       aria-label="Move down"
                     >
                       <ArrowDown className="w-3.5 h-3.5" />
@@ -986,7 +986,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         setPhotoDraft(photo);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="rounded-full border border-[#E7E7E2] px-3.5 py-1.5 text-xs font-medium hover:bg-[#F7F7F4]"
+                      className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
                     >
                       Edit
                     </button>
@@ -996,7 +996,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         await deletePhotograph(photo.id);
                         notify('Photograph deleted.');
                       }}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] text-red-600 hover:bg-red-50"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border text-red-600 hover:bg-red-50"
                       aria-label="Delete photograph"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1013,7 +1013,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           <div className="space-y-8">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-medium">
                   Editorial Journal &middot; English &amp; বাংলা
                 </p>
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
@@ -1022,12 +1022,12 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               </div>
               <div className="flex flex-wrap items-center gap-2.5">
                 {autosavedStamp && (
-                  <span className="text-xs text-[#686868]">Autosaved {autosavedStamp}</span>
+                  <span className="text-xs text-muted-foreground">Autosaved {autosavedStamp}</span>
                 )}
                 <button
                   type="button"
                   onClick={handleRestoreAutosavedArticle}
-                  className="rounded-full border border-[#E7E7E2] bg-[#FFFFFF] px-4 py-2 text-xs font-medium hover:bg-[#F0F0EC]"
+                  className="rounded-full border border-border bg-card px-4 py-2 text-xs font-medium hover:bg-muted"
                 >
                   Restore Draft
                 </button>
@@ -1038,7 +1038,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     setArticleDraft(emptyArticle());
                     setArticleTagsText('');
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#171717] text-[#FFFFFF] px-4 py-2 text-xs font-medium"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary text-white px-4 py-2 text-xs font-medium"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   New Article
@@ -1046,7 +1046,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               </div>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-5">
+            <div className="bg-card border border-border p-6 space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                 <div className="md:col-span-6">
                   <label className={labelCls}>Article Title *</label>
@@ -1185,7 +1185,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   />
                 </div>
                 <div className="md:col-span-3">
-                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-[#171717]/25 px-4 py-2 text-xs font-medium cursor-pointer hover:bg-[#F7F7F4]">
+                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
                     <Upload className="w-3.5 h-3.5" />
                     Upload Cover
                     <input
@@ -1219,7 +1219,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               </div>
 
               {/* Tags & SEO */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-[#E7E7E2]">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-border">
                 <div>
                   <label className={labelCls}>Tags (comma-separated)</label>
                   <input
@@ -1264,7 +1264,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     type="button"
                     disabled={busy}
                     onClick={() => handleSaveArticle(false)}
-                    className="rounded-full border border-[#171717]/25 px-5 py-2.5 text-sm font-medium hover:bg-[#F7F7F4] disabled:opacity-50"
+                    className="rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-secondary disabled:opacity-50"
                   >
                     Save as Draft
                   </button>
@@ -1272,7 +1272,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     type="button"
                     disabled={busy}
                     onClick={() => handleSaveArticle(true)}
-                    className="inline-flex items-center gap-2 rounded-full bg-[#171717] text-[#FFFFFF] px-6 py-2.5 text-sm font-medium hover:bg-[#333333] disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
                   >
                     <Save className="w-4 h-4" />
                     Publish Article
@@ -1282,7 +1282,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
             </div>
 
             {/* Existing Articles List */}
-            <div className="bg-[#FFFFFF] border border-[#E7E7E2] divide-y divide-[#E7E7E2]">
+            <div className="bg-card border border-border divide-y divide-border">
               {articles.map((art) => (
                 <div
                   key={art.id}
@@ -1290,14 +1290,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-[#F0F0EC] px-2.5 py-0.5 text-[11px] font-medium">
+                      <span className="rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-medium">
                         {art.language === 'bn' ? 'বাংলা' : 'EN'}
                       </span>
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
                           art.published
-                            ? 'bg-[#171717] text-[#FFFFFF]'
-                            : 'bg-[#F7F7F4] text-[#686868]'
+                            ? 'bg-primary text-white'
+                            : 'bg-secondary text-muted-foreground'
                         }`}
                       >
                         {art.published ? 'Published' : 'Draft'}
@@ -1306,7 +1306,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         {art.title}
                       </p>
                     </div>
-                    <p className="text-xs text-[#686868] mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       /articles/{art.slug} &middot; {art.category} &middot; {art.publishedDate}
                     </p>
                   </div>
@@ -1314,7 +1314,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   <div className="flex items-center gap-2 shrink-0">
                     <Link
                       to={`/articles/${encodeURIComponent(art.slug)}`}
-                      className="rounded-full border border-[#E7E7E2] px-3 py-1.5 text-xs hover:bg-[#F7F7F4]"
+                      className="rounded-full border border-border px-3 py-1.5 text-xs hover:bg-secondary"
                     >
                       View
                     </Link>
@@ -1326,7 +1326,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         setArticleTagsText((art.tags || []).join(', '));
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="rounded-full border border-[#E7E7E2] px-3.5 py-1.5 text-xs font-medium hover:bg-[#F7F7F4]"
+                      className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
                     >
                       Edit
                     </button>
@@ -1336,7 +1336,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         await deleteArticle(art.id);
                         notify('Article deleted.');
                       }}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] text-red-600 hover:bg-red-50"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border text-red-600 hover:bg-red-50"
                       aria-label="Delete article"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1352,7 +1352,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
         {activeTab === 'videos' && (
           <div className="space-y-8">
             <div>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-medium">
                 YouTube &middot; Facebook &middot; Instagram &middot; TikTok
               </p>
               <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
@@ -1362,7 +1362,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
 
             <form
               onSubmit={handleSaveVideo}
-              className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-5"
+              className="bg-card border border-border p-6 space-y-5"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold">
@@ -1375,7 +1375,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       setEditingVideoId(null);
                       setVideoDraft(emptyVideo(videos.length));
                     }}
-                    className="rounded-full border border-[#E7E7E2] px-3.5 py-1 text-xs"
+                    className="rounded-full border border-border px-3.5 py-1 text-xs"
                   >
                     + New Video
                   </button>
@@ -1395,7 +1395,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 </div>
                 <div className="md:col-span-4">
                   <label className={labelCls}>Detected Platform</label>
-                  <div className="h-[38px] px-3.5 bg-[#F7F7F4] border border-[#E7E7E2] flex items-center text-sm font-medium">
+                  <div className="h-[38px] px-3.5 bg-secondary border border-border flex items-center text-sm font-medium">
                     {parsedVideoPreview
                       ? parsedVideoPreview.valid
                         ? `${parsedVideoPreview.platformLabel} (${
@@ -1414,21 +1414,21 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               )}
 
               {parsedVideoPreview && parsedVideoPreview.valid && (
-                <div className="bg-[#F7F7F4] border border-[#E7E7E2] p-4 space-y-3">
-                  <div className="flex items-center justify-between text-xs text-[#686868]">
+                <div className="bg-secondary border border-border p-4 space-y-3">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>Live Embed Preview ({parsedVideoPreview.platformLabel})</span>
                     <a
                       href={videoDraft.videoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-[#171717] font-medium hover:underline"
+                      className="inline-flex items-center gap-1 text-foreground font-medium hover:underline"
                     >
                       {parsedVideoPreview.fallbackLabel}
                       <ExternalLink className="w-3 h-3" />
                     </a>
                   </div>
                   {parsedVideoPreview.canEmbed && parsedVideoPreview.embedUrl ? (
-                    <div className="max-w-md aspect-video bg-[#0B0B0B]">
+                    <div className="max-w-md aspect-video bg-obsidian">
                       <iframe
                         src={parsedVideoPreview.embedUrl}
                         title="Video embed preview"
@@ -1437,7 +1437,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                       />
                     </div>
                   ) : (
-                    <p className="text-xs text-[#686868]">{parsedVideoPreview.limitationNote}</p>
+                    <p className="text-xs text-muted-foreground">{parsedVideoPreview.limitationNote}</p>
                   )}
                 </div>
               )}
@@ -1491,7 +1491,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   />
                 </div>
                 <div className="md:col-span-3">
-                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-[#171717]/25 px-4 py-2 text-xs font-medium cursor-pointer hover:bg-[#F7F7F4]">
+                  <label className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
                     <Upload className="w-3.5 h-3.5" />
                     Upload Thumbnail
                     <input
@@ -1545,7 +1545,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex items-center gap-2 rounded-full bg-[#171717] text-[#FFFFFF] px-6 py-2.5 text-sm font-medium hover:bg-[#333333] disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {editingVideoId ? 'Update Video' : 'Save Video'}
@@ -1553,7 +1553,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
             </form>
 
             {/* Video List */}
-            <div className="bg-[#FFFFFF] border border-[#E7E7E2] divide-y divide-[#E7E7E2]">
+            <div className="bg-card border border-border divide-y divide-border">
               {videos.map((vid) => (
                 <div
                   key={vid.id}
@@ -1563,16 +1563,16 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                     <img
                       src={vid.thumbnailUrl}
                       alt={vid.title}
-                      className="w-24 h-14 object-cover bg-[#0B0B0B] shrink-0"
+                      className="w-24 h-14 object-cover bg-obsidian shrink-0"
                     />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="rounded-full bg-[#F0F0EC] px-2.5 py-0.5 text-[11px] font-medium">
+                        <span className="rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-medium">
                           {PLATFORM_LABELS[vid.platform]}
                         </span>
                         <p className="text-sm font-semibold truncate">{vid.title}</p>
                       </div>
-                      <p className="text-xs text-[#686868] truncate mt-0.5">
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">
                         {vid.category} &middot; {vid.published ? 'Published' : 'Draft'}
                       </p>
                     </div>
@@ -1585,7 +1585,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         setVideoDraft(vid);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="rounded-full border border-[#E7E7E2] px-3.5 py-1.5 text-xs font-medium hover:bg-[#F7F7F4]"
+                      className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium hover:bg-secondary"
                     >
                       Edit
                     </button>
@@ -1595,7 +1595,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         await deleteVideo(vid.id);
                         notify('Video removed.');
                       }}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] text-red-600 hover:bg-red-50"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border text-red-600 hover:bg-red-50"
                       aria-label="Delete video"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1611,7 +1611,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
         {activeTab === 'collections' && (
           <div className="space-y-8">
             <div>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-medium">
                 Gallery Taxonomy
               </p>
               <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
@@ -1621,7 +1621,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
 
             <form
               onSubmit={handleSaveCollection}
-              className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-4"
+              className="bg-card border border-border p-6 space-y-4"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -1657,31 +1657,31 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded-full bg-[#171717] text-[#FFFFFF] px-6 py-2.5 text-sm font-medium"
+                className="rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium"
               >
                 Save Category
               </button>
             </form>
 
-            <div className="bg-[#FFFFFF] border border-[#E7E7E2] divide-y divide-[#E7E7E2]">
+            <div className="bg-card border border-border divide-y divide-border">
               {collections.map((col) => (
                 <div key={col.id} className="p-4 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4 min-w-0">
                     <img
                       src={col.coverImageUrl}
                       alt={col.title}
-                      className="w-16 h-12 object-cover bg-[#F0F0EC] shrink-0"
+                      className="w-16 h-12 object-cover bg-muted shrink-0"
                     />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold">{col.title}</p>
-                      <p className="text-xs text-[#686868] truncate">{col.description}</p>
+                      <p className="text-xs text-muted-foreground truncate">{col.description}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={() => setCollectionDraft(col)}
-                      className="rounded-full border border-[#E7E7E2] px-3.5 py-1.5 text-xs"
+                      className="rounded-full border border-border px-3.5 py-1.5 text-xs"
                     >
                       Edit
                     </button>
@@ -1691,7 +1691,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         await deleteCollection(col.id);
                         notify('Category deleted.');
                       }}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] text-red-600"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border text-red-600"
                       aria-label="Delete category"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1708,19 +1708,19 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           <div className="space-y-8">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-medium">
                   Biodiversity Records
                 </p>
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
                   Species &amp; Habitats
                 </h2>
               </div>
-              <div className="inline-flex rounded-full border border-[#E7E7E2] bg-[#FFFFFF] p-1">
+              <div className="inline-flex rounded-full border border-border bg-card p-1">
                 <button
                   type="button"
                   onClick={() => setWildlifeSubTab('species')}
                   className={`rounded-full px-4 py-1.5 text-xs font-medium ${
-                    wildlifeSubTab === 'species' ? 'bg-[#171717] text-[#FFFFFF]' : 'text-[#686868]'
+                    wildlifeSubTab === 'species' ? 'bg-primary text-white' : 'text-muted-foreground'
                   }`}
                 >
                   Species ({species.length})
@@ -1729,7 +1729,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   type="button"
                   onClick={() => setWildlifeSubTab('locations')}
                   className={`rounded-full px-4 py-1.5 text-xs font-medium ${
-                    wildlifeSubTab === 'locations' ? 'bg-[#171717] text-[#FFFFFF]' : 'text-[#686868]'
+                    wildlifeSubTab === 'locations' ? 'bg-primary text-white' : 'text-muted-foreground'
                   }`}
                 >
                   Habitats ({locations.length})
@@ -1741,7 +1741,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <>
                 <form
                   onSubmit={handleSaveSpecies}
-                  className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-4"
+                  className="bg-card border border-border p-6 space-y-4"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -1829,23 +1829,23 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   <button
                     type="submit"
                     disabled={busy}
-                    className="rounded-full bg-[#171717] text-[#FFFFFF] px-6 py-2.5 text-sm font-medium"
+                    className="rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium"
                   >
                     Save Species Dossier
                   </button>
                 </form>
 
-                <div className="bg-[#FFFFFF] border border-[#E7E7E2] divide-y divide-[#E7E7E2]">
+                <div className="bg-card border border-border divide-y divide-border">
                   {species.map((sp) => (
                     <div key={sp.id} className="p-4 flex items-center justify-between gap-4">
                       <div>
                         <p className="text-sm font-semibold">
                           {sp.commonName}{' '}
-                          <span className="italic font-normal text-[#686868]">
+                          <span className="italic font-normal text-muted-foreground">
                             ({sp.scientificName})
                           </span>
                         </p>
-                        <p className="text-xs text-[#686868]">
+                        <p className="text-xs text-muted-foreground">
                           {sp.bengaliName} &middot; {sp.habitatRegion} &middot;{' '}
                           {sp.conservationStatus}
                         </p>
@@ -1854,7 +1854,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         <button
                           type="button"
                           onClick={() => setSpeciesDraft(sp)}
-                          className="rounded-full border border-[#E7E7E2] px-3.5 py-1.5 text-xs"
+                          className="rounded-full border border-border px-3.5 py-1.5 text-xs"
                         >
                           Edit
                         </button>
@@ -1864,7 +1864,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                             await deleteSpecies(sp.id);
                             notify('Species removed.');
                           }}
-                          className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] text-red-600"
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border text-red-600"
                           aria-label="Delete species"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1878,7 +1878,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <>
                 <form
                   onSubmit={handleSaveLocation}
-                  className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-4"
+                  className="bg-card border border-border p-6 space-y-4"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -1936,18 +1936,18 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   <button
                     type="submit"
                     disabled={busy}
-                    className="rounded-full bg-[#171717] text-[#FFFFFF] px-6 py-2.5 text-sm font-medium"
+                    className="rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium"
                   >
                     Save Habitat
                   </button>
                 </form>
 
-                <div className="bg-[#FFFFFF] border border-[#E7E7E2] divide-y divide-[#E7E7E2]">
+                <div className="bg-card border border-border divide-y divide-border">
                   {locations.map((loc) => (
                     <div key={loc.id} className="p-4 flex items-center justify-between gap-4">
                       <div>
                         <p className="text-sm font-semibold">{loc.name}</p>
-                        <p className="text-xs text-[#686868]">
+                        <p className="text-xs text-muted-foreground">
                           {loc.region} &middot; {loc.ecosystem}
                         </p>
                       </div>
@@ -1955,7 +1955,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         <button
                           type="button"
                           onClick={() => setLocationDraft(loc)}
-                          className="rounded-full border border-[#E7E7E2] px-3.5 py-1.5 text-xs"
+                          className="rounded-full border border-border px-3.5 py-1.5 text-xs"
                         >
                           Edit
                         </button>
@@ -1965,7 +1965,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                             await deleteLocation(loc.id);
                             notify('Habitat deleted.');
                           }}
-                          className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] text-red-600"
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border text-red-600"
                           aria-label="Delete habitat"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1983,7 +1983,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
         {activeTab === 'content' && (
           <form onSubmit={handleSaveProfile} className="space-y-6">
             <div>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-medium">
                 Editorial Copy &amp; Channels
               </p>
               <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
@@ -1991,7 +1991,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               </h2>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-5">
+            <div className="bg-card border border-border p-6 space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className={labelCls}>Hero Headline</label>
@@ -2095,7 +2095,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex items-center gap-2 rounded-full bg-[#171717] text-[#FFFFFF] px-7 py-2.5 text-sm font-medium hover:bg-[#333333] disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-7 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 Save Website Content
@@ -2108,7 +2108,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
         {activeTab === 'enquiries' && (
           <div className="space-y-6">
             <div>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#686868] font-medium">
+              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-medium">
                 Client &amp; Conservation Messages
               </p>
               <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
@@ -2117,7 +2117,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
             </div>
 
             {enquiries.length === 0 ? (
-              <div className="bg-[#FFFFFF] border border-[#E7E7E2] p-10 text-center text-sm text-[#686868]">
+              <div className="bg-card border border-border p-10 text-center text-sm text-muted-foreground">
                 No enquiries yet. Messages sent via /contact will appear here automatically.
               </div>
             ) : (
@@ -2127,17 +2127,17 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                   return (
                     <div
                       key={enq.id}
-                      className="bg-[#FFFFFF] border border-[#E7E7E2] p-6 space-y-4"
+                      className="bg-card border border-border p-6 space-y-4"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="text-base font-semibold">{enq.subject}</h3>
-                            <span className="rounded-full bg-[#F0F0EC] px-3 py-0.5 text-[11px] font-medium">
+                            <span className="rounded-full bg-muted px-3 py-0.5 text-[11px] font-medium">
                               {enq.enquiryType}
                             </span>
                           </div>
-                          <p className="text-xs text-[#686868] mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             {enq.name} ({enq.email})
                             {enq.organization ? ` · ${enq.organization}` : ''}
                           </p>
@@ -2155,7 +2155,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                               );
                               notify('Enquiry status updated.');
                             }}
-                            className="rounded-full border border-[#E7E7E2] bg-[#F7F7F4] px-3.5 py-1.5 text-xs font-medium capitalize"
+                            className="rounded-full border border-border bg-secondary px-3.5 py-1.5 text-xs font-medium capitalize"
                           >
                             <option value="new">New</option>
                             <option value="reviewed">Reviewed</option>
@@ -2168,7 +2168,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                               await deleteEnquiry(enq.id);
                               notify('Enquiry deleted.');
                             }}
-                            className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-[#E7E7E2] text-red-600"
+                            className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-border text-red-600"
                             aria-label="Delete enquiry"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -2176,7 +2176,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         </div>
                       </div>
 
-                      <p className="text-sm text-[#171717]/85 leading-relaxed bg-[#F7F7F4] p-4 border border-[#E7E7E2]">
+                      <p className="text-sm text-foreground/85 leading-relaxed bg-secondary p-4 border border-border">
                         {enq.message}
                       </p>
 
@@ -2195,7 +2195,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                             await updateEnquiry(enq.id, enq.status, notesVal);
                             notify('Notes saved.');
                           }}
-                          className="rounded-full border border-[#171717]/25 px-5 py-2 text-xs font-medium hover:bg-[#F7F7F4]"
+                          className="rounded-full border border-border px-5 py-2 text-xs font-medium hover:bg-secondary"
                         >
                           Save Note
                         </button>

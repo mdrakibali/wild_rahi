@@ -9,6 +9,10 @@ import {
   type EnquiryInput,
 } from '../../lib/validation';
 import type { EnquiryType } from '../../types/portfolio';
+import { Input } from '../ui/Input';
+import { Select } from '../ui/Select';
+import { Textarea } from '../ui/Textarea';
+import { Button } from '../ui/Button';
 
 interface EnquiryFormProps {
   defaultType?: EnquiryType;
@@ -34,14 +38,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [serverError, setServerError] = useState<string | null>(null);
 
   const isLight = theme === 'light';
-
-  const inputClass = isLight
-    ? 'w-full bg-[#FFFFFF] border border-[#E7E7E2] px-4 py-3 text-sm text-[#171717] placeholder:text-[#686868]/60 focus:outline-none focus:border-[#171717] transition-colors'
-    : 'w-full bg-[#151515] border border-[#FFFFFF]/15 px-4 py-3 text-sm text-[#FFFFFF] placeholder:text-[#FFFFFF]/40 focus:outline-none focus:border-[#FFFFFF] transition-colors';
-
-  const labelClass = isLight
-    ? 'block text-xs uppercase tracking-[0.14em] text-[#686868] font-medium mb-2'
-    : 'block text-xs uppercase tracking-[0.14em] text-[#FFFFFF]/65 font-medium mb-2';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,158 +70,119 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   if (submitted) {
     return (
       <div
-        className={`p-8 border ${
+        className={`p-8 rounded-lg border ${
           isLight
-            ? 'bg-[#F7F7F4] border-[#E7E7E2] text-[#171717]'
-            : 'bg-[#151515] border-[#FFFFFF]/15 text-[#FFFFFF]'
+            ? 'bg-card border-border text-foreground'
+            : 'bg-card-dark border-border-dark text-white'
         } space-y-4`}
       >
-        <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#171717] text-[#FFFFFF]">
+        <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground">
           <Check className="w-5 h-5" />
         </div>
-        <h3 className="text-2xl font-semibold tracking-tight">Enquiry Received</h3>
-        <p className={`text-sm leading-relaxed ${isLight ? 'text-[#686868]' : 'text-[#FFFFFF]/70'}`}>
+        <h3 className="text-2xl font-serif font-bold tracking-tight">Enquiry Received</h3>
+        <p className={`text-sm leading-relaxed ${isLight ? 'text-muted-foreground' : 'text-white/70'}`}>
           Thank you for writing to Wild Rahi. Your message has been recorded and Razaul Hafiz Rahi
           will respond as soon as he returns from field assignments.
         </p>
-        <button
+        <Button
           type="button"
+          variant={isLight ? 'primary' : 'accent'}
           onClick={() => setSubmitted(false)}
-          className={`inline-flex items-center rounded-full px-6 py-2.5 text-sm font-medium transition-colors ${
-            isLight
-              ? 'border border-[#171717]/25 text-[#171717] hover:bg-[#171717] hover:text-[#FFFFFF]'
-              : 'border border-[#FFFFFF]/30 text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#0B0B0B]'
-          }`}
         >
           Send Another Message
-        </button>
+        </Button>
       </div>
     );
   }
+  
+  const selectOptions = ALLOWED_ENQUIRY_TYPES.map((t) => ({ value: t, label: t }));
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div>
-          <label htmlFor="enquiry-name" className={labelClass}>
-            Full Name *
-          </label>
-          <input
-            id="enquiry-name"
-            type="text"
-            value={form.name}
-            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-            placeholder="Your name"
-            className={inputClass}
-            required
-          />
-          {errors.name && <p className="text-xs text-red-600 mt-1.5">{errors.name}</p>}
-        </div>
-
-        <div>
-          <label htmlFor="enquiry-email" className={labelClass}>
-            Email Address *
-          </label>
-          <input
-            id="enquiry-email"
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-            placeholder="name@organization.org"
-            className={inputClass}
-            required
-          />
-          {errors.email && <p className="text-xs text-red-600 mt-1.5">{errors.email}</p>}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div>
-          <label htmlFor="enquiry-org" className={labelClass}>
-            Organization / Publication
-          </label>
-          <input
-            id="enquiry-org"
-            type="text"
-            value={form.organization}
-            onChange={(e) => setForm((f) => ({ ...f, organization: e.target.value }))}
-            placeholder="Optional"
-            className={inputClass}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="enquiry-type" className={labelClass}>
-            Enquiry Category
-          </label>
-          <select
-            id="enquiry-type"
-            value={form.enquiryType}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, enquiryType: e.target.value as EnquiryType }))
-            }
-            className={inputClass}
-          >
-            {ALLOWED_ENQUIRY_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="enquiry-subject" className={labelClass}>
-          Subject *
-        </label>
-        <input
-          id="enquiry-subject"
-          type="text"
-          value={form.subject}
-          onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
-          placeholder="Licensing, commission, conservation documentation, or exhibition"
-          className={inputClass}
+    <form
+      onSubmit={handleSubmit}
+      className={`p-7 sm:p-8 rounded-lg border ${
+        isLight
+          ? 'bg-card border-border text-foreground shadow-xs'
+          : 'bg-card-dark border-border-dark text-white'
+      } space-y-5`}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Input
+          label="Your Name"
           required
+          placeholder="e.g. Tanvir Ahmed"
+          value={form.name}
+          onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+          error={errors.name}
         />
-        {errors.subject && <p className="text-xs text-red-600 mt-1.5">{errors.subject}</p>}
+
+        <Input
+          label="Email Address"
+          type="email"
+          required
+          placeholder="e.g. tanvir@example.com"
+          value={form.email}
+          onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+          error={errors.email}
+        />
       </div>
 
-      <div>
-        <label htmlFor="enquiry-message" className={labelClass}>
-          Message *
-        </label>
-        <textarea
-          id="enquiry-message"
-          rows={5}
-          value={form.message}
-          onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-          placeholder="Share project scope, timeline, publication details, or biodiversity collaboration goals..."
-          className={inputClass}
-          required
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Input
+          label="Organization / Publication"
+          placeholder="e.g. NatGeo Traveller / WWF"
+          value={form.organization || ''}
+          onChange={(e) => setForm((p) => ({ ...p, organization: e.target.value }))}
+          error={errors.organization}
         />
-        {errors.message && <p className="text-xs text-red-600 mt-1.5">{errors.message}</p>}
+
+        <Select
+          label="Nature of Enquiry"
+          required
+          value={form.enquiryType}
+          onChange={(e) => setForm((p) => ({ ...p, enquiryType: e.target.value as EnquiryType }))}
+          options={selectOptions}
+          error={errors.enquiryType}
+        />
       </div>
+
+      <Input
+        label="Subject Line"
+        required
+        placeholder="e.g. Sundarbans Field Documentation Commission"
+        value={form.subject}
+        onChange={(e) => setForm((p) => ({ ...p, subject: e.target.value }))}
+        error={errors.subject}
+      />
+
+      <Textarea
+        label="Message / Project Brief"
+        required
+        placeholder="Describe the scope, timeline, publication channel, or target species..."
+        rows={5}
+        value={form.message}
+        onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+        error={errors.message}
+      />
 
       {serverError && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 px-4 py-3">
+        <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
           {serverError}
-        </p>
+        </div>
       )}
 
-      <div className="pt-1">
-        <button
+      <div className="pt-2 flex items-center justify-between">
+        <p className="text-xs text-muted-foreground">
+          Direct inquiry to Razaul Hafiz Rahi.
+        </p>
+        <Button
           type="submit"
-          disabled={submitting}
-          className={`inline-flex items-center gap-2.5 rounded-full px-8 py-3.5 text-sm font-medium transition-colors disabled:opacity-50 ${
-            isLight
-              ? 'bg-[#171717] text-[#FFFFFF] hover:bg-[#333333]'
-              : 'bg-[#FFFFFF] text-[#0B0B0B] hover:bg-[#F0F0EC]'
-          }`}
+          variant="primary"
+          loading={submitting}
+          icon={<Send className="w-4 h-4" />}
         >
-          <Send className="w-4 h-4" />
-          {submitting ? 'Sending Message...' : 'Send Enquiry'}
-        </button>
+          Dispatch Message
+        </Button>
       </div>
     </form>
   );

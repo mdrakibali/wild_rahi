@@ -249,7 +249,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
 
   if (!editor) {
     return (
-      <div className="border border-[#E7E7E2] bg-[#FFFFFF] p-6 text-sm text-[#686868]">
+      <div className="border border-border bg-card p-6 text-sm text-muted-foreground">
         Initializing editorial rich text editor...
       </div>
     );
@@ -258,8 +258,8 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
   const toolBtn = (active: boolean) =>
     `inline-flex items-center justify-center h-8 px-2.5 text-xs font-medium rounded-full transition-colors ${
       active
-        ? 'bg-[#171717] text-[#FFFFFF]'
-        : 'text-[#171717] hover:bg-[#F0F0EC]'
+        ? 'bg-primary text-white'
+        : 'text-foreground hover:bg-muted'
     }`;
 
   const handleApplyLink = () => {
@@ -355,9 +355,9 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
   };
 
   return (
-    <div className="border border-[#E7E7E2] bg-[#FFFFFF]">
+    <div className="border border-border bg-card">
       {/* Mode Switch + Toolbar */}
-      <div className="border-b border-[#E7E7E2] bg-[#F7F7F4] px-3 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      <div className="border-b border-border bg-secondary px-3 py-2.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1" role="toolbar" aria-label="Article formatting toolbar">
           <button
             type="button"
@@ -392,7 +392,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
             <Heading3 className="w-4 h-4" />
           </button>
 
-          <span className="w-px h-5 bg-[#E7E7E2] mx-1" />
+          <span className="w-px h-5 bg-muted mx-1" />
 
           <button
             type="button"
@@ -427,7 +427,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
             <Strikethrough className="w-3.5 h-3.5" />
           </button>
 
-          <span className="w-px h-5 bg-[#E7E7E2] mx-1" />
+          <span className="w-px h-5 bg-muted mx-1" />
 
           <button
             type="button"
@@ -454,7 +454,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
             <AlignRight className="w-3.5 h-3.5" />
           </button>
 
-          <span className="w-px h-5 bg-[#E7E7E2] mx-1" />
+          <span className="w-px h-5 bg-muted mx-1" />
 
           <button
             type="button"
@@ -489,7 +489,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
             <Minus className="w-3.5 h-3.5" />
           </button>
 
-          <span className="w-px h-5 bg-[#E7E7E2] mx-1" />
+          <span className="w-px h-5 bg-muted mx-1" />
 
           <button
             type="button"
@@ -530,7 +530,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
             YouTube
           </button>
 
-          <span className="w-px h-5 bg-[#E7E7E2] mx-1" />
+          <span className="w-px h-5 bg-muted mx-1" />
 
           <button
             type="button"
@@ -559,12 +559,12 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
         </div>
 
         {/* Edit / Live Preview Switch */}
-        <div className="inline-flex items-center rounded-full border border-[#E7E7E2] bg-[#FFFFFF] p-0.5">
+        <div className="inline-flex items-center rounded-full border border-border bg-card p-0.5">
           <button
             type="button"
             onClick={() => setMode('edit')}
             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-              mode === 'edit' ? 'bg-[#171717] text-[#FFFFFF]' : 'text-[#686868] hover:text-[#171717]'
+              mode === 'edit' ? 'bg-primary text-white' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <PenLine className="w-3 h-3" />
@@ -575,8 +575,8 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
             onClick={() => setMode('preview')}
             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               mode === 'preview'
-                ? 'bg-[#171717] text-[#FFFFFF]'
-                : 'text-[#686868] hover:text-[#171717]'
+                ? 'bg-primary text-white'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <Eye className="w-3 h-3" />
@@ -587,25 +587,25 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
 
       {/* Contextual Insert Panels */}
       {activePanel === 'link' && (
-        <div className="border-b border-[#E7E7E2] bg-[#F7F7F4] p-4 flex flex-wrap items-center gap-3">
+        <div className="border-b border-border bg-secondary p-4 flex flex-wrap items-center gap-3">
           <input
             type="url"
             value={linkUrl}
             onChange={(e) => setLinkUrl(e.target.value)}
             placeholder="https://example.org/source"
-            className="flex-1 min-w-[220px] bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-2 text-sm"
+            className="flex-1 min-w-[220px] bg-card border border-border px-3 py-2 text-sm"
           />
           <button
             type="button"
             onClick={handleApplyLink}
-            className="rounded-full bg-[#171717] text-[#FFFFFF] px-4 py-1.5 text-xs font-medium"
+            className="rounded-full bg-primary text-white px-4 py-1.5 text-xs font-medium"
           >
             Apply Link
           </button>
           <button
             type="button"
             onClick={() => setActivePanel(null)}
-            className="rounded-full border border-[#E7E7E2] bg-[#FFFFFF] px-3 py-1.5 text-xs"
+            className="rounded-full border border-border bg-card px-3 py-1.5 text-xs"
           >
             Cancel
           </button>
@@ -613,13 +613,13 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
       )}
 
       {activePanel === 'image' && (
-        <div className="border-b border-[#E7E7E2] bg-[#F7F7F4] p-4 space-y-3">
+        <div className="border-b border-border bg-secondary p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#171717]">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
               Insert Inline Photograph
             </p>
             <button type="button" onClick={() => setActivePanel(null)} aria-label="Close panel">
-              <X className="w-4 h-4 text-[#686868]" />
+              <X className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -628,9 +628,9 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
               value={imgSrc}
               onChange={(e) => setImgSrc(e.target.value)}
               placeholder="Image URL or upload file below"
-              className="bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-2 text-sm"
+              className="bg-card border border-border px-3 py-2 text-sm"
             />
-            <label className="inline-flex items-center justify-center gap-2 rounded-full border border-[#171717]/25 bg-[#FFFFFF] px-4 py-2 text-xs font-medium cursor-pointer hover:bg-[#F0F0EC]">
+            <label className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium cursor-pointer hover:bg-muted">
               <Upload className="w-3.5 h-3.5" />
               Upload Image File
               <input
@@ -645,12 +645,12 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
               value={imgAlt}
               onChange={(e) => setImgAlt(e.target.value)}
               placeholder="Alt text (accessibility)"
-              className="bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-2 text-sm"
+              className="bg-card border border-border px-3 py-2 text-sm"
             />
             <select
               value={imgLayout}
               onChange={(e) => setImgLayout(e.target.value as FigureLayout)}
-              className="bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-2 text-sm"
+              className="bg-card border border-border px-3 py-2 text-sm"
             >
               <option value="standard">Layout: Standard Column</option>
               <option value="wide">Layout: Wide Editorial Breakout</option>
@@ -663,14 +663,14 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
               value={imgCaption}
               onChange={(e) => setImgCaption(e.target.value)}
               placeholder="Caption (English or বাংলা)"
-              className="bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-2 text-sm"
+              className="bg-card border border-border px-3 py-2 text-sm"
             />
             <input
               type="text"
               value={imgCredit}
               onChange={(e) => setImgCredit(e.target.value)}
               placeholder="Credit (optional, e.g. Razaul Hafiz Rahi)"
-              className="bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-2 text-sm"
+              className="bg-card border border-border px-3 py-2 text-sm"
             />
           </div>
           {imgError && <p className="text-xs text-red-600">{imgError}</p>}
@@ -678,7 +678,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
             <button
               type="button"
               onClick={handleInsertFigure}
-              className="rounded-full bg-[#171717] text-[#FFFFFF] px-5 py-2 text-xs font-medium"
+              className="rounded-full bg-primary text-white px-5 py-2 text-xs font-medium"
             >
               Insert Photograph
             </button>
@@ -687,13 +687,13 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
       )}
 
       {activePanel === 'gallery' && (
-        <div className="border-b border-[#E7E7E2] bg-[#F7F7F4] p-4 space-y-3">
+        <div className="border-b border-border bg-secondary p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#171717]">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
               Insert Multi-Image Gallery Block (2&ndash;4 Photos)
             </p>
             <button type="button" onClick={() => setActivePanel(null)} aria-label="Close panel">
-              <X className="w-4 h-4 text-[#686868]" />
+              <X className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
           <div className="space-y-2.5">
@@ -708,7 +708,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
                     )
                   }
                   placeholder={`Photo ${idx + 1} URL`}
-                  className="md:col-span-5 bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-1.5 text-xs"
+                  className="md:col-span-5 bg-card border border-border px-3 py-1.5 text-xs"
                 />
                 <input
                   type="text"
@@ -719,9 +719,9 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
                     )
                   }
                   placeholder="Caption (optional)"
-                  className="md:col-span-4 bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-1.5 text-xs"
+                  className="md:col-span-4 bg-card border border-border px-3 py-1.5 text-xs"
                 />
-                <label className="md:col-span-3 inline-flex items-center justify-center gap-1 rounded-full border border-[#E7E7E2] bg-[#FFFFFF] px-3 py-1.5 text-xs cursor-pointer hover:bg-[#F0F0EC]">
+                <label className="md:col-span-3 inline-flex items-center justify-center gap-1 rounded-full border border-border bg-card px-3 py-1.5 text-xs cursor-pointer hover:bg-muted">
                   <Upload className="w-3 h-3" />
                   Upload
                   <input
@@ -741,7 +741,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
                 onClick={() =>
                   setGalleryItems((prev) => [...prev, { src: '', alt: '', caption: '' }])
                 }
-                className="rounded-full border border-[#171717]/25 bg-[#FFFFFF] px-4 py-1.5 text-xs font-medium"
+                className="rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium"
               >
                 + Add Slot
               </button>
@@ -749,7 +749,7 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
             <button
               type="button"
               onClick={handleInsertGallery}
-              className="rounded-full bg-[#171717] text-[#FFFFFF] px-5 py-1.5 text-xs font-medium"
+              className="rounded-full bg-primary text-white px-5 py-1.5 text-xs font-medium"
             >
               Insert Gallery Block
             </button>
@@ -758,25 +758,25 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
       )}
 
       {activePanel === 'youtube' && (
-        <div className="border-b border-[#E7E7E2] bg-[#F7F7F4] p-4 flex flex-wrap items-center gap-3">
+        <div className="border-b border-border bg-secondary p-4 flex flex-wrap items-center gap-3">
           <input
             type="url"
             value={youtubeUrl}
             onChange={(e) => setYoutubeUrl(e.target.value)}
             placeholder="https://www.youtube.com/watch?v=..."
-            className="flex-1 min-w-[220px] bg-[#FFFFFF] border border-[#E7E7E2] px-3 py-2 text-sm"
+            className="flex-1 min-w-[220px] bg-card border border-border px-3 py-2 text-sm"
           />
           <button
             type="button"
             onClick={handleInsertYoutube}
-            className="rounded-full bg-[#171717] text-[#FFFFFF] px-4 py-1.5 text-xs font-medium"
+            className="rounded-full bg-primary text-white px-4 py-1.5 text-xs font-medium"
           >
             Embed YouTube
           </button>
           <button
             type="button"
             onClick={() => setActivePanel(null)}
-            className="rounded-full border border-[#E7E7E2] bg-[#FFFFFF] px-3 py-1.5 text-xs"
+            className="rounded-full border border-border bg-card px-3 py-1.5 text-xs"
           >
             Cancel
           </button>
@@ -786,15 +786,15 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
       {/* Surface: Tiptap Editor OR Editorial Live Preview */}
       {mode === 'edit' ? (
         <div
-          className="tiptap-editor-content article-prose px-6 py-5 bg-[#FFFFFF]"
+          className="tiptap-editor-content article-prose px-6 py-5 bg-card"
           lang={language}
         >
           <EditorContent editor={editor} />
         </div>
       ) : (
-        <div className="px-6 sm:px-10 py-8 bg-[#FFFFFF]" lang={language}>
+        <div className="px-6 sm:px-10 py-8 bg-card" lang={language}>
           {title && (
-            <h2 className="text-3xl font-semibold tracking-tight text-[#171717] mb-6 pb-4 border-b border-[#E7E7E2]">
+            <h2 className="text-3xl font-semibold tracking-tight text-foreground mb-6 pb-4 border-b border-border">
               {title}
             </h2>
           )}
