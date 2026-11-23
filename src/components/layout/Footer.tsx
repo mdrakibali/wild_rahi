@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-full bg-white text-obsidian px-6 py-2.5 text-xs font-semibold uppercase tracking-wider hover:bg-secondary transition-colors shadow-xs"
+                className="inline-flex items-center gap-2 rounded-md bg-white text-obsidian px-5 py-2 text-xs font-semibold uppercase tracking-wider hover:bg-secondary transition-colors"
               >
                 Enquire or Collaborate
                 <ArrowUpRight className="w-4 h-4" />
@@ -35,7 +35,7 @@ export const Footer: React.FC = () => {
                   href={profile.facebookUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 text-white px-5 py-2.5 text-xs font-semibold uppercase tracking-wider hover:border-white/50 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-md border border-white/20 text-white px-4 py-2 text-xs font-semibold uppercase tracking-wider hover:border-white/50 transition-colors"
                 >
                   Facebook
                   <ArrowUpRight className="w-3.5 h-3.5" />

@@ -31,14 +31,14 @@ interface EthicalCharterCardProps {
 
 export const EthicalCharterCard: React.FC<EthicalCharterCardProps> = ({ item }) => {
   return (
-    <div className="bg-secondary border border-border rounded-2xl p-8 space-y-3.5 hover:border-foreground/30 transition-colors">
-      <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground shadow-xs">
-        <ShieldCheck className="w-5 h-5" />
+    <div className="bg-secondary border border-border rounded-md p-6 space-y-3">
+      <div className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-primary text-primary-foreground">
+        <ShieldCheck className="w-4 h-4" />
       </div>
-      <h3 className="text-xl font-serif font-bold tracking-tight text-foreground">
+      <h3 className="text-lg font-serif font-bold tracking-tight text-foreground">
         {item.title}
       </h3>
-      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
         {item.body}
       </p>
     </div>

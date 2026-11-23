@@ -30,6 +30,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onClose,
 }) => {
   const displayText = message || description || '';
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -46,61 +47,61 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   if (!isOpen) return null;
 
   const icons = {
-    danger: <AlertCircle className="w-6 h-6 text-foreground" />,
-    warning: <AlertTriangle className="w-6 h-6 text-foreground" />,
-    info: <Info className="w-6 h-6 text-foreground" />,
+    danger: <AlertCircle className="w-5 h-5 text-foreground" />,
+    warning: <AlertTriangle className="w-5 h-5 text-foreground" />,
+    info: <Info className="w-5 h-5 text-foreground" />,
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-obsidian/60 backdrop-blur-xs transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-obsidian/60 transition-opacity"
         onClick={() => !loading && onClose()}
       />
 
-      {/* Modal Dialog Card (rounded-2xl) */}
+      {/* Modal Dialog Card (rounded-md, flat, no shadow) */}
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl p-6 sm:p-7 z-10 transition-all transform animate-scale-in"
+        className="relative w-full max-w-md bg-card border border-border rounded-md p-6 z-10"
       >
         <button
           type="button"
           onClick={onClose}
           disabled={loading}
-          className="absolute top-5 right-5 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-full hover:bg-secondary disabled:opacity-50"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-secondary disabled:opacity-50"
           aria-label="Close dialog"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center bg-secondary border border-border">
+        <div className="flex items-start gap-3.5">
+          <div className="w-10 h-10 rounded-md shrink-0 flex items-center justify-center bg-secondary border border-border">
             {icons[variant]}
           </div>
 
           <div className="flex-1 min-w-0 pr-4">
-            <h3 className="text-xl font-serif font-bold tracking-tight text-foreground">
+            <h3 className="text-lg font-serif font-bold tracking-tight text-foreground">
               {title}
             </h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+            <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
               {displayText}
             </p>
 
             {itemName && (
-              <div className="mt-3 px-3 py-2 bg-secondary border border-border rounded-xl text-xs font-mono text-foreground break-all">
+              <div className="mt-3 px-3 py-1.5 bg-secondary border border-border rounded-md text-xs font-mono text-foreground break-all">
                 {itemName}
               </div>
             )}
           </div>
         </div>
 
-        {/* Buttons (rounded-full) */}
-        <div className="mt-6 pt-4 border-t border-border flex items-center justify-end gap-3">
+        {/* Buttons (rounded-md) */}
+        <div className="mt-6 pt-4 border-t border-border flex items-center justify-end gap-2.5">
           <Button
             variant="outline"
-            size="md"
+            size="sm"
             onClick={onClose}
             disabled={loading}
           >
@@ -109,7 +110,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
           <Button
             variant={variant === 'danger' ? 'destructive' : 'primary'}
-            size="md"
+            size="sm"
             loading={loading}
             onClick={onConfirm}
           >

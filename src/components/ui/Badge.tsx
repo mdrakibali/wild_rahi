@@ -19,7 +19,7 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const base =
-    'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide transition-colors';
+    'inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium tracking-wide transition-colors';
 
   let variantStyle = 'bg-secondary text-secondary-foreground';
 

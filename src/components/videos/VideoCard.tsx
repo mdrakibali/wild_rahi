@@ -10,7 +10,7 @@ interface VideoCardProps {
 
 export const VideoCard: React.FC<VideoCardProps> = ({ video, onPlay }) => {
   return (
-    <article className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-foreground/40 transition-all flex flex-col shadow-xs hover:shadow-md">
+    <article className="group bg-card border border-border rounded-md overflow-hidden flex flex-col">
       <button
         type="button"
         onClick={onPlay}
@@ -21,24 +21,24 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, onPlay }) => {
           src={video.thumbnailUrl}
           alt={video.title}
           loading="lazy"
-          className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          className="w-full h-full object-cover opacity-90"
         />
-        <div className="absolute inset-0 bg-obsidian/25 group-hover:bg-obsidian/15 transition-colors flex items-center justify-center">
-          <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white text-obsidian transition-transform duration-300 group-hover:scale-105 shadow-md">
+        <div className="absolute inset-0 bg-obsidian/20 flex items-center justify-center">
+          <span className="inline-flex items-center justify-center w-11 h-11 rounded-md bg-white text-obsidian">
             <Play className="w-5 h-5 ml-0.5 fill-current" />
           </span>
         </div>
-        <span className="absolute top-3 left-3 rounded-full bg-obsidian/85 backdrop-blur-xs text-white px-3 py-1 text-[10px] font-mono tracking-wider">
+        <span className="absolute top-3 left-3 rounded-md bg-obsidian/85 backdrop-blur-xs text-white px-2.5 py-0.5 text-[10px] font-mono tracking-wider">
           {PLATFORM_LABELS[video.platform]}
         </span>
       </button>
 
-      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between gap-4">
+      <div className="p-5 flex-1 flex flex-col justify-between gap-4">
         <div className="space-y-1.5">
           <p className="text-[11px] text-muted-foreground font-mono">
             {video.category} &middot; {video.publishedDate}
           </p>
-          <h3 className="text-lg font-serif font-bold tracking-tight text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-lg font-serif font-bold tracking-tight text-foreground leading-snug line-clamp-2">
             {video.title}
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">

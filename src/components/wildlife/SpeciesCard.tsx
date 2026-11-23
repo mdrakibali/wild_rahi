@@ -11,14 +11,14 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species }) => {
   return (
     <Link
       to={`/wildlife/${encodeURIComponent(species.slug)}`}
-      className="group bg-card border border-border rounded-2xl overflow-hidden flex flex-col hover:border-foreground/40 transition-all shadow-xs hover:shadow-md"
+      className="bg-card border border-border rounded-md overflow-hidden flex flex-col"
     >
-      <div className="aspect-[4/3] overflow-hidden bg-muted relative rounded-2xl m-3 mb-0">
+      <div className="aspect-[4/3] overflow-hidden bg-muted relative">
         <img
           src={species.coverImageUrl}
           alt={species.commonName}
           loading="lazy"
-          className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          className="w-full h-full object-cover"
         />
         <div className="absolute top-3 left-3">
           <Badge variant="conservation" status={species.conservationStatus}>
@@ -29,7 +29,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species }) => {
 
       <div className="p-5 flex-1 flex flex-col justify-between gap-4">
         <div className="space-y-1.5">
-          <h3 className="text-xl font-serif font-bold tracking-tight text-foreground group-hover:text-primary transition-colors leading-snug">
+          <h3 className="text-xl font-serif font-bold tracking-tight text-foreground leading-snug">
             {species.commonName}
           </h3>
           <p className="text-xs italic text-muted-foreground">{species.scientificName}</p>
@@ -45,7 +45,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species }) => {
 
         <div className="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground font-mono">
           <span>{species.habitatRegion}</span>
-          <span className="font-sans font-semibold text-primary">Dossier &rarr;</span>
+          <span className="font-sans font-semibold text-foreground hover:underline">Dossier &rarr;</span>
         </div>
       </div>
     </Link>

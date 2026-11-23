@@ -13,12 +13,12 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
     <section className="bg-secondary border-b border-border py-16 lg:py-24">
       <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-5">
-          <div className="aspect-[4/5] overflow-hidden bg-muted border border-border rounded-2xl shadow-xs">
+          <div className="aspect-[4/5] overflow-hidden bg-muted border border-border rounded-md">
             {profile.portraitUrl && (
               <img
                 src={profile.portraitUrl}
                 alt={profile.photographerName}
-                className="w-full h-full object-cover rounded-2xl"
+                className="w-full h-full object-cover rounded-md"
               />
             )}
           </div>
@@ -34,7 +34,7 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
           <p className="text-lg sm:text-xl text-foreground/85 leading-relaxed font-normal">
             {profile.bioSummary}
           </p>
-          <div className="pt-2 flex flex-wrap gap-3.5">
+          <div className="pt-2 flex flex-wrap gap-3">
             <Link to="/contact">
               <Button
                 variant="primary"

@@ -49,7 +49,7 @@ export const Header: React.FC = () => {
         className={`fixed top-0 inset-x-0 z-40 transition-colors duration-300 ${
           isHomeHero
             ? "bg-gradient-to-b from-obsidian/85 via-obsidian/40 to-transparent text-white"
-            : "bg-card/95 backdrop-blur-md text-foreground border-b border-border shadow-xs"
+            : "bg-card/95 backdrop-blur-md text-foreground border-b border-border"
         }`}
       >
         <div className="site-container h-20 flex items-center justify-between gap-6">
@@ -107,7 +107,7 @@ export const Header: React.FC = () => {
 
             <Link
               to="/contact"
-              className={`ml-2 inline-flex items-center justify-center rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
+              className={`ml-2 inline-flex items-center justify-center rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
                 isHomeHero
                   ? "bg-white text-obsidian hover:bg-secondary"
                   : "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -120,7 +120,7 @@ export const Header: React.FC = () => {
           <button
             type="button"
             onClick={() => setMobileOpen((prev) => !prev)}
-            className={`lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-full border transition-colors ${
+            className={`lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md border transition-colors ${
               isHomeHero
                 ? "border-white/30 text-white hover:bg-white/10"
                 : "border-border text-foreground hover:bg-secondary"
@@ -167,7 +167,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-border text-foreground hover:bg-secondary"
+                className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-border text-foreground hover:bg-secondary"
                 aria-label="Close navigation menu"
               >
                 <X className="w-5 h-5" />
@@ -205,11 +205,11 @@ export const Header: React.FC = () => {
               </div>
 
               <div className="pt-8 border-t border-border space-y-5">
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2.5">
                   <Link
                     to="/contact"
                     onClick={() => setMobileOpen(false)}
-                    className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium"
+                    className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-5 py-2 text-sm font-medium"
                   >
                     Start a Conversation
                   </Link>
@@ -218,7 +218,7 @@ export const Header: React.FC = () => {
                       href={profile.facebookUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-full border border-border text-foreground px-5 py-2.5 text-sm font-medium hover:bg-secondary"
+                      className="inline-flex items-center justify-center rounded-md border border-border text-foreground px-4 py-2 text-sm font-medium hover:bg-secondary"
                     >
                       Facebook
                     </a>

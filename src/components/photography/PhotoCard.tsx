@@ -10,7 +10,7 @@ interface PhotoCardProps {
 
 export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect }) => {
   return (
-    <article className="break-inside-avoid group bg-card border border-border rounded-2xl p-3 sm:p-4 hover:border-foreground/40 transition-all shadow-xs hover:shadow-md mb-6">
+    <article className="break-inside-avoid group bg-card border border-border rounded-md p-3 sm:p-4 mb-6">
       <button
         type="button"
         onClick={onInspect}
@@ -18,7 +18,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect }) => {
         aria-label={`Inspect ${photo.title} in lightbox`}
       >
         <div
-          className={`relative rounded-2xl overflow-hidden bg-muted ${getAspectRatioClass(
+          className={`relative rounded-md overflow-hidden bg-muted ${getAspectRatioClass(
             photo.aspectRatio
           )}`}
         >
@@ -26,17 +26,17 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect }) => {
             src={photo.imageUrl}
             alt={photo.title}
             loading="lazy"
-            className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            className="w-full h-full object-cover rounded-md"
           />
-          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-obsidian/80 backdrop-blur-xs text-white px-3.5 py-1.5 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
+          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-md bg-obsidian/85 backdrop-blur-xs text-white px-3 py-1.5 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
             <Expand className="w-3.5 h-3.5" />
             Inspect
           </span>
         </div>
 
-        <div className="pt-4 space-y-1.5">
+        <div className="pt-3.5 space-y-1.5">
           <div className="flex items-baseline justify-between gap-3">
-            <h3 className="text-lg font-serif font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+            <h3 className="text-lg font-serif font-bold tracking-tight text-foreground">
               {photo.title}
             </h3>
             <span className="text-xs font-mono text-muted-foreground shrink-0">{photo.year}</span>

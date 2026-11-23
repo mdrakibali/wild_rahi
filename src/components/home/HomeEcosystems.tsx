@@ -25,7 +25,7 @@ export const HomeEcosystems: React.FC<HomeEcosystemsProps> = ({ locations }) => 
           </div>
           <Link
             to="/wildlife"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-primary hover:text-white transition-colors self-start md:self-auto shadow-2xs"
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-secondary transition-colors self-start md:self-auto"
           >
             Explore Habitats
             <ArrowRight className="w-4 h-4" />
@@ -37,29 +37,29 @@ export const HomeEcosystems: React.FC<HomeEcosystemsProps> = ({ locations }) => 
             <Link
               key={loc.id}
               to={`/photography?location=${encodeURIComponent(loc.slug)}`}
-              className="group bg-card border border-border rounded-2xl overflow-hidden flex flex-col hover:border-foreground/40 transition-all shadow-xs hover:shadow-md"
+              className="bg-card border border-border rounded-md overflow-hidden flex flex-col"
             >
-              <div className="aspect-[16/10] overflow-hidden bg-muted rounded-2xl m-3 mb-0">
+              <div className="aspect-[16/10] overflow-hidden bg-muted">
                 <img
                   src={loc.coverImageUrl}
                   alt={loc.name}
                   loading="lazy"
-                  className="w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <div className="p-6 flex-1 flex flex-col justify-between gap-4">
+              <div className="p-5 flex-1 flex flex-col justify-between gap-4">
                 <div className="space-y-2">
                   <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground font-medium">
                     {loc.region} &middot; {loc.ecosystem}
                   </p>
-                  <h3 className="text-xl font-serif font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-serif font-bold tracking-tight text-foreground">
                     {loc.name}
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
                     {loc.description}
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary group-hover:underline">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-foreground hover:underline">
                   View habitat plates
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </span>

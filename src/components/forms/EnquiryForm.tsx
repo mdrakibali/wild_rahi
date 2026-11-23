@@ -70,13 +70,13 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   if (submitted) {
     return (
       <div
-        className={`p-8 rounded-2xl border ${
+        className={`p-7 rounded-md border ${
           isLight
             ? 'bg-card border-border text-foreground'
             : 'bg-card-dark border-border-dark text-white'
-        } space-y-4 shadow-sm`}
+        } space-y-4`}
       >
-        <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground">
+        <div className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-primary text-primary-foreground">
           <Check className="w-5 h-5" />
         </div>
         <h3 className="text-2xl font-serif font-bold tracking-tight">Enquiry Received</h3>
@@ -100,9 +100,9 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`p-7 sm:p-8 rounded-2xl border ${
+      className={`p-6 sm:p-8 rounded-md border ${
         isLight
-          ? 'bg-card border-border text-foreground shadow-xs'
+          ? 'bg-card border-border text-foreground'
           : 'bg-card-dark border-border-dark text-white'
       } space-y-5`}
     >

@@ -58,24 +58,24 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
     },
     {
       label: 'Articles',
-      value: publishedArticles,
-      sub: `${draftArticles} in draft`,
+      value: articles.length,
+      sub: `${publishedArticles} pub / ${draftArticles} draft`,
       icon: FileText,
       tab: 'articles',
     },
     {
       label: 'Videos',
-      value: publishedVideos,
-      sub: `${videos.length} links`,
+      value: videos.length,
+      sub: `${publishedVideos} published`,
       icon: Video,
       tab: 'videos',
     },
     {
-      label: 'Categories',
-      value: collections.length,
-      sub: `${species.length} species`,
+      label: 'Species',
+      value: species.length,
+      sub: 'Dossiers catalogued',
       icon: FolderOpen,
-      tab: 'collections',
+      tab: 'wildlife',
     },
     {
       label: 'Enquiries',
@@ -142,9 +142,9 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               key={item.label}
               type="button"
               onClick={() => onNavigateTab(item.tab)}
-              className="text-left bg-card border border-border hover:border-foreground/50 p-5 rounded-2xl transition-all space-y-3 shadow-xs hover:shadow-sm cursor-pointer group"
+              className="text-left bg-card border border-border p-5 rounded-md space-y-3 cursor-pointer group"
             >
-              <div className="flex items-center justify-between text-muted-foreground group-hover:text-primary transition-colors">
+              <div className="flex items-center justify-between text-muted-foreground">
                 <span className="text-xs font-medium uppercase tracking-wider">{item.label}</span>
                 <Icon className="w-4 h-4" />
               </div>
@@ -159,13 +159,13 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
 
       {/* Recent Content Updates + Latest Enquiries */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-7 bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
+        <div className="lg:col-span-7 bg-card border border-border rounded-md p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-serif font-bold text-foreground">Recent Articles &amp; Drafts</h3>
             <button
               type="button"
               onClick={() => onNavigateTab('articles')}
-              className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+              className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               Manage all &rarr;
             </button>
@@ -190,13 +190,13 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
           </div>
         </div>
 
-        <div className="lg:col-span-5 bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
+        <div className="lg:col-span-5 bg-card border border-border rounded-md p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-serif font-bold text-foreground">Latest Enquiries</h3>
             <button
               type="button"
               onClick={() => onNavigateTab('enquiries')}
-              className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+              className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               Open inbox &rarr;
             </button>
@@ -218,15 +218,6 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                   <p className="text-xs text-muted-foreground truncate">{enq.subject}</p>
                 </div>
               ))}
-            </div>
-          )}
-
-          {databaseInfo && (
-            <div className="pt-4 border-t border-border text-xs text-muted-foreground">
-              Storage Engine:{' '}
-              <strong className="text-foreground font-semibold">
-                PostgreSQL (Drizzle ORM)
-              </strong>
             </div>
           )}
         </div>
