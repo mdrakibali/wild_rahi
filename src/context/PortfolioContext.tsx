@@ -107,6 +107,10 @@ interface PortfolioContextValue {
   updateEnquiry: (id: string, status: EnquiryStatus, adminNotes: string) => Promise<void>;
   deleteEnquiry: (id: string) => Promise<void>;
   downloadArchiveBackup: () => Promise<void>;
+  activeModalPhoto: Photograph | null;
+  openPhotoModal: (photo: Photograph) => void;
+  closePhotoModal: () => void;
+  navigateModalPhoto: (direction: -1 | 1) => void;
 }
 
 const PortfolioContext = createContext<PortfolioContextValue | null>(null);
@@ -452,6 +456,53 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     URL.revokeObjectURL(url);
   }, []);
 
+  // Instagram-style URL-synced Photo Modal state & methods
+  const [activeModalPhoto, setActiveModalPhoto] = useState<Photograph | null>(null);
+
+  const openPhotoModal = useCallback((photo: Photograph) => {
+    setActiveModalPhoto(photo);
+    if (typeof window !== 'undefined') {
+      const slug = encodeURIComponent(photo.slug || photo.id);
+      window.history.pushState({ photoModal: true, photoId: photo.id }, '', `/photography/${slug}`);
+    }
+  }, []);
+
+  const closePhotoModal = useCallback(() => {
+    setActiveModalPhoto(null);
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/photography/')) {
+      window.history.back();
+    }
+  }, []);
+
+  const navigateModalPhoto = useCallback(
+    (direction: -1 | 1) => {
+      setActiveModalPhoto((current) => {
+        if (!current) return null;
+        const idx = photographs.findIndex((p) => p.id === current.id);
+        if (idx === -1) return current;
+        const nextIdx = idx + direction;
+        if (nextIdx < 0 || nextIdx >= photographs.length) return current;
+        const nextPhoto = photographs[nextIdx];
+        if (typeof window !== 'undefined') {
+          const slug = encodeURIComponent(nextPhoto.slug || nextPhoto.id);
+          window.history.replaceState({ photoModal: true, photoId: nextPhoto.id }, '', `/photography/${slug}`);
+        }
+        return nextPhoto;
+      });
+    },
+    [photographs]
+  );
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (!window.location.pathname.startsWith('/photography/')) {
+        setActiveModalPhoto(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const isAdmin = Boolean(adminUser);
 
   const value = useMemo<PortfolioContextValue>(
@@ -491,6 +542,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       updateEnquiry,
       deleteEnquiry,
       downloadArchiveBackup,
+      activeModalPhoto,
+      openPhotoModal,
+      closePhotoModal,
+      navigateModalPhoto,
     }),
     [
       photographs,
@@ -528,6 +583,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       updateEnquiry,
       deleteEnquiry,
       downloadArchiveBackup,
+      activeModalPhoto,
+      openPhotoModal,
+      closePhotoModal,
+      navigateModalPhoto,
     ]
   );
 

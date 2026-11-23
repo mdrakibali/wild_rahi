@@ -11,13 +11,11 @@ import type { VideoItem } from "../types/portfolio";
 import { CinematicHero } from "../components/hero/CinematicHero";
 import { HomeCategories } from "../components/home/HomeCategories";
 import { HomeVideos } from "../components/home/HomeVideos";
-import { Lightbox } from "../components/lightbox/Lightbox";
 import { HorizontalJourney } from "../components/photography/HorizontalJourney";
 import { VideoModal } from "../components/videos/VideoModal";
 
 export const HomePage: React.FC = () => {
   const { photographs, collections, videos, profile } = usePortfolio();
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   const publishedPhotos = useMemo(
@@ -63,10 +61,7 @@ export const HomePage: React.FC = () => {
       />
 
       {/* 3. Panoramic Field Journey */}
-      <HorizontalJourney
-        photographs={journeyPhotos}
-        onSelectPhoto={(index) => setLightboxIndex(index)}
-      />
+      <HorizontalJourney photographs={journeyPhotos} />
 
       {/* 4. Field Video Footage */}
       <HomeVideos
@@ -107,13 +102,6 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Modals */}
-      <Lightbox
-        photographs={journeyPhotos}
-        activeIndex={lightboxIndex}
-        onClose={() => setLightboxIndex(null)}
-        onChangeIndex={setLightboxIndex}
-      />
-
       <VideoModal video={activeVideo} onClose={() => setActiveVideo(null)} />
     </div>
   );

@@ -79,41 +79,7 @@ export const AboutSidebar: React.FC<AboutSidebarProps> = ({ profile }) => {
 
         {/* Complete Gear Notes Breakdown */}
         {profile.equipmentNote && (
-          <span className="text-[11px] font-mono text-muted-foreground">Sony &amp; Gitzo</span>
-        </div>
-
-        {/* 2x2 Visual Product Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {PRIMARY_GEAR_CARDS.map((gear, idx) => (
-            <div
-              key={idx}
-              className="bg-card border border-border rounded-md overflow-hidden flex flex-col group hover:border-primary/50 transition-colors"
-            >
-              <div className="h-28 w-full bg-muted overflow-hidden relative">
-                <img
-                  src={gear.image}
-                  alt={gear.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <span className="absolute top-2 left-2 text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-white font-medium border border-white/10">
-                  {gear.category}
-                </span>
-              </div>
-              <div className="p-3 space-y-1 flex-1 flex flex-col justify-between">
-                <h4 className="text-xs font-semibold text-foreground leading-snug">
-                  {gear.name}
-                </h4>
-                <p className="text-[11px] text-muted-foreground leading-tight">
-                  {gear.role}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Complete Gear Notes Breakdown */}
-        {profile.equipmentNote && (
-          <div className="text-sm text-foreground/85 leading-relaxed whitespace-pre-line font-mono bg-card/60 p-3.5 rounded border border-border/80">
+          <div className="text-sm text-foreground/85 leading-relaxed whitespace-pre-line font-mono text-xs bg-card/60 p-3.5 rounded border border-border/80">
             {profile.equipmentNote}
           </div>
         )}

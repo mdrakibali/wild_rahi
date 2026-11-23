@@ -28,13 +28,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
-  children,
-  modal,
-}: {
-  children: React.ReactNode;
-  modal: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="bg-background text-foreground">
       <head>
@@ -47,10 +41,7 @@ export default function RootLayout({
       </head>
       <body className="bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground min-h-screen">
         <PortfolioProvider>
-          <AppShell>
-            {children}
-            {modal}
-          </AppShell>
+          <AppShell>{children}</AppShell>
         </PortfolioProvider>
       </body>
     </html>

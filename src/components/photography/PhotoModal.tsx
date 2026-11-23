@@ -1,72 +1,54 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowLeft, ArrowRight, Camera, ChevronLeft, ChevronRight, Expand, MapPin, Share2, X } from 'lucide-react';
+import { Camera, ChevronLeft, ChevronRight, MapPin, Share2, X } from 'lucide-react';
 import { usePortfolio } from '@/context/PortfolioContext';
 import { formatExifMetadata } from '@/lib/validation';
 
-interface PhotoModalProps {
-  slug: string;
-}
-
-export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
-  const router = useRouter();
-  const { photographs } = usePortfolio();
+export const PhotoModal: React.FC = () => {
+  const { activeModalPhoto, photographs, closePhotoModal, navigateModalPhoto } = usePortfolio();
   const [copied, setCopied] = useState(false);
 
-  // Find active photo index
+  // Active photo index in archive
   const activeIndex = useMemo(() => {
-    return photographs.findIndex((p) => (p.slug || p.id) === slug || p.id === slug);
-  }, [photographs, slug]);
-
-  const photo = photographs[activeIndex] || photographs[0];
-
-  const handleClose = () => {
-    router.back();
-  };
-
-  const handleNavigate = (nextIdx: number) => {
-    if (nextIdx >= 0 && nextIdx < photographs.length) {
-      const nextPhoto = photographs[nextIdx];
-      router.replace(`/photography/${encodeURIComponent(nextPhoto.slug || nextPhoto.id)}`, {
-        scroll: false,
-      });
-    }
-  };
+    if (!activeModalPhoto) return -1;
+    return photographs.findIndex((p) => p.id === activeModalPhoto.id);
+  }, [photographs, activeModalPhoto]);
 
   // Keyboard navigation: Escape to close, Left/Right arrows
   useEffect(() => {
+    if (!activeModalPhoto) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleClose();
-      if (e.key === 'ArrowLeft' && activeIndex > 0) handleNavigate(activeIndex - 1);
-      if (e.key === 'ArrowRight' && activeIndex < photographs.length - 1) handleNavigate(activeIndex + 1);
+      if (e.key === 'Escape') closePhotoModal();
+      if (e.key === 'ArrowLeft') navigateModalPhoto(-1);
+      if (e.key === 'ArrowRight') navigateModalPhoto(1);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeIndex, photographs.length]);
+  }, [activeModalPhoto, closePhotoModal, navigateModalPhoto]);
 
-  // Lock background body scroll
+  // Lock background body scroll when open
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, []);
+    if (activeModalPhoto) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [activeModalPhoto]);
 
   const handleShare = async () => {
-    const url = window.location.href;
-    if (navigator.clipboard) {
-      await navigator.clipboard.writeText(url);
+    if (typeof window !== 'undefined' && navigator.clipboard) {
+      await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
 
-  if (!photo) return null;
+  if (!activeModalPhoto) return null;
 
-  const exif = formatExifMetadata(photo);
+  const exif = formatExifMetadata(activeModalPhoto);
 
   return (
     <AnimatePresence>
@@ -76,16 +58,16 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/92 backdrop-blur-md p-2 sm:p-6"
-        onClick={handleClose}
+        onClick={closePhotoModal}
       >
         {/* Top Floating Controls */}
-        <div
-          className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between text-white pointer-events-none"
-        >
+        <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between text-white pointer-events-none">
           <div className="flex items-center gap-2 pointer-events-auto">
-            <span className="text-xs font-mono px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90">
-              {activeIndex + 1} / {photographs.length}
-            </span>
+            {activeIndex !== -1 && (
+              <span className="text-xs font-mono px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90">
+                {activeIndex + 1} / {photographs.length}
+              </span>
+            )}
             <span className="hidden sm:inline-block text-xs font-medium text-white/70">
               Press Esc or click outside to close
             </span>
@@ -108,7 +90,7 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                handleClose();
+                closePhotoModal();
               }}
               className="p-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-colors cursor-pointer"
               title="Close modal"
@@ -125,7 +107,7 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              handleNavigate(activeIndex - 1);
+              navigateModalPhoto(-1);
             }}
             className="hidden sm:flex absolute left-4 z-40 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all cursor-pointer hover:scale-105"
             aria-label="Previous photo"
@@ -140,7 +122,7 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              handleNavigate(activeIndex + 1);
+              navigateModalPhoto(1);
             }}
             className="hidden sm:flex absolute right-4 z-40 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all cursor-pointer hover:scale-105"
             aria-label="Next photo"
@@ -161,39 +143,39 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
           {/* High-Res Photo Frame */}
           <div className="relative flex-1 bg-black flex items-center justify-center min-h-[320px] lg:min-h-[580px] overflow-hidden">
             <img
-              src={photo.imageUrl}
-              alt={photo.title}
+              src={activeModalPhoto.imageUrl}
+              alt={activeModalPhoto.title}
               className="max-h-[82vh] w-auto max-w-full object-contain select-none"
             />
           </div>
 
-          {/* Details Sidebar / Drawer */}
+          {/* Details Sidebar */}
           <div className="w-full lg:w-96 p-6 sm:p-7 flex flex-col justify-between overflow-y-auto max-h-[40vh] lg:max-h-[85vh] bg-card border-t lg:border-t-0 lg:border-l border-border space-y-6">
             <div className="space-y-4">
               <div className="space-y-1">
                 <span className="text-[11px] font-mono text-primary font-semibold uppercase tracking-wider">
-                  {photo.year || 'Field Archive'}
+                  {activeModalPhoto.year || 'Field Archive'}
                 </span>
                 <h2 className="text-xl sm:text-2xl font-serif font-bold text-foreground leading-snug">
-                  {photo.title}
+                  {activeModalPhoto.title}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground pt-1">
-                  <span>{photo.speciesName || 'Wildlife'}</span>
-                  {photo.locationName && (
+                  <span>{activeModalPhoto.speciesName || 'Wildlife'}</span>
+                  {activeModalPhoto.locationName && (
                     <>
                       <span>&middot;</span>
                       <span className="inline-flex items-center gap-0.5">
                         <MapPin className="w-3 h-3 text-muted-foreground" />
-                        {photo.locationName}
+                        {activeModalPhoto.locationName}
                       </span>
                     </>
                   )}
                 </div>
               </div>
 
-              {photo.caption && (
+              {activeModalPhoto.caption && (
                 <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed italic border-l-2 border-primary/40 pl-3">
-                  &ldquo;{photo.caption}&rdquo;
+                  &ldquo;{activeModalPhoto.caption}&rdquo;
                 </p>
               )}
 
@@ -203,14 +185,14 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
                   <Camera className="w-3.5 h-3.5 text-primary" /> Camera &amp; Optics Data
                 </p>
                 <div className="space-y-1.5 text-xs">
-                  {photo.camera && (
+                  {activeModalPhoto.camera && (
                     <p className="text-foreground">
-                      <span className="text-muted-foreground font-mono">Body:</span> {photo.camera}
+                      <span className="text-muted-foreground font-mono">Body:</span> {activeModalPhoto.camera}
                     </p>
                   )}
-                  {photo.lens && (
+                  {activeModalPhoto.lens && (
                     <p className="text-foreground">
-                      <span className="text-muted-foreground font-mono">Optics:</span> {photo.lens}
+                      <span className="text-muted-foreground font-mono">Optics:</span> {activeModalPhoto.lens}
                     </p>
                   )}
                   {exif && (
@@ -239,7 +221,7 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
 
               <button
                 type="button"
-                onClick={handleClose}
+                onClick={closePhotoModal}
                 className="rounded-md border border-border px-3.5 py-1.5 hover:bg-secondary font-medium transition-colors cursor-pointer"
               >
                 Close
@@ -251,4 +233,3 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({ slug }) => {
     </AnimatePresence>
   );
 };
-

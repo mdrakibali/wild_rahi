@@ -5,18 +5,20 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Expand } from 'lucide-react';
 import type { Photograph } from '../../types/portfolio';
+import { usePortfolio } from '../../context/PortfolioContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface HorizontalJourneyProps {
   photographs: Photograph[];
-  onSelectPhoto: (index: number) => void;
+  onSelectPhoto?: (index: number) => void;
 }
 
 export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
   photographs,
   onSelectPhoto,
 }) => {
+  const { openPhotoModal } = usePortfolio();
   const sectionRef = useRef<HTMLElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
 
@@ -84,10 +86,16 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
             key={photo.id}
             className="shrink-0 w-[84vw] sm:w-[68vw] lg:w-[46vw] xl:w-[40vw] snap-center group"
           >
-            <button
-              type="button"
-              onClick={() => onSelectPhoto(index)}
-              className="block w-full text-left focus:outline-none"
+            <a
+              href={`/photography/${encodeURIComponent(photo.slug || photo.id)}`}
+              onClick={(e) => {
+                if (!e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0) {
+                  e.preventDefault();
+                  if (onSelectPhoto) onSelectPhoto(index);
+                  openPhotoModal(photo);
+                }
+              }}
+              className="block w-full text-left focus:outline-none cursor-pointer"
               aria-label={`Open ${photo.title} in lightbox`}
             >
               <div className="relative overflow-hidden bg-surface-dark aspect-[16/10] rounded-md">
@@ -115,7 +123,7 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
                   {String(index + 1).padStart(2, '0')} / {String(photographs.length).padStart(2, '0')}
                 </span>
               </div>
-            </button>
+            </a>
           </article>
         ))}
       </div>
