@@ -7,6 +7,7 @@ import { VideoModal } from '../components/videos/VideoModal';
 import { PLATFORM_LABELS, parseVideoUrl, type VideoPlatform } from '../lib/videoEmbed';
 import { ALLOWED_VIDEO_CATEGORIES } from '../lib/validation';
 import type { VideoItem } from '../types/portfolio';
+import { Select } from '../components/ui/Select';
 
 const PLATFORM_FILTERS: Array<{ id: 'all' | VideoPlatform; label: string }> = [
   { id: 'all', label: 'All Platforms' },
@@ -79,20 +80,21 @@ export const VideosPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <select
-                aria-label="Filter by video category"
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="rounded-full border border-border bg-secondary px-4 py-2 text-sm text-foreground"
-              >
-                <option value="all">All Categories</option>
-                {ALLOWED_VIDEO_CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-              <span className="text-xs font-mono text-muted-foreground">
+              <div className="w-52">
+                <Select
+                  aria-label="Filter by video category"
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                >
+                  <option value="all">All Categories</option>
+                  {ALLOWED_VIDEO_CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <span className="text-xs font-mono text-muted-foreground whitespace-nowrap">
                 {filteredVideos.length} {filteredVideos.length === 1 ? 'video' : 'videos'}
               </span>
             </div>

@@ -235,44 +235,44 @@ export const WildlifeArchivePage: React.FC = () => {
       <section className="bg-card border-b border-border">
         <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 flex-1">
-            <div className="relative flex-1 min-w-[220px] max-w-sm">
-              <Search className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
+            <div className="flex-1 min-w-[220px] max-w-sm">
+              <Input
+                icon={<Search className="w-4 h-4" />}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search common, scientific, or বাংলা name..."
-                className="w-full rounded-full border border-border bg-secondary pl-10 pr-4 py-2 text-sm text-foreground focus:outline-none focus:border-primary focus:bg-card"
               />
             </div>
 
-            <select
-              aria-label="Filter by region"
-              value={regionFilter}
-              onChange={(e) => setRegionFilter(e.target.value)}
-              className="rounded-full border border-border bg-secondary px-4 py-2 text-sm text-foreground"
-            >
-              <option value="all">All Regions</option>
-              {regions.map((reg) => (
-                <option key={reg} value={reg}>
-                  {reg}
-                </option>
-              ))}
-            </select>
+            <div className="w-48">
+              <Select
+                aria-label="Filter by region"
+                value={regionFilter}
+                onChange={(e) => setRegionFilter(e.target.value)}
+              >
+                <option value="all">All Regions</option>
+                {regions.map((reg) => (
+                  <option key={reg} value={reg}>
+                    {reg}
+                  </option>
+                ))}
+              </Select>
+            </div>
 
-            <select
-              aria-label="Filter by conservation status"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-full border border-border bg-secondary px-4 py-2 text-sm text-foreground"
-            >
-              <option value="all">All Statuses</option>
-              {ALLOWED_CONSERVATION_STATUSES.map((st) => (
-                <option key={st} value={st}>
-                  {st}
-                </option>
-              ))}
-            </select>
+            <div className="w-52">
+              <Select
+                aria-label="Filter by conservation status"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">All Statuses</option>
+                {ALLOWED_CONSERVATION_STATUSES.map((st) => (
+                  <option key={st} value={st}>
+                    {st}
+                  </option>
+                ))}
+              </Select>
+            </div>
           </div>
 
           <p className="text-xs font-mono text-muted-foreground">
