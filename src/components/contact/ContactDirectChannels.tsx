@@ -1,6 +1,7 @@
 import React from 'react';
 import { Mail, MapPin, ArrowUpRight } from 'lucide-react';
 import type { SiteProfile } from '@/types/portfolio';
+import { FacebookIcon, InstagramIcon, TikTokIcon, YoutubeIcon } from '../common/SocialIcons';
 
 interface ContactDirectChannelsProps {
   profile: SiteProfile;
@@ -43,10 +44,10 @@ export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ pr
               href={profile.facebookUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-4 py-1.5 text-xs font-medium hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-xs font-medium hover:bg-primary/90 transition-colors"
             >
+              <FacebookIcon className="w-3.5 h-3.5" />
               Facebook
-              <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           )}
           {profile.instagramUrl && (
@@ -54,10 +55,10 @@ export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ pr
               href={profile.instagramUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card text-foreground px-4 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card text-foreground px-4 py-2 text-xs font-medium hover:bg-secondary transition-colors"
             >
+              <InstagramIcon className="w-3.5 h-3.5" />
               Instagram
-              <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           )}
           {profile.youtubeUrl && (
@@ -65,10 +66,10 @@ export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ pr
               href={profile.youtubeUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card text-foreground px-4 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card text-foreground px-4 py-2 text-xs font-medium hover:bg-secondary transition-colors"
             >
+              <YoutubeIcon className="w-3.5 h-3.5" />
               YouTube
-              <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           )}
           {profile.tiktokUrl && (
@@ -76,10 +77,10 @@ export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ pr
               href={profile.tiktokUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card text-foreground px-4 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card text-foreground px-4 py-2 text-xs font-medium hover:bg-secondary transition-colors"
             >
+              <TikTokIcon className="w-3.5 h-3.5" />
               TikTok
-              <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           )}
         </div>

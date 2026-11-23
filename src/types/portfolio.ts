@@ -40,6 +40,7 @@ export type EnquiryStatus = 'new' | 'reviewed' | 'replied' | 'archived';
 
 export interface Photograph {
   id: string;
+  slug?: string;
   title: string;
   caption: string;
   imageUrl: string;
@@ -58,6 +59,7 @@ export interface Photograph {
   year: string;
   month?: string;
   createdAt?: string;
+  storagePath?: string;
   featured: boolean;
   inHorizontalJourney: boolean;
   published: boolean;

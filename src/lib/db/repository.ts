@@ -51,6 +51,7 @@ export class DatabaseRepository {
       // Map to frontend types
       const mappedPhotos: Photograph[] = photosList.map((p) => ({
         id: p.id,
+        slug: p.slug || p.id,
         title: p.title,
         caption: p.description || '',
         imageUrl: p.imageUrl,

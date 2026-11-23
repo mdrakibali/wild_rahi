@@ -3,6 +3,7 @@ import { Link } from '@/lib/router-compat';
 import { ArrowRight, ArrowUpRight, Award, Calendar, Camera, Compass, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import type { SiteProfile } from '@/types/portfolio';
+import { FacebookIcon, InstagramIcon } from '../common/SocialIcons';
 
 interface AboutHeroProps {
   profile: SiteProfile;
@@ -100,9 +101,24 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
                 <Button
                   variant="outline"
                   size="lg"
-                  icon={<ArrowUpRight className="w-4 h-4" />}
+                  icon={<FacebookIcon className="w-4 h-4" />}
                 >
-                  Facebook Page
+                  Facebook
+                </Button>
+              </a>
+            )}
+            {profile.instagramUrl && (
+              <a
+                href={profile.instagramUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button
+                  variant="outline"
+                  size="lg"
+                  icon={<InstagramIcon className="w-4 h-4" />}
+                >
+                  Instagram
                 </Button>
               </a>
             )}

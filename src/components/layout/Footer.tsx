@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from '@/lib/router-compat';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Mail } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { FacebookIcon, InstagramIcon, TikTokIcon, YoutubeIcon } from '../common/SocialIcons';
 
 export const Footer: React.FC = () => {
   const { profile } = usePortfolio();
@@ -35,10 +36,45 @@ export const Footer: React.FC = () => {
                   href={profile.facebookUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-md border border-white/20 text-white px-4 py-2 text-xs font-semibold uppercase tracking-wider hover:border-white/50 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-md border border-white/20 text-white px-3.5 py-2 text-xs font-semibold tracking-wider hover:border-white/50 transition-colors"
+                  aria-label="Facebook Profile"
                 >
+                  <FacebookIcon className="w-3.5 h-3.5" />
                   Facebook
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {profile.instagramUrl && (
+                <a
+                  href={profile.instagramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-md border border-white/20 text-white px-3.5 py-2 text-xs font-semibold tracking-wider hover:border-white/50 transition-colors"
+                  aria-label="Instagram Profile"
+                >
+                  <InstagramIcon className="w-3.5 h-3.5" />
+                  Instagram
+                </a>
+              )}
+              {profile.youtubeUrl && (
+                <a
+                  href={profile.youtubeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-md border border-white/20 text-white px-3.5 py-2 text-xs font-semibold tracking-wider hover:border-white/50 transition-colors"
+                  aria-label="YouTube Channel"
+                >
+                  <YoutubeIcon className="w-3.5 h-3.5" />
+                  YouTube
+                </a>
+              )}
+              {profile.contactEmail && (
+                <a
+                  href={`mailto:${profile.contactEmail}`}
+                  className="inline-flex items-center gap-2 rounded-md border border-white/20 text-white px-3.5 py-2 text-xs font-semibold tracking-wider hover:border-white/50 transition-colors"
+                  aria-label="Send Email"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  Email
                 </a>
               )}
             </div>

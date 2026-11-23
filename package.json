@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "rm -rf .next tsconfig.tsbuildinfo && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",

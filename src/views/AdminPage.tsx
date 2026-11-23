@@ -32,6 +32,8 @@ import { AdminOverview } from '../components/admin/AdminOverview';
 import { AdminSettings } from '../components/admin/AdminSettings';
 import { ArticleRichEditor } from '../components/admin/ArticleRichEditor';
 import { Select } from '../components/ui/Select';
+import { ImageDropzone } from '../components/ui/ImageDropzone';
+import { uploadImageFileToServer } from '../lib/imageUpload';
 import { Input } from '../components/ui/Input';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 import { readImageFileAsDataUrl } from '../lib/imageUpload';
@@ -191,6 +193,40 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  );
  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
  const [photoMonthFilter, setPhotoMonthFilter] = useState('all');
+ const [batchAlbumId, setBatchAlbumId] = useState<string>(collections[0]?.id || 'birds');
+
+ const handleBatchAlbumUpload = async (items: Array<{ imageUrl: string; storagePath: string; fileName: string }>) => {
+ setBusy(true);
+ try {
+ let added = 0;
+ const currentYear = `${new Date().toLocaleString('en-US', { month: 'short' })} ${new Date().getFullYear()}`;
+ const targetCol = collections.find((c) => c.id === batchAlbumId) || collections[0];
+
+ for (let i = 0; i < items.length; i++) {
+ const item = items[i];
+ const baseTitle = item.fileName.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim() || 'Field Plate';
+ const nextOrder = photographs.length + i + 1;
+ const photo: Photograph = {
+ ...emptyPhoto(collections, locations, nextOrder),
+ id: toSafeSlug(`${baseTitle}-${Date.now()}-${i}`, 80),
+ title: baseTitle,
+ imageUrl: item.imageUrl,
+ storagePath: item.storagePath,
+ collectionId: targetCol?.id || 'birds',
+ year: currentYear,
+ sortOrder: nextOrder,
+ published: true,
+ };
+ await savePhotograph(photo);
+ added++;
+ }
+ notify(`Successfully uploaded and saved ${added} ${added === 1 ? 'photo' : 'photos'} to album "${targetCol?.title || 'Selected Album'}".`);
+ } catch (err) {
+ notify(err instanceof Error ? err.message : 'Album upload failed.', 'err');
+ } finally {
+ setBusy(false);
+ }
+ };
 
  const availableMonths = useMemo(() => {
  const months = new Set<string>();
@@ -828,18 +864,38 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  Photography Management
  </h2>
  </div>
+ </div>
 
- <label className="inline-flex items-center gap-2 rounded-md bg-primary text-white hover:bg-primary/90 px-5 py-2.5 text-xs font-medium cursor-pointer hover:bg-primary/90 self-start">
- <Upload className="w-3.5 h-3.5" />
- Upload Multiple Photos
- <input
- type="file"
- accept="image/*"
- multiple
- className="hidden"
- onChange={(e) => handleBatchPhotoUpload(e.target.files)}
+ {/* Album Multi-Image Dropzone (Direct to Supabase Storage) */}
+ <div className="bg-card border border-border rounded-md p-6 space-y-4">
+ <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
+ <div>
+ <h3 className="text-sm font-serif font-bold text-foreground">
+ Batch Upload to Album
+ </h3>
+ <p className="text-xs text-muted-foreground">
+ Select an album (category) and drop multiple high-res photos to upload directly to Supabase Storage.
+ </p>
+ </div>
+ <div className="w-full sm:w-64">
+ <Select
+ label="Target Album / Category"
+ value={batchAlbumId}
+ onChange={(e) => setBatchAlbumId(e.target.value)}
+ options={collections.map((col) => ({
+ value: col.id,
+ label: col.title,
+ }))}
  />
- </label>
+ </div>
+ </div>
+
+ <ImageDropzone
+ multiple={true}
+ folder="photographs"
+ onMultipleUpload={handleBatchAlbumUpload}
+ helperText="Select multiple JPEG, PNG, or WebP wildlife photos. They will be uploaded directly to Supabase Storage and linked to the selected album."
+ />
  </div>
 
  <form
@@ -930,37 +986,16 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
- <div className="md:col-span-9">
- <label className={labelCls}>Photograph Image URL or File Upload *</label>
- <input
- className={inputCls}
+ <div className="space-y-1">
+ <ImageDropzone
+ label="Photograph Image (Supabase Storage) *"
  value={photoDraft.imageUrl}
- onChange={(e) => setPhotoDraft((p) => ({ ...p, imageUrl: e.target.value }))}
- placeholder="https://... or upload image"
- />
- </div>
- <div className="md:col-span-3">
- <label className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
- <Upload className="w-3.5 h-3.5" />
- Upload Photo
- <input
- type="file"
- accept="image/*"
- className="hidden"
- onChange={async (e) => {
- const file = e.target.files?.[0];
- if (!file) return;
- try {
- const dataUrl = await readImageFileAsDataUrl(file);
- setPhotoDraft((p) => ({ ...p, imageUrl: dataUrl }));
- } catch (err) {
- notify(err instanceof Error ? err.message : 'Upload error', 'err');
+ onChange={(url, path) =>
+ setPhotoDraft((p) => ({ ...p, imageUrl: url, storagePath: path }))
  }
- }}
+ folder="photographs"
+ helperText="Drag & drop or click to upload high-res photo directly to Supabase Storage."
  />
- </label>
- </div>
  </div>
 
  <div>
@@ -2235,7 +2270,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  <h3 className="text-base font-serif font-bold text-foreground border-b border-border pb-3">
  1. Photographer Identity &amp; Portrait
  </h3>
- <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+ <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
  <div>
  <label className={labelCls}>Photographer Name</label>
  <input
@@ -2245,6 +2280,17 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  setProfileDraft((p) => ({ ...p, photographerName: e.target.value }))
  }
  placeholder="e.g. Razaul Hafiz Rahi"
+ />
+ </div>
+ <div>
+ <label className={labelCls}>Born &amp; Origin</label>
+ <input
+ className={inputCls}
+ value={profileDraft.born || ''}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, born: e.target.value }))
+ }
+ placeholder="e.g. 1996 · Khulna, Bangladesh"
  />
  </div>
  <div>
@@ -2297,51 +2343,15 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
 
  {/* Portrait Image with Preview & Upload */}
- <div className="space-y-3 pt-2">
- <label className={labelCls}>Photographer Portrait Image *</label>
- <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
- <div className="md:col-span-8">
- <input
- className={inputCls}
+ <div className="pt-2">
+ <ImageDropzone
+ label="Photographer Portrait Photo (Supabase Storage)"
  value={profileDraft.portraitUrl}
- onChange={(e) =>
- setProfileDraft((p) => ({ ...p, portraitUrl: e.target.value }))
- }
- placeholder="https://... or upload local portrait photo"
+ onChange={(url) => setProfileDraft((p) => ({ ...p, portraitUrl: url }))}
+ folder="profile"
+ aspectRatio="portrait"
+ helperText="Upload official photographer portrait photo directly to Supabase Storage."
  />
- </div>
- <div className="md:col-span-4 flex items-center gap-3">
- <label className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer transition-colors">
- <Upload className="w-3.5 h-3.5" />
- Upload Portrait
- <input
- type="file"
- accept="image/*"
- className="hidden"
- onChange={async (e) => {
- const file = e.target.files?.[0];
- if (!file) return;
- try {
- const dataUrl = await readImageFileAsDataUrl(file);
- setProfileDraft((p) => ({ ...p, portraitUrl: dataUrl }));
- notify('Portrait image loaded successfully.');
- } catch (err) {
- notify(err instanceof Error ? err.message : 'Upload failed', 'err');
- }
- }}
- />
- </label>
- {profileDraft.portraitUrl && (
- <div className="w-12 h-12 rounded-md border border-border overflow-hidden shrink-0 bg-muted">
- <img
- src={profileDraft.portraitUrl}
- alt="Portrait preview"
- className="w-full h-full object-cover"
- />
- </div>
- )}
- </div>
- </div>
  </div>
  </div>
 
