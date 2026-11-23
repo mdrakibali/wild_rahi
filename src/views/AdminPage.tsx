@@ -74,14 +74,14 @@ const ARTICLE_DRAFT_STORAGE_KEY = 'wildrahi_article_autosave_v1';
 
 const NAV_TABS: Array<{ id: AdminTab; label: string; icon: React.ComponentType<{ className?: string }> }> = [
  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
- { id: 'photographs', label: 'Photographs', icon: Camera },
+ { id: 'photographs', label: 'Photos', icon: Camera },
  { id: 'articles', label: 'Articles', icon: FileText },
  { id: 'videos', label: 'Videos', icon: Video },
  { id: 'collections', label: 'Categories', icon: FolderOpen },
- { id: 'wildlife', label: 'Wildlife & Habitats', icon: MapPin },
- { id: 'content', label: 'Site Content', icon: Globe },
- { id: 'enquiries', label: 'Enquiries', icon: Inbox },
- { id: 'settings', label: 'Database & Security', icon: Database },
+ { id: 'wildlife', label: 'Species', icon: MapPin },
+ { id: 'content', label: 'About & Bio', icon: Globe },
+ { id: 'enquiries', label: 'Messages', icon: Inbox },
+ { id: 'settings', label: 'Settings', icon: Database },
 ];
 
 const emptyPhoto = (collections: Collection[], locations: HabitatLocation[], count: number): Photograph => ({
@@ -563,7 +563,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  const handleSaveLocation = async (e: React.FormEvent) => {
  e.preventDefault();
  if (!locationDraft.name.trim()) {
- notify('Habitat name is required.', 'err');
+ notify('Location name is required.', 'err');
  return;
  }
  setBusy(true);
@@ -586,7 +586,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  isPlaceholder: false,
  sortOrder: locations.length + 2,
  });
- notify('Habitat saved.');
+ notify('Location saved.');
  } catch (err) {
  notify(err instanceof Error ? err.message : 'Failed to save habitat.', 'err');
  } finally {
@@ -771,7 +771,8 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </aside>
 
  {/* Main Workspace (Independent Scrolling on Desktop) */}
- <main className="flex-1 min-w-0 lg:h-screen lg:overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+ <main className="flex-1 min-w-0 lg:h-screen lg:overflow-y-auto p-4 sm:p-6 lg:p-8 w-full bg-background">
+  <div className="w-full max-w-6xl mx-auto space-y-8">
  {toast && (
  <div
  role="status"
@@ -868,24 +869,17 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  />
  </div>
  <div>
- <label className={labelCls}>Category</label>
- <select
- className={inputCls}
+ <Select
+ label="Category"
  value={photoDraft.collectionId}
  onChange={(e) => setPhotoDraft((p) => ({ ...p, collectionId: e.target.value }))}
- >
- {collections.map((c) => (
- <option key={c.id} value={c.id}>
- {c.title}
- </option>
- ))}
- </select>
+ options={collections.map((c) => ({ value: c.id, label: c.title }))}
+ />
  </div>
 
  <div>
- <label className={labelCls}>Habitat Location</label>
- <select
- className={inputCls}
+ <Select
+ label="Photo Location"
  value={photoDraft.locationSlug}
  onChange={(e) => {
  const loc = locations.find((l) => l.slug === e.target.value);
@@ -895,30 +889,19 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  locationName: loc?.name || p.locationName,
  }));
  }}
- >
- {locations.map((l) => (
- <option key={l.id} value={l.slug}>
- {l.name}
- </option>
- ))}
- </select>
+ options={locations.map((l) => ({ value: l.slug, label: l.name }))}
+ />
  </div>
 
  <div>
- <label className={labelCls}>Aspect Ratio</label>
- <select
- className={inputCls}
+ <Select
+ label="Aspect Ratio"
  value={photoDraft.aspectRatio}
  onChange={(e) =>
  setPhotoDraft((p) => ({ ...p, aspectRatio: e.target.value as AspectRatio }))
  }
- >
- {ALLOWED_ASPECT_RATIOS.map((r) => (
- <option key={r} value={r}>
- {r}
- </option>
- ))}
- </select>
+ options={ALLOWED_ASPECT_RATIOS.map((r) => ({ value: r, label: r }))}
+ />
  </div>
 
  <div>
@@ -974,19 +957,128 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  />
  </div>
 
+ <div className="space-y-2">
+ <div className="flex flex-wrap items-center justify-between gap-2">
+ <label className={labelCls}>Camera &amp; Optics Metadata</label>
+ <div className="flex flex-wrap items-center gap-1.5">
+ <span className="text-[11px] text-muted-foreground font-medium">Quick Gear:</span>
+ <button
+ type="button"
+ onClick={() =>
+ setPhotoDraft((p) => ({
+ ...p,
+ camera: 'Sony Alpha 7 IV',
+ lens: 'Sony FE 200-600mm F5.6-6.3 G OSS',
+ focalLength: '600mm',
+ aperture: 'f/6.3',
+ shutterSpeed: '1/2000s',
+ iso: '800',
+ }))
+ }
+ className="px-2 py-0.5 text-[11px] font-medium rounded border border-border bg-card hover:bg-secondary text-foreground transition-colors cursor-pointer"
+ >
+ Sony A7 IV + 200-600mm
+ </button>
+ <button
+ type="button"
+ onClick={() =>
+ setPhotoDraft((p) => ({
+ ...p,
+ camera: 'Canon EOS R5',
+ lens: 'Canon RF 100-500mm f/4.5-7.1 L IS USM',
+ focalLength: '500mm',
+ aperture: 'f/7.1',
+ shutterSpeed: '1/1600s',
+ iso: '640',
+ }))
+ }
+ className="px-2 py-0.5 text-[11px] font-medium rounded border border-border bg-card hover:bg-secondary text-foreground transition-colors cursor-pointer"
+ >
+ Canon R5 + 100-500mm
+ </button>
+ <button
+ type="button"
+ onClick={() =>
+ setPhotoDraft((p) => ({
+ ...p,
+ camera: 'Nikon Z8',
+ lens: 'NIKKOR Z 180-600mm f/5.6-6.3 VR',
+ focalLength: '600mm',
+ aperture: 'f/6.3',
+ shutterSpeed: '1/2500s',
+ iso: '1000',
+ }))
+ }
+ className="px-2 py-0.5 text-[11px] font-medium rounded border border-border bg-card hover:bg-secondary text-foreground transition-colors cursor-pointer"
+ >
+ Nikon Z8 + 180-600mm
+ </button>
+ {photographs.length > 0 && (
+ <button
+ type="button"
+ onClick={() => {
+ const lastWithGear = photographs.find((ph) => ph.camera || ph.lens);
+ if (lastWithGear) {
+ setPhotoDraft((p) => ({
+ ...p,
+ camera: lastWithGear.camera || p.camera,
+ lens: lastWithGear.lens || p.lens,
+ focalLength: lastWithGear.focalLength || p.focalLength,
+ aperture: lastWithGear.aperture || p.aperture,
+ shutterSpeed: lastWithGear.shutterSpeed || p.shutterSpeed,
+ iso: lastWithGear.iso || p.iso,
+ }));
+ notify('Applied gear settings from recent photograph.');
+ } else {
+ notify('No previous photograph gear found to copy.', 'err');
+ }
+ }}
+ className="px-2 py-0.5 text-[11px] font-medium rounded border border-primary/40 bg-primary/10 hover:bg-primary/20 text-foreground transition-colors cursor-pointer"
+ title="Copy camera and lens settings from the most recent photo"
+ >
+ Copy Recent Gear
+ </button>
+ )}
+ </div>
+ </div>
+
  <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
  <input
+ list="wildlife-camera-presets"
  className={inputCls}
- placeholder="Camera"
+ placeholder="Camera (e.g. Sony A7 IV)"
  value={photoDraft.camera}
  onChange={(e) => setPhotoDraft((p) => ({ ...p, camera: e.target.value }))}
  />
+ <datalist id="wildlife-camera-presets">
+ <option value="Sony Alpha 7 IV" />
+ <option value="Sony Alpha 1" />
+ <option value="Sony Alpha 7R V" />
+ <option value="Canon EOS R5" />
+ <option value="Canon EOS R6 Mark II" />
+ <option value="Nikon Z8" />
+ <option value="Nikon Z9" />
+ <option value="Fujifilm X-T5" />
+ </datalist>
+
  <input
+ list="wildlife-lens-presets"
  className={inputCls}
- placeholder="Lens"
+ placeholder="Lens (e.g. 200-600mm)"
  value={photoDraft.lens}
  onChange={(e) => setPhotoDraft((p) => ({ ...p, lens: e.target.value }))}
  />
+ <datalist id="wildlife-lens-presets">
+ <option value="Sony FE 200-600mm F5.6-6.3 G OSS" />
+ <option value="Sony FE 600mm f/4 GM OSS" />
+ <option value="Sony FE 100-400mm F4.5-5.6 GM OSS" />
+ <option value="Canon RF 100-500mm f/4.5-7.1 L IS USM" />
+ <option value="Canon RF 600mm f/4 L IS USM" />
+ <option value="NIKKOR Z 180-600mm f/5.6-6.3 VR" />
+ <option value="NIKKOR Z 600mm f/4 TC VR S" />
+ <option value="Sigma 150-600mm f/5-6.3 DG DN OS" />
+ </datalist>
+
  <input
  className={inputCls}
  placeholder="Focal (600mm)"
@@ -995,22 +1087,23 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  />
  <input
  className={inputCls}
- placeholder="Aperture (f/4)"
+ placeholder="Aperture (f/6.3)"
  value={photoDraft.aperture}
  onChange={(e) => setPhotoDraft((p) => ({ ...p, aperture: e.target.value }))}
  />
  <input
  className={inputCls}
- placeholder="Shutter (1/1600s)"
+ placeholder="Shutter (1/2000s)"
  value={photoDraft.shutterSpeed}
  onChange={(e) => setPhotoDraft((p) => ({ ...p, shutterSpeed: e.target.value }))}
  />
  <input
  className={inputCls}
- placeholder="ISO 800"
+ placeholder="ISO (e.g. 800)"
  value={photoDraft.iso}
  onChange={(e) => setPhotoDraft((p) => ({ ...p, iso: e.target.value }))}
  />
+ </div>
  </div>
 
  <div className="flex flex-wrap items-center gap-6 text-sm">
@@ -1180,9 +1273,8 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  />
  </div>
  <div className="md:col-span-3">
- <label className={labelCls}>Language</label>
- <select
- className={inputCls}
+ <Select
+ label="Language"
  value={articleDraft.language}
  onChange={(e) =>
  setArticleDraft((a) => ({
@@ -1190,15 +1282,15 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  language: e.target.value as ArticleLanguage,
  }))
  }
- >
- <option value="en">English (en)</option>
- <option value="bn">বাংলা (bn)</option>
- </select>
+ options={[
+ { value: 'en', label: 'English (en)' },
+ { value: 'bn', label: 'বাংলা (bn)' },
+ ]}
+ />
  </div>
  <div className="md:col-span-3">
- <label className={labelCls}>Category</label>
- <select
- className={inputCls}
+ <Select
+ label="Category"
  value={articleDraft.category}
  onChange={(e) =>
  setArticleDraft((a) => ({
@@ -1206,13 +1298,8 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  category: e.target.value as ArticleCategory,
  }))
  }
- >
- {ALLOWED_ARTICLE_CATEGORIES.map((cat) => (
- <option key={cat} value={cat}>
- {cat}
- </option>
- ))}
- </select>
+ options={ALLOWED_ARTICLE_CATEGORIES.map((cat) => ({ value: cat, label: cat }))}
+ />
  </div>
 
  <div className="md:col-span-4">
@@ -1226,24 +1313,20 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
 
  <div className="md:col-span-4">
- <label className={labelCls}>Link Translation (Optional)</label>
- <select
- className={inputCls}
+ <Select
+ label="Link Translation (Optional)"
  value={articleDraft.translationGroupId || ''}
  onChange={(e) =>
  setArticleDraft((a) => ({ ...a, translationGroupId: e.target.value }))
  }
- >
- <option value="">Standalone Article (No linked translation)</option>
- {otherLanguageArticles.map((other) => {
- const groupVal = other.translationGroupId || other.slug;
- return (
- <option key={other.id} value={groupVal}>
- Link to [{other.language.toUpperCase()}]: {other.title}
- </option>
- );
- })}
- </select>
+ options={[
+ { value: '', label: 'Standalone Article (No linked translation)' },
+ ...otherLanguageArticles.map((other) => ({
+ value: other.translationGroupId || other.slug,
+ label: `Link to [${other.language.toUpperCase()}]: ${other.title}`,
+ })),
+ ]}
+ />
  </div>
 
  <div className="md:col-span-4">
@@ -1561,20 +1644,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  />
  </div>
  <div>
- <label className={labelCls}>Category</label>
- <select
- className={inputCls}
+ <Select
+ label="Category"
  value={videoDraft.category}
  onChange={(e) =>
  setVideoDraft((v) => ({ ...v, category: e.target.value as VideoCategory }))
  }
- >
- {ALLOWED_VIDEO_CATEGORIES.map((cat) => (
- <option key={cat} value={cat}>
- {cat}
- </option>
- ))}
- </select>
+ options={ALLOWED_VIDEO_CATEGORIES.map((cat) => ({ value: cat, label: cat }))}
+ />
  </div>
  <div>
  <label className={labelCls}>Published Date</label>
@@ -1814,7 +1891,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  Biodiversity Records
  </p>
  <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight mt-1 text-foreground">
- Species &amp; Habitats
+ Species &amp; Locations
  </h2>
  </div>
  <div className="inline-flex rounded-md border border-border hover:bg-secondary bg-card p-1">
@@ -1834,7 +1911,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  wildlifeSubTab === 'locations' ? 'bg-primary text-white' : 'text-muted-foreground'
  }`}
  >
- Habitats ({locations.length})
+ Locations ({locations.length})
  </button>
  </div>
  </div>
@@ -1888,9 +1965,8 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  />
  </div>
  <div>
- <label className={labelCls}>Conservation Status</label>
- <select
- className={inputCls}
+ <Select
+ label="Conservation Status"
  value={speciesDraft.conservationStatus}
  onChange={(e) =>
  setSpeciesDraft((s) => ({
@@ -1898,13 +1974,8 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  conservationStatus: e.target.value as ConservationStatus,
  }))
  }
- >
- {ALLOWED_CONSERVATION_STATUSES.map((st) => (
- <option key={st} value={st}>
- {st}
- </option>
- ))}
- </select>
+ options={ALLOWED_CONSERVATION_STATUSES.map((st) => ({ value: st, label: st }))}
+ />
  </div>
  <div>
  <label className={labelCls}>Cover Image URL</label>
@@ -1981,7 +2052,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  >
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
  <div>
- <label className={labelCls}>Habitat Name *</label>
+ <label className={labelCls}>Location Name (e.g. Sundarbans) *</label>
  <input
  className={inputCls}
  value={locationDraft.name}
@@ -2037,7 +2108,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  disabled={busy}
  className="rounded-md bg-primary text-white hover:bg-primary/90 px-6 py-2.5 text-sm font-medium"
  >
- Save Habitat
+ Save Location
  </button>
  </form>
 
@@ -2062,7 +2133,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  type="button"
  onClick={() => setDeleteTarget({ type: 'habitat', id: loc.id, name: loc.name })}
  className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary text-red-600"
- aria-label="Delete habitat"
+ aria-label="Delete location"
  >
  <Trash2 className="w-3.5 h-3.5" />
  </button>
@@ -2075,19 +2146,254 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
  )}
 
- {/* 7. WEBSITE CONTENT */}
+ {/* 7. WEBSITE CONTENT & ABOUT */}
  {activeTab === 'content' && (
- <form onSubmit={handleSaveProfile} className="space-y-6">
+ <form onSubmit={handleSaveProfile} className="space-y-8">
+ <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground font-medium">
- Editorial Copy &amp; Channels
+ Photographer Bio, Equipment &amp; Brand
  </p>
  <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight mt-1 text-foreground">
- Website Content Management
+ About &amp; Studio Profile
  </h2>
  </div>
+ <button
+ type="submit"
+ disabled={busy}
+ className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 text-xs font-semibold tracking-wide transition-all disabled:opacity-50 cursor-pointer"
+ >
+ <Save className="w-4 h-4" />
+ Save All Changes
+ </button>
+ </div>
 
- <div className="bg-card border border-border rounded-md p-6 sm:p-7 space-y-5 ">
+ {/* 1. Photographer Identity & Portrait */}
+ <div className="bg-card border border-border rounded-md p-6 sm:p-7 space-y-6">
+ <h3 className="text-base font-serif font-bold text-foreground border-b border-border pb-3">
+ 1. Photographer Identity &amp; Portrait
+ </h3>
+ <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+ <div>
+ <label className={labelCls}>Photographer Name</label>
+ <input
+ className={inputCls}
+ value={profileDraft.photographerName}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, photographerName: e.target.value }))
+ }
+ placeholder="e.g. Razaul Hafiz Rahi"
+ />
+ </div>
+ <div>
+ <label className={labelCls}>Studio / Brand Name</label>
+ <input
+ className={inputCls}
+ value={profileDraft.brandName}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, brandName: e.target.value }))
+ }
+ placeholder="Wild Rahi"
+ />
+ </div>
+ <div>
+ <label className={labelCls}>Location Base</label>
+ <input
+ className={inputCls}
+ value={profileDraft.location}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, location: e.target.value }))
+ }
+ placeholder="e.g. Dhaka &amp; Sundarbans, Bangladesh"
+ />
+ </div>
+ </div>
+
+ <div>
+ <label className={labelCls}>Bio Headline</label>
+ <input
+ className={inputCls}
+ value={profileDraft.bioHeadline}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, bioHeadline: e.target.value }))
+ }
+ placeholder="e.g. Documenting the Vanishing Wilderness of Bangladesh"
+ />
+ </div>
+
+ <div>
+ <label className={labelCls}>Bio Summary (About Page Intro)</label>
+ <textarea
+ rows={3}
+ className={inputCls}
+ value={profileDraft.bioSummary}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, bioSummary: e.target.value }))
+ }
+ placeholder="Comprehensive narrative bio of your wildlife journey..."
+ />
+ </div>
+
+ {/* Portrait Image with Preview & Upload */}
+ <div className="space-y-3 pt-2">
+ <label className={labelCls}>Photographer Portrait Image *</label>
+ <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+ <div className="md:col-span-8">
+ <input
+ className={inputCls}
+ value={profileDraft.portraitUrl}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, portraitUrl: e.target.value }))
+ }
+ placeholder="https://... or upload local portrait photo"
+ />
+ </div>
+ <div className="md:col-span-4 flex items-center gap-3">
+ <label className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer transition-colors">
+ <Upload className="w-3.5 h-3.5" />
+ Upload Portrait
+ <input
+ type="file"
+ accept="image/*"
+ className="hidden"
+ onChange={async (e) => {
+ const file = e.target.files?.[0];
+ if (!file) return;
+ try {
+ const dataUrl = await readImageFileAsDataUrl(file);
+ setProfileDraft((p) => ({ ...p, portraitUrl: dataUrl }));
+ notify('Portrait image loaded successfully.');
+ } catch (err) {
+ notify(err instanceof Error ? err.message : 'Upload failed', 'err');
+ }
+ }}
+ />
+ </label>
+ {profileDraft.portraitUrl && (
+ <div className="w-12 h-12 rounded-md border border-border overflow-hidden shrink-0 bg-muted">
+ <img
+ src={profileDraft.portraitUrl}
+ alt="Portrait preview"
+ className="w-full h-full object-cover"
+ />
+ </div>
+ )}
+ </div>
+ </div>
+ </div>
+ </div>
+
+ {/* 2. Field Narrative & Philosophy */}
+ <div className="bg-card border border-border rounded-md p-6 sm:p-7 space-y-6">
+ <h3 className="text-base font-serif font-bold text-foreground border-b border-border pb-3">
+ 2. Field Narrative &amp; Conservation Ethics (About Page)
+ </h3>
+
+ <div>
+ <label className={labelCls}>Field Journey Note (How Wild Rahi Began)</label>
+ <textarea
+ rows={3}
+ className={inputCls}
+ value={profileDraft.journeyNote}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, journeyNote: e.target.value }))
+ }
+ placeholder="Explain how your early explorations turned into Wild Rahi..."
+ />
+ </div>
+
+ <div>
+ <label className={labelCls}>Why Wildlife Matters (Biodiversity &amp; Awareness)</label>
+ <textarea
+ rows={3}
+ className={inputCls}
+ value={profileDraft.whyWildlifeMatters}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, whyWildlifeMatters: e.target.value }))
+ }
+ placeholder="Why documenting Bangladesh's flora and fauna is critical..."
+ />
+ </div>
+
+ <div>
+ <label className={labelCls}>Photographic Philosophy &amp; Ethics</label>
+ <textarea
+ rows={3}
+ className={inputCls}
+ value={profileDraft.philosophy}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, philosophy: e.target.value }))
+ }
+ placeholder="Strict non-intrusive wildlife photography guidelines and ethics..."
+ />
+ </div>
+ </div>
+
+ {/* 3. Field Equipment & Studio Details */}
+ <div className="bg-card border border-border rounded-md p-6 sm:p-7 space-y-6">
+ <h3 className="text-base font-serif font-bold text-foreground border-b border-border pb-3">
+ 3. Field Equipment &amp; Credentials
+ </h3>
+
+ <div>
+ <label className={labelCls}>Field Equipment &amp; Optical Setup</label>
+ <textarea
+ rows={3}
+ className={inputCls}
+ value={profileDraft.equipmentNote}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, equipmentNote: e.target.value }))
+ }
+ placeholder="List your primary cameras, long telephoto primes, hides, and audio gear..."
+ />
+ </div>
+
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+ <div>
+ <label className={labelCls}>Exhibitions &amp; Collaborations</label>
+ <textarea
+ rows={3}
+ className={inputCls}
+ value={profileDraft.achievementsNote}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, achievementsNote: e.target.value }))
+ }
+ placeholder="Past gallery exhibitions, IUCN features, book publications..."
+ />
+ </div>
+ <div>
+ <label className={labelCls}>Archival Fine-Art Prints Note</label>
+ <textarea
+ rows={3}
+ className={inputCls}
+ value={profileDraft.printSpecsNote || ''}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, printSpecsNote: e.target.value }))
+ }
+ placeholder="Print paper, archival inks, Hahnemühle cotton rag specs..."
+ />
+ </div>
+ </div>
+
+ <div>
+ <label className={labelCls}>Editorial &amp; Conservation Licensing Note</label>
+ <input
+ className={inputCls}
+ value={profileDraft.licensingNote || ''}
+ onChange={(e) =>
+ setProfileDraft((p) => ({ ...p, licensingNote: e.target.value }))
+ }
+ placeholder="Licensing terms for researchers, NGOs, and publications..."
+ />
+ </div>
+ </div>
+
+ {/* 4. Homepage Editorial Copy & Contact Email */}
+ <div className="bg-card border border-border rounded-md p-6 sm:p-7 space-y-5">
+ <h3 className="text-base font-serif font-bold text-foreground border-b border-border pb-3">
+ 4. Homepage Headline &amp; Conservation Statement
+ </h3>
+
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div>
  <label className={labelCls}>Hero Headline</label>
@@ -2145,7 +2451,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  />
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
  <div>
  <label className={labelCls}>Facebook URL</label>
  <input
@@ -2188,14 +2494,16 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
  </div>
 
+ <div className="pt-4">
  <button
  type="submit"
  disabled={busy}
- className="inline-flex items-center gap-2 rounded-md bg-primary text-white hover:bg-primary/90 px-7 py-2.5 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+ className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 px-7 py-2.5 text-xs font-semibold tracking-wide transition-all disabled:opacity-50 cursor-pointer"
  >
  <Save className="w-4 h-4" />
- Save Website Content
+ Save Website Content &amp; Profile
  </button>
+ </div>
  </div>
  </form>
  )}
@@ -2240,7 +2548,8 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
 
  <div className="flex items-center gap-2">
- <select
+ <div className="w-36">
+ <Select
  aria-label="Enquiry status"
  value={enq.status}
  onChange={async (e) => {
@@ -2249,15 +2558,16 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  e.target.value as EnquiryStatus,
  notesVal
  );
- notify('Enquiry status updated.');
+ notify('Message status updated.');
  }}
- className="rounded-md border border-border hover:bg-secondary bg-secondary px-3.5 py-1.5 text-xs font-medium capitalize"
- >
- <option value="new">New</option>
- <option value="reviewed">Reviewed</option>
- <option value="replied">Replied</option>
- <option value="archived">Archived</option>
- </select>
+ options={[
+ { value: 'new', label: 'New' },
+ { value: 'reviewed', label: 'Reviewed' },
+ { value: 'replied', label: 'Replied' },
+ { value: 'archived', label: 'Archived' },
+ ]}
+ />
+ </div>
  <button
  type="button"
  onClick={() => setDeleteTarget({ type: 'enquiry', id: enq.id, name: `${enq.name} (${enq.subject})` })}
@@ -2341,6 +2651,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  }
  }}
  />
+ </div>
  </main>
  </div>
  );

@@ -66,11 +66,11 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
             Featured Visual Sequence
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-semibold tracking-tight leading-[1.12]">
-            A Horizontal Journey Through Wild Habitats
+            A Visual Journey Across Wild Bangladesh
           </h2>
         </div>
         <p className="text-sm text-white/65 max-w-sm">
-          Select any plate to inspect full-resolution detail, habitat context, and field camera
+          Select any plate to inspect full-resolution detail, location context, and field camera
           notes.
         </p>
       </div>

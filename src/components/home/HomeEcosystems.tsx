@@ -14,10 +14,10 @@ export const HomeEcosystems: React.FC<HomeEcosystemsProps> = ({ locations }) => 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl space-y-3">
             <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-              Documented Ecosystems
+              Documented Locations
             </p>
             <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-serif font-bold tracking-tight leading-[1.12]">
-              Habitats of Bangladesh
+              Locations &amp; Wilderness of Bangladesh
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               From tidal mangrove creeks of the Sundarbans to monsoon wetlands and northeastern evergreen forests.
@@ -27,7 +27,7 @@ export const HomeEcosystems: React.FC<HomeEcosystemsProps> = ({ locations }) => 
             to="/wildlife"
             className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-secondary transition-colors self-start md:self-auto"
           >
-            Explore Habitats
+            Explore Locations
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

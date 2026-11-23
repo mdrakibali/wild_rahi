@@ -160,6 +160,7 @@ export class DatabaseRepository {
       }));
 
       const profile = profilesList[0];
+      const social = (profile?.socialLinks as Record<string, string>) || {};
       const mappedProfile: SiteProfile = profile
         ? {
             ...DEFAULT_PROFILE,
@@ -167,9 +168,22 @@ export class DatabaseRepository {
             bioSummary: profile.biography || DEFAULT_PROFILE.bioSummary,
             portraitUrl: profile.profileImage || DEFAULT_PROFILE.portraitUrl,
             contactEmail: profile.email || DEFAULT_PROFILE.contactEmail,
-            facebookUrl: (profile.socialLinks as Record<string, string>)?.facebook || DEFAULT_PROFILE.facebookUrl,
-            instagramUrl: (profile.socialLinks as Record<string, string>)?.instagram || '',
-            youtubeUrl: (profile.socialLinks as Record<string, string>)?.youtube || '',
+            facebookUrl: social.facebook || DEFAULT_PROFILE.facebookUrl,
+            instagramUrl: social.instagram || '',
+            youtubeUrl: social.youtube || '',
+            tiktokUrl: social.tiktok || '',
+            bioHeadline: social.bioHeadline || DEFAULT_PROFILE.bioHeadline,
+            location: social.location || DEFAULT_PROFILE.location,
+            equipmentNote: social.equipmentNote || DEFAULT_PROFILE.equipmentNote,
+            journeyNote: social.journeyNote || DEFAULT_PROFILE.journeyNote,
+            whyWildlifeMatters: social.whyWildlifeMatters || DEFAULT_PROFILE.whyWildlifeMatters,
+            philosophy: social.philosophy || DEFAULT_PROFILE.philosophy,
+            achievementsNote: social.achievementsNote || DEFAULT_PROFILE.achievementsNote,
+            printSpecsNote: social.printSpecsNote || DEFAULT_PROFILE.printSpecsNote,
+            licensingNote: social.licensingNote || DEFAULT_PROFILE.licensingNote,
+            heroHeadline: social.heroHeadline || DEFAULT_PROFILE.heroHeadline,
+            heroSubheadline: social.heroSubheadline || DEFAULT_PROFILE.heroSubheadline,
+            introBody: social.introBody || DEFAULT_PROFILE.introBody,
             conservationStatement: profile.conservationContent || DEFAULT_PROFILE.conservationStatement,
           }
         : DEFAULT_PROFILE;

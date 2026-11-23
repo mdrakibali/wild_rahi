@@ -38,6 +38,7 @@ import {
  X,
 } from 'lucide-react';
 import { sanitizeArticleHtml } from '../../lib/sanitizeHtml';
+import { Select } from '../ui/Select';
 import { readImageFileAsDataUrl } from '../../lib/imageUpload';
 import type { ArticleLanguage } from '../../types/portfolio';
 
@@ -647,17 +648,17 @@ export const ArticleRichEditor: React.FC<ArticleRichEditorProps> = ({
  placeholder="Alt text (accessibility)"
  className="bg-card border border-border px-3 py-2 text-sm"
  />
- <select
+ <Select
  value={imgLayout}
  onChange={(e) => setImgLayout(e.target.value as FigureLayout)}
- className="bg-card border border-border px-3 py-2 text-sm"
- >
- <option value="standard">Layout: Standard Column</option>
- <option value="wide">Layout: Wide Editorial Breakout</option>
- <option value="full">Layout: Full Width Plate</option>
- <option value="left">Layout: Left Aligned</option>
- <option value="right">Layout: Right Aligned</option>
- </select>
+ options={[
+ { value: 'standard', label: 'Layout: Standard Column' },
+ { value: 'wide', label: 'Layout: Wide Editorial Breakout' },
+ { value: 'full', label: 'Layout: Full Width Plate' },
+ { value: 'left', label: 'Layout: Left Aligned' },
+ { value: 'right', label: 'Layout: Right Aligned' },
+ ]}
+ />
  <input
  type="text"
  value={imgCaption}

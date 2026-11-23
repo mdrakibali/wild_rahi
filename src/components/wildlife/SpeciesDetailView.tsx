@@ -61,7 +61,7 @@ export const SpeciesDetailView: React.FC<SpeciesDetailViewProps> = ({
  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-border">
  <div className="bg-card p-4 rounded-md border border-border">
  <dt className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
- Habitat &amp; Region
+ Location &amp; Region
  </dt>
  <dd className="text-sm font-medium mt-1 text-foreground">
  {species.habitat} ({species.habitatRegion})
