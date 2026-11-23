@@ -7,14 +7,13 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 
 interface AdminSettingsProps {
-  databaseInfo: DatabaseInfo | null;
+  databaseInfo?: DatabaseInfo | null;
   usingDefaultCredentials?: boolean;
   onDownloadBackup: () => Promise<void>;
   onChangePassword: (currentPass: string, newPass: string) => Promise<void>;
 }
 
 export const AdminSettings: React.FC<AdminSettingsProps> = ({
-  databaseInfo,
   usingDefaultCredentials,
   onDownloadBackup,
   onChangePassword,
@@ -91,33 +90,6 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
           <p className="text-sm text-muted-foreground leading-relaxed">
             Wild Rahi is powered by PostgreSQL via Drizzle ORM configured through <code className="font-mono text-xs bg-secondary px-1.5 py-0.5 rounded">DATABASE_URL</code>, ensuring relational integrity and high-performance querying for your portfolio archive.
           </p>
-
-          {databaseInfo && (
-            <dl className="grid grid-cols-2 gap-3 text-xs bg-secondary/50 border border-border rounded-md p-4">
-              <div>
-                <dt className="text-muted-foreground">Active Engine</dt>
-                <dd className="font-semibold text-foreground mt-0.5">
-                  PostgreSQL (Drizzle ORM)
-                </dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground">Database State</dt>
-                <dd className="font-mono text-foreground mt-0.5">{databaseInfo.databaseName || 'Connected'}</dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground">Photographs / Articles</dt>
-                <dd className="font-mono text-foreground mt-0.5">
-                  {databaseInfo.collections.photographs} / {databaseInfo.collections.articles}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground">Videos / Enquiries</dt>
-                <dd className="font-mono text-foreground mt-0.5">
-                  {databaseInfo.collections.videos} / {databaseInfo.collections.enquiries}
-                </dd>
-              </div>
-            </dl>
-          )}
 
           <Button
             type="button"

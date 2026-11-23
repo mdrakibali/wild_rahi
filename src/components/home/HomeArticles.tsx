@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Link } from '@/lib/router-compat';
 import { ArrowRight } from 'lucide-react';
@@ -13,8 +15,8 @@ export const HomeArticles: React.FC<HomeArticlesProps> = ({ articles }) => {
 
   return (
     <section className="bg-card text-foreground py-20 lg:py-28 border-t border-border">
-      <div className="site-container">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div className="site-container space-y-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl space-y-3">
             <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
               Editorial Journal &middot; English &amp; বাংলা
@@ -35,13 +37,14 @@ export const HomeArticles: React.FC<HomeArticlesProps> = ({ articles }) => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+        {/* Responsive Hybrid: Swipeable on Mobile, 3-column Grid on md+ */}
+        <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-4 md:pb-0 no-scrollbar">
           {articles.slice(0, 3).map((article) => (
             <Link
               key={article.id}
               to={`/articles/${encodeURIComponent(article.slug)}`}
               lang={article.language}
-              className="flex flex-col border border-border bg-card rounded-md overflow-hidden"
+              className="shrink-0 w-[84vw] sm:w-[50vw] md:w-auto snap-start flex flex-col border border-border bg-card rounded-md overflow-hidden"
             >
               <div className="aspect-[16/10] overflow-hidden bg-muted">
                 <img
@@ -51,24 +54,24 @@ export const HomeArticles: React.FC<HomeArticlesProps> = ({ articles }) => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="p-6 flex-1 flex flex-col justify-between gap-5">
-                <div className="space-y-2.5">
+              <div className="p-5 flex-1 flex flex-col justify-between gap-4">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
                     <span>{article.category}</span>
                     <Badge variant="outline">
                       {article.language === 'bn' ? 'বাংলা' : 'English'}
                     </Badge>
                   </div>
-                  <h3 className="text-xl font-serif font-bold tracking-tight text-foreground leading-snug group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-serif font-bold tracking-tight text-foreground leading-snug">
                     {article.title}
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
                     {article.excerpt}
                   </p>
                 </div>
-                <div className="pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground font-mono">
+                <div className="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground font-mono">
                   <span>{article.publishedDate} &middot; {article.readTimeMinutes} min read</span>
-                  <span className="font-sans font-semibold text-primary">Read &rarr;</span>
+                  <span className="font-sans font-semibold text-foreground hover:underline">Read &rarr;</span>
                 </div>
               </div>
             </Link>
@@ -78,4 +81,3 @@ export const HomeArticles: React.FC<HomeArticlesProps> = ({ articles }) => {
     </section>
   );
 };
-

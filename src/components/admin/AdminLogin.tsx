@@ -3,15 +3,22 @@
 import React, { useState } from 'react';
 import { Link } from '@/lib/router-compat';
 import { ArrowLeft, Lock, LogIn, Mail } from 'lucide-react';
+import type { DatabaseInfo } from '../../types/portfolio';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 
-interface AdminLoginProps {
-  onSignIn: (email: string, pass: string) => Promise<void>;
+export interface AdminLoginProps {
+  onSignIn: (email: string, password: string) => Promise<void>;
+  databaseInfo?: DatabaseInfo | null;
+  usingDefaultCredentials?: boolean;
 }
 
-export const AdminLogin: React.FC<AdminLoginProps> = ({ onSignIn }) => {
-  const [email, setEmail] = useState('');
+export const AdminLogin: React.FC<AdminLoginProps> = ({
+  onSignIn,
+  databaseInfo: _databaseInfo,
+  usingDefaultCredentials,
+}) => {
+  const [email, setEmail] = useState(usingDefaultCredentials ? 'admin@wildrahi.com' : '');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
