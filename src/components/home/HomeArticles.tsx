@@ -28,7 +28,7 @@ export const HomeArticles: React.FC<HomeArticlesProps> = ({ articles }) => {
           </div>
           <Link
             to="/articles"
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-primary hover:text-white transition-colors self-start md:self-auto shadow-2xs"
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2 text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-secondary transition-colors self-start md:self-auto"
           >
             Read All Articles
             <ArrowRight className="w-4 h-4" />
@@ -41,14 +41,14 @@ export const HomeArticles: React.FC<HomeArticlesProps> = ({ articles }) => {
               key={article.id}
               to={`/articles/${encodeURIComponent(article.slug)}`}
               lang={article.language}
-              className="group flex flex-col border border-border bg-card rounded-lg overflow-hidden hover:border-primary/40 transition-all shadow-xs hover:shadow-md"
+              className="flex flex-col border border-border bg-card rounded-md overflow-hidden"
             >
               <div className="aspect-[16/10] overflow-hidden bg-muted">
                 <img
                   src={article.coverImageUrl}
                   alt={article.title}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="p-6 flex-1 flex flex-col justify-between gap-5">

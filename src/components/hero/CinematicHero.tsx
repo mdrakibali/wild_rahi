@@ -86,7 +86,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({
           <div className="hero-stagger pt-3 flex flex-wrap items-center gap-3.5">
             <Link
               to="/photography"
-              className="inline-flex items-center gap-2.5 rounded-md bg-card text-obsidian px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-muted transition-colors shadow-sm"
+              className="inline-flex items-center gap-2.5 rounded-md bg-card text-obsidian px-7 py-3.5 text-sm sm:text-[15px] font-medium hover:bg-muted transition-colors"
             >
               Explore Photography
               <ArrowRight className="w-4 h-4" />

@@ -45,15 +45,15 @@ export const HomeVideos: React.FC<HomeVideosProps> = ({ videos, onSelectVideo })
                 className="text-left focus:outline-none flex-1 flex flex-col cursor-pointer"
                 aria-label={`Play video: ${vid.title}`}
               >
-                <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden bg-surface-dark border border-white/10">
+                <div className="relative aspect-[16/10] w-full rounded-md overflow-hidden bg-surface-dark border border-white/10">
                   <img
                     src={vid.thumbnailUrl}
                     alt={vid.title}
                     loading="lazy"
-                    className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    className="w-full h-full object-cover opacity-90 rounded-md"
                   />
-                  <div className="absolute inset-0 bg-obsidian/30 group-hover:bg-obsidian/10 transition-colors flex items-center justify-center">
-                    <span className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-obsidian transition-transform duration-300 group-hover:scale-105 shadow-md">
+                  <div className="absolute inset-0 bg-obsidian/30 flex items-center justify-center">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-white text-obsidian">
                       <Play className="w-4 h-4 ml-0.5 fill-current" />
                     </span>
                   </div>

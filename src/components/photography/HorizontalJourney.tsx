@@ -90,14 +90,14 @@ export const HorizontalJourney: React.FC<HorizontalJourneyProps> = ({
               className="block w-full text-left focus:outline-none"
               aria-label={`Open ${photo.title} in lightbox`}
             >
-              <div className="relative overflow-hidden bg-surface-dark aspect-[16/10]">
+              <div className="relative overflow-hidden bg-surface-dark aspect-[16/10] rounded-md">
                 <img
                   src={photo.imageUrl}
                   alt={photo.title}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  className="w-full h-full object-cover rounded-md"
                 />
-                <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-obsidian/80 text-white px-3.5 py-1.5 text-xs font-medium opacity-90 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-md bg-obsidian/80 text-white px-3 py-1 text-xs font-medium opacity-90 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                   <Expand className="w-3.5 h-3.5" />
                   View Plate
                 </span>
