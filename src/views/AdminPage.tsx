@@ -95,28 +95,30 @@ const NAV_TABS: Array<{ id: AdminTab; label: string; icon: React.ComponentType<{
 ];
 
 const emptyPhoto = (collections: Collection[], locations: HabitatLocation[], count: number): Photograph => ({
- id: '',
- title: '',
- caption: '',
- imageUrl: '',
- aspectRatio: '4:3',
- collectionId: collections[0]?.id || 'birds',
- speciesSlug: '',
- speciesName: '',
- locationSlug: locations[0]?.slug || 'sundarbans',
- locationName: locations[0]?.name || 'Sundarbans',
- camera: '',
- lens: '',
- focalLength: '',
- aperture: '',
- shutterSpeed: '',
- iso: '',
- year: `${new Date().toLocaleString('en-US', { month: 'short' })} ${new Date().getFullYear()}`,
- featured: false,
- inHorizontalJourney: false,
- published: true,
- isPlaceholder: false,
- sortOrder: count + 1,
+  id: "",
+  title: "",
+  caption: "",
+  imageUrl: "",
+  aspectRatio: "4:3",
+  collectionId: collections[0]?.id || "",
+  categorySlug: "mammals",
+  categoryName: "Mammals",
+  speciesSlug: "",
+  speciesName: "",
+  locationSlug: "sundarbans",
+  locationName: "Sundarbans",
+  camera: "",
+  lens: "",
+  focalLength: "",
+  aperture: "",
+  shutterSpeed: "",
+  iso: "",
+  year: String(new Date().getFullYear()),
+  featured: false,
+  inHorizontalJourney: false,
+  published: true,
+  isPlaceholder: false,
+  sortOrder: count + 1,
 });
 
 const emptyArticle = (): Article => ({
@@ -929,71 +931,89 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  )}
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div>
- <label className={labelCls}>Title *</label>
- <input
- className={inputCls}
- value={photoDraft.title}
- onChange={(e) => setPhotoDraft((p) => ({ ...p, title: e.target.value }))}
- placeholder="e.g. Dawn Over Sundarbans Creek"
- />
- </div>
- <div>
- <label className={labelCls}>Species Name</label>
- <input
- className={inputCls}
- value={photoDraft.speciesName}
- onChange={(e) => setPhotoDraft((p) => ({ ...p, speciesName: e.target.value }))}
- placeholder="e.g. Bengal Tiger"
- />
- </div>
- <div>
- <Select
- label="Category"
- value={photoDraft.collectionId}
- onChange={(e) => setPhotoDraft((p) => ({ ...p, collectionId: e.target.value }))}
- options={collections.map((c) => ({ value: c.id, label: c.title }))}
- />
- </div>
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label className={labelCls}>Title *</label>
+              <input
+                className={inputCls}
+                value={photoDraft.title}
+                onChange={(e) => setPhotoDraft((p) => ({ ...p, title: e.target.value }))}
+                placeholder="e.g. Dawn Over Sundarbans Creek"
+              />
+            </div>
+            <div>
+              <Select
+                label="Subject Category *"
+                value={photoDraft.categorySlug || "mammals"}
+                onChange={(e) => {
+                  const catSlug = e.target.value;
+                  const cat = ADMIN_SUBJECT_CATEGORIES.find((c) => c.id === catSlug);
+                  setPhotoDraft((p) => ({
+                    ...p,
+                    categorySlug: catSlug,
+                    categoryName: cat?.label.split(" ")[0] || catSlug,
+                  }));
+                }}
+                options={ADMIN_SUBJECT_CATEGORIES.map((c) => ({
+                  value: c.id,
+                  label: c.label,
+                }))}
+              />
+            </div>
+            <div>
+              <Select
+                label="Assign to Album (Optional)"
+                value={photoDraft.collectionId}
+                onChange={(e) =>
+                  setPhotoDraft((p) => ({
+                    ...p,
+                    collectionId: e.target.value,
+                    albumId: e.target.value,
+                  }))
+                }
+                options={[
+                  { value: "", label: "None (Standalone Gallery Plate)" },
+                  ...collections.map((c) => ({ value: c.id, label: c.title })),
+                ]}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Location (Type freely)</label>
+              <input
+                className={inputCls}
+                value={photoDraft.locationName}
+                onChange={(e) =>
+                  setPhotoDraft((p) => ({
+                    ...p,
+                    locationName: e.target.value,
+                    locationSlug: toSafeSlug(e.target.value) || "field",
+                  }))
+                }
+                placeholder="e.g. Sundarbans, Lawachara, Sylhet"
+              />
+            </div>
+          </div>
 
- <div>
- <Select
- label="Photo Location"
- value={photoDraft.locationSlug}
- onChange={(e) => {
- const loc = locations.find((l) => l.slug === e.target.value);
- setPhotoDraft((p) => ({
- ...p,
- locationSlug: e.target.value,
- locationName: loc?.name || p.locationName,
- }));
- }}
- options={locations.map((l) => ({ value: l.slug, label: l.name }))}
- />
- </div>
-
- <div>
- <Select
- label="Aspect Ratio"
- value={photoDraft.aspectRatio}
- onChange={(e) =>
- setPhotoDraft((p) => ({ ...p, aspectRatio: e.target.value as AspectRatio }))
- }
- options={ALLOWED_ASPECT_RATIOS.map((r) => ({ value: r, label: r }))}
- />
- </div>
-
- <div>
- <label className={labelCls}>Month &amp; Year</label>
- <input
- className={inputCls}
- value={photoDraft.year}
- placeholder="e.g. Feb 2026 or 2026"
- onChange={(e) => setPhotoDraft((p) => ({ ...p, year: e.target.value }))}
- />
- </div>
- </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>Species Name (Optional)</label>
+              <input
+                className={inputCls}
+                value={photoDraft.speciesName}
+                onChange={(e) => setPhotoDraft((p) => ({ ...p, speciesName: e.target.value }))}
+                placeholder="e.g. Bengal Tiger (Panthera tigris)"
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Field Year / Date</label>
+              <input
+                className={inputCls}
+                value={photoDraft.year}
+                placeholder="e.g. 2026 or Feb 2026"
+                onChange={(e) => setPhotoDraft((p) => ({ ...p, year: e.target.value }))}
+              />
+            </div>
+          </div>
 
  <div className="space-y-1">
  <ImageDropzone
@@ -1461,51 +1481,27 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  />
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
- <div className="md:col-span-5">
- <label className={labelCls}>Cover Image URL *</label>
- <input
- className={inputCls}
- value={articleDraft.coverImageUrl}
- onChange={(e) =>
- setArticleDraft((a) => ({ ...a, coverImageUrl: e.target.value }))
- }
- placeholder="https://... or upload image"
- />
- </div>
- <div className="md:col-span-4">
- <label className={labelCls}>Cover Caption</label>
- <input
- className={inputCls}
- value={articleDraft.coverCaption || ''}
- onChange={(e) =>
- setArticleDraft((a) => ({ ...a, coverCaption: e.target.value }))
- }
- placeholder="Optional cover credit or location note"
- />
- </div>
- <div className="md:col-span-3">
- <label className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
- <Upload className="w-3.5 h-3.5" />
- Upload Cover
- <input
- type="file"
- accept="image/*"
- className="hidden"
- onChange={async (e) => {
- const file = e.target.files?.[0];
- if (!file) return;
- try {
- const dataUrl = await readImageFileAsDataUrl(file);
- setArticleDraft((a) => ({ ...a, coverImageUrl: dataUrl }));
- } catch (err) {
- notify(err instanceof Error ? err.message : 'Upload failed', 'err');
- }
- }}
- />
- </label>
- </div>
- </div>
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            <div>
+              <ImageDropzone
+                label="Article Cover Image (Direct Upload to Storage) *"
+                value={articleDraft.coverImageUrl}
+                onChange={(url) => setArticleDraft((a) => ({ ...a, coverImageUrl: url }))}
+                folder="articles"
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Cover Caption</label>
+              <input
+                className={inputCls}
+                value={articleDraft.coverCaption || ""}
+                onChange={(e) =>
+                  setArticleDraft((a) => ({ ...a, coverCaption: e.target.value }))
+                }
+                placeholder="Optional cover credit or location note"
+              />
+            </div>
+          </div>
 
  {/* Tiptap Rich Text Editor */}
  <div>
@@ -1771,38 +1767,27 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
- <div className="md:col-span-9">
- <label className={labelCls}>Custom Thumbnail URL (auto-filled for YouTube)</label>
- <input
- className={inputCls}
- value={videoDraft.thumbnailUrl}
- onChange={(e) => setVideoDraft((v) => ({ ...v, thumbnailUrl: e.target.value }))}
- placeholder="https://... or upload cover frame"
- />
- </div>
- <div className="md:col-span-3">
- <label className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-border hover:bg-secondary px-4 py-2 text-xs font-medium cursor-pointer hover:bg-secondary">
- <Upload className="w-3.5 h-3.5" />
- Upload Thumbnail
- <input
- type="file"
- accept="image/*"
- className="hidden"
- onChange={async (e) => {
- const file = e.target.files?.[0];
- if (!file) return;
- try {
- const dataUrl = await readImageFileAsDataUrl(file, 1200, 0.82);
- setVideoDraft((v) => ({ ...v, thumbnailUrl: dataUrl }));
- } catch (err) {
- notify(err instanceof Error ? err.message : 'Upload failed', 'err');
- }
- }}
- />
- </label>
- </div>
- </div>
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            <div>
+              <ImageDropzone
+                label="Article Cover Image (Direct Upload to Storage) *"
+                value={articleDraft.coverImageUrl}
+                onChange={(url) => setArticleDraft((a) => ({ ...a, coverImageUrl: url }))}
+                folder="articles"
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Cover Caption</label>
+              <input
+                className={inputCls}
+                value={articleDraft.coverCaption || ""}
+                onChange={(e) =>
+                  setArticleDraft((a) => ({ ...a, coverCaption: e.target.value }))
+                }
+                placeholder="Optional cover credit or location note"
+              />
+            </div>
+          </div>
 
  <div>
  <label className={labelCls}>Short Description</label>
@@ -1911,26 +1896,26 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  onSubmit={handleSaveCollection}
  className="bg-card border border-border rounded-md p-6 sm:p-7 space-y-4 "
  >
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div>
- <label className={labelCls}>Album Title *</label>
- <input
- className={inputCls}
- value={collectionDraft.title}
- onChange={(e) => setCollectionDraft((c) => ({ ...c, title: e.target.value }))}
- />
- </div>
- <div>
- <label className={labelCls}>Cover Image URL</label>
- <input
- className={inputCls}
- value={collectionDraft.coverImageUrl}
- onChange={(e) =>
- setCollectionDraft((c) => ({ ...c, coverImageUrl: e.target.value }))
- }
- />
- </div>
- </div>
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <div>
+              <label className={labelCls}>Album Title *</label>
+              <input
+                className={inputCls}
+                value={collectionDraft.title}
+                onChange={(e) => setCollectionDraft((c) => ({ ...c, title: e.target.value }))}
+                placeholder="e.g. Wild Horses of Padma Char, Sundarbans Expedition"
+              />
+            </div>
+            <div>
+              <ImageDropzone
+                label="Album Main Cover Image *"
+                value={collectionDraft.coverImageUrl}
+                onChange={(url) => setCollectionDraft((c) => ({ ...c, coverImageUrl: url }))}
+                folder="albums"
+                helperText="Upload the main hero/cover photo for this album."
+              />
+            </div>
+          </div>
  <div>
  <label className={labelCls}>Description</label>
  <textarea
@@ -1951,7 +1936,78 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </button>
  </form>
 
- <div className="bg-card border border-border divide-y divide-border">
+        {/* Batch Upload Child Photos directly to Selected Album */}
+        <div className="bg-card border border-border rounded-xl p-6 sm:p-7 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+            <div>
+              <h3 className="text-base font-serif font-bold text-foreground">
+                Upload Child Photos to Album
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Drop 10-20 photos at once. They will be saved to Supabase Storage and automatically added as child photos inside the selected album.
+              </p>
+            </div>
+            <div className="w-full sm:w-64">
+              <Select
+                label="Target Album"
+                value={batchAlbumId}
+                onChange={(e) => setBatchAlbumId(e.target.value)}
+                options={collections.map((col) => ({
+                  value: col.id,
+                  label: col.title,
+                }))}
+              />
+            </div>
+          </div>
+
+          <ImageDropzone
+            multiple={true}
+            folder="photographs"
+            onMultipleUpload={handleBatchAlbumUpload}
+            helperText="Drag & drop multiple high-res photos. They will be uploaded and added as child photos inside the selected album."
+          />
+
+          {/* Show Child Photos currently in this Album */}
+          {(() => {
+            const albumPhotos = photographs.filter((p) => p.collectionId === batchAlbumId);
+            return (
+              <div className="pt-4 border-t border-border space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Child Photos in this Album ({albumPhotos.length})
+                  </span>
+                </div>
+                {albumPhotos.length === 0 ? (
+                  <p className="text-xs text-muted-foreground italic py-3">
+                    No child photos in this album yet. Drop multiple photos above to add them!
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-8 gap-2.5 max-h-64 overflow-y-auto p-1 border border-border rounded-lg bg-secondary/30">
+                    {albumPhotos.map((p) => (
+                      <div
+                        key={p.id}
+                        className="group relative aspect-square rounded-md overflow-hidden bg-muted border border-border"
+                      >
+                        <img
+                          src={p.imageUrl}
+                          alt={p.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-1">
+                          <p className="text-[10px] text-white font-medium text-center line-clamp-2">
+                            {p.title}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+
+        <div className="bg-card border border-border divide-y divide-border">
  {collections.map((col) => (
  <div key={col.id} className="p-4 flex items-center justify-between gap-4">
  <div className="flex items-center gap-4 min-w-0">
@@ -2083,16 +2139,14 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  options={ALLOWED_CONSERVATION_STATUSES.map((st) => ({ value: st, label: st }))}
  />
  </div>
- <div>
- <label className={labelCls}>Cover Image URL</label>
- <input
- className={inputCls}
- value={speciesDraft.coverImageUrl}
- onChange={(e) =>
- setSpeciesDraft((s) => ({ ...s, coverImageUrl: e.target.value }))
- }
- />
- </div>
+ <div className="md:col-span-2">
+              <ImageDropzone
+                label="Species Cover Photo (Direct Upload)"
+                value={speciesDraft.coverImageUrl}
+                onChange={(url) => setSpeciesDraft((s) => ({ ...s, coverImageUrl: url }))}
+                folder="species"
+              />
+            </div>
  </div>
  <div>
  <label className={labelCls}>Ecological Description</label>
@@ -2114,7 +2168,78 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </button>
  </form>
 
- <div className="bg-card border border-border divide-y divide-border">
+        {/* Batch Upload Child Photos directly to Selected Album */}
+        <div className="bg-card border border-border rounded-xl p-6 sm:p-7 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+            <div>
+              <h3 className="text-base font-serif font-bold text-foreground">
+                Upload Child Photos to Album
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Drop 10-20 photos at once. They will be saved to Supabase Storage and automatically added as child photos inside the selected album.
+              </p>
+            </div>
+            <div className="w-full sm:w-64">
+              <Select
+                label="Target Album"
+                value={batchAlbumId}
+                onChange={(e) => setBatchAlbumId(e.target.value)}
+                options={collections.map((col) => ({
+                  value: col.id,
+                  label: col.title,
+                }))}
+              />
+            </div>
+          </div>
+
+          <ImageDropzone
+            multiple={true}
+            folder="photographs"
+            onMultipleUpload={handleBatchAlbumUpload}
+            helperText="Drag & drop multiple high-res photos. They will be uploaded and added as child photos inside the selected album."
+          />
+
+          {/* Show Child Photos currently in this Album */}
+          {(() => {
+            const albumPhotos = photographs.filter((p) => p.collectionId === batchAlbumId);
+            return (
+              <div className="pt-4 border-t border-border space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Child Photos in this Album ({albumPhotos.length})
+                  </span>
+                </div>
+                {albumPhotos.length === 0 ? (
+                  <p className="text-xs text-muted-foreground italic py-3">
+                    No child photos in this album yet. Drop multiple photos above to add them!
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-8 gap-2.5 max-h-64 overflow-y-auto p-1 border border-border rounded-lg bg-secondary/30">
+                    {albumPhotos.map((p) => (
+                      <div
+                        key={p.id}
+                        className="group relative aspect-square rounded-md overflow-hidden bg-muted border border-border"
+                      >
+                        <img
+                          src={p.imageUrl}
+                          alt={p.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-1">
+                          <p className="text-[10px] text-white font-medium text-center line-clamp-2">
+                            {p.title}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+
+        <div className="bg-card border border-border divide-y divide-border">
  {species.map((sp) => (
  <div key={sp.id} className="p-4 flex items-center justify-between gap-4">
  <div>
@@ -2189,15 +2314,13 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </div>
  </div>
  <div>
- <label className={labelCls}>Cover Image URL</label>
- <input
- className={inputCls}
- value={locationDraft.coverImageUrl}
- onChange={(e) =>
- setLocationDraft((l) => ({ ...l, coverImageUrl: e.target.value }))
- }
- />
- </div>
+              <ImageDropzone
+                label="Location Cover Photo (Direct Upload)"
+                value={locationDraft.coverImageUrl}
+                onChange={(url) => setLocationDraft((l) => ({ ...l, coverImageUrl: url }))}
+                folder="locations"
+              />
+            </div>
  <div>
  <label className={labelCls}>Description</label>
  <textarea
@@ -2218,7 +2341,9 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
  </button>
  </form>
 
- <div className="bg-card border border-border divide-y divide-border">
+        
+
+        <div className="bg-card border border-border divide-y divide-border">
  {locations.map((loc) => (
  <div key={loc.id} className="p-4 flex items-center justify-between gap-4">
  <div>
