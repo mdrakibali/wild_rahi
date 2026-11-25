@@ -5,12 +5,21 @@ import { useSearchParams } from '@/lib/router-compat';
 import { usePortfolio } from '../context/PortfolioContext';
 import { PhotoCard } from '../components/photography/PhotoCard';
 
+const SUBJECT_CATEGORIES = [
+  { id: 'all', label: 'All Plates' },
+  { id: 'mammals', label: 'Mammals' },
+  { id: 'birds', label: 'Birds' },
+  { id: 'reptiles', label: 'Reptiles & Amphibians' },
+  { id: 'landscapes', label: 'Landscapes & Habitats' },
+  { id: 'insects', label: 'Macro & Insects' },
+];
+
 export const GalleryPage: React.FC = () => {
-  const { photographs, collections } = usePortfolio();
+  const { photographs } = usePortfolio();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [collectionId, setCollectionId] = useState<string>(
-    searchParams.get('collection') || 'all'
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    searchParams.get('category') || searchParams.get('collection') || 'all'
   );
 
   useEffect(() => {
@@ -18,22 +27,89 @@ export const GalleryPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const c = searchParams.get('collection');
-    if (c) setCollectionId(c);
+    const c = searchParams.get('category') || searchParams.get('collection');
+    if (c) setSelectedCategory(c);
   }, [searchParams]);
 
-  // Pure category-based filtering (no search or location required)
+  // Subject-based taxonomy filtering
   const filteredPhotos = useMemo(() => {
     const published = photographs.filter((p) => p.published);
-    if (collectionId === 'all') return published;
-    return published.filter((p) => p.collectionId === collectionId);
-  }, [photographs, collectionId]);
+    if (selectedCategory === 'all') return published;
 
-  const updateCollection = (next: string) => {
-    setCollectionId(next);
+    return published.filter((p) => {
+      const slug = p.categorySlug?.toLowerCase() || '';
+      const name = p.categoryName?.toLowerCase() || '';
+      const colId = p.collectionId?.toLowerCase() || '';
+      const title = p.title?.toLowerCase() || '';
+      const spec = p.speciesName?.toLowerCase() || '';
+
+      if (selectedCategory === 'mammals') {
+        return (
+          slug === 'mammals' ||
+          name.includes('mammal') ||
+          colId.includes('mammal') ||
+          spec.includes('tiger') ||
+          spec.includes('cat') ||
+          spec.includes('deer')
+        );
+      }
+      if (selectedCategory === 'birds') {
+        return (
+          slug === 'birds' ||
+          name.includes('bird') ||
+          name.includes('avian') ||
+          colId.includes('bird') ||
+          spec.includes('kingfisher') ||
+          spec.includes('bird')
+        );
+      }
+      if (selectedCategory === 'reptiles') {
+        return (
+          slug === 'reptiles' ||
+          name.includes('reptile') ||
+          colId.includes('reptile') ||
+          spec.includes('viper') ||
+          spec.includes('snake')
+        );
+      }
+      if (selectedCategory === 'landscapes') {
+        return (
+          slug === 'landscapes' ||
+          name.includes('landscape') ||
+          name.includes('wetland') ||
+          colId.includes('landscape') ||
+          title.includes('haor') ||
+          title.includes('sundarbans')
+        );
+      }
+      if (selectedCategory === 'insects') {
+        return (
+          slug === 'insects' ||
+          name.includes('insect') ||
+          name.includes('macro') ||
+          colId.includes('insect') ||
+          spec.includes('butterfly') ||
+          spec.includes('mormon')
+        );
+      }
+
+      return (
+        p.collectionId === selectedCategory ||
+        p.categorySlug === selectedCategory ||
+        p.albumId === selectedCategory
+      );
+    });
+  }, [photographs, selectedCategory]);
+
+  const updateCategory = (next: string) => {
+    setSelectedCategory(next);
     const params = new URLSearchParams(searchParams);
-    if (next === 'all') params.delete('collection');
-    else params.set('collection', next);
+    if (next === 'all') {
+      params.delete('category');
+      params.delete('collection');
+    } else {
+      params.set('category', next);
+    }
     setSearchParams(params, { replace: true });
   };
 
@@ -49,38 +125,27 @@ export const GalleryPage: React.FC = () => {
             Wildlife Gallery
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            High-resolution natural-light wildlife plates. Click any image to view full screen with lens and camera details.
+            High-resolution natural-light wildlife plates across Bangladesh. Click any image to view full screen with lens and camera details.
           </p>
         </div>
       </section>
 
-      {/* Category Filter Bar Only */}
+      {/* Clear Universal Category Filter Bar */}
       <section className="bg-card border-b border-border sticky top-20 z-20">
         <div className="site-container py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => updateCollection('all')}
-              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer ${
-                collectionId === 'all'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-foreground hover:bg-muted'
-              }`}
-            >
-              All Plates
-            </button>
-            {collections.map((col) => (
+            {SUBJECT_CATEGORIES.map((cat) => (
               <button
-                key={col.id}
+                key={cat.id}
                 type="button"
-                onClick={() => updateCollection(col.id)}
+                onClick={() => updateCategory(cat.id)}
                 className={`rounded-md px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer ${
-                  collectionId === col.id
-                    ? 'bg-primary text-primary-foreground'
+                  selectedCategory === cat.id
+                    ? 'bg-primary text-primary-foreground shadow-xs'
                     : 'bg-secondary text-foreground hover:bg-muted'
                 }`}
               >
-                {col.title}
+                {cat.label}
               </button>
             ))}
           </div>
@@ -91,17 +156,17 @@ export const GalleryPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 4-Column Dynamic CSS Grid (Col 4, Row 1 Bento Style) */}
+      {/* Gapless Responsive Column Masonry */}
       <section className="site-container py-10 lg:py-16">
         {filteredPhotos.length === 0 ? (
-          <div className="py-20 text-center space-y-4 bg-secondary border border-border rounded-md p-8 max-w-xl mx-auto">
+          <div className="py-20 text-center space-y-4 bg-secondary border border-border rounded-xl p-8 max-w-xl mx-auto">
             <h2 className="text-2xl font-serif font-bold text-foreground">No plates found in this category</h2>
             <p className="text-xs sm:text-sm text-muted-foreground">
               Select another category or view all plates.
             </p>
             <button
               type="button"
-              onClick={() => updateCollection('all')}
+              onClick={() => updateCategory('all')}
               className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 px-5 py-2 text-xs font-semibold uppercase tracking-wider cursor-pointer"
             >
               Show All Plates

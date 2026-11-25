@@ -46,6 +46,9 @@ export interface Photograph {
   imageUrl: string;
   aspectRatio: AspectRatio;
   collectionId: string;
+  categorySlug?: string;
+  categoryName?: string;
+  albumId?: string;
   speciesSlug: string;
   speciesName: string;
   locationSlug: string;

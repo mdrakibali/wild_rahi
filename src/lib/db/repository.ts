@@ -38,6 +38,7 @@ export class DatabaseRepository {
         articlesList,
         videosList,
         profilesList,
+        categoriesList,
       ] = await Promise.all([
         db.select().from(photographs).orderBy(photographs.sortOrder),
         db.select().from(collections).orderBy(collections.sortOrder),
@@ -46,40 +47,48 @@ export class DatabaseRepository {
         db.select().from(articles).orderBy(desc(articles.publishedAt)),
         db.select().from(videos).orderBy(videos.sortOrder),
         db.select().from(siteProfiles).limit(1),
+        db.select().from(categories),
       ]);
 
       // Map to frontend types
-      const mappedPhotos: Photograph[] = photosList.map((p) => ({
-        id: p.id,
-        slug: p.slug || p.id,
-        title: p.title,
-        caption: p.description || '',
-        imageUrl: p.imageUrl,
-        aspectRatio: '4:3',
-        collectionId: p.categoryId || '',
-        speciesSlug: '',
-        speciesName: '',
-        locationSlug: '',
-        locationName: '',
-        camera: p.camera || '',
-        lens: p.lens || '',
-        focalLength: (p.settings as Record<string, string>)?.focalLength || '',
-        aperture: (p.settings as Record<string, string>)?.aperture || '',
-        shutterSpeed: (p.settings as Record<string, string>)?.shutterSpeed || '',
-        iso: (p.settings as Record<string, string>)?.iso || '',
-        year: p.photographedAt
-          ? `${new Date(p.photographedAt).toLocaleString('en-US', { month: 'short' })} ${new Date(p.photographedAt).getFullYear()}`
-          : 'Feb 2026',
-        month: p.photographedAt
-          ? new Date(p.photographedAt).toLocaleString('en-US', { month: 'long', year: 'numeric' })
-          : 'February 2026',
-        createdAt: p.createdAt ? p.createdAt.toISOString() : undefined,
-        featured: p.isFeatured,
-        inHorizontalJourney: p.isFeatured,
-        published: p.status === 'published',
-        isPlaceholder: false,
-        sortOrder: p.sortOrder,
-      }));
+      const mappedPhotos: Photograph[] = photosList.map((p) => {
+        const spec = speciesList.find((s) => s.id === p.speciesId);
+        const loc = locsList.find((l) => l.id === p.locationId);
+        const cat = categoriesList.find((c) => c.id === p.categoryId);
+        return {
+          id: p.id,
+          slug: p.slug || p.id,
+          title: p.title,
+          caption: p.description || '',
+          imageUrl: p.imageUrl,
+          aspectRatio: '4:3',
+          collectionId: p.categoryId || '',
+          categorySlug: cat?.slug || '',
+          categoryName: cat?.name || '',
+          speciesSlug: spec ? spec.scientificName.toLowerCase().replace(/\s+/g, '-') : '',
+          speciesName: spec?.commonName || spec?.scientificName || '',
+          locationSlug: loc ? loc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '',
+          locationName: loc?.name || '',
+          camera: p.camera || '',
+          lens: p.lens || '',
+          focalLength: (p.settings as Record<string, string>)?.focalLength || '',
+          aperture: (p.settings as Record<string, string>)?.aperture || '',
+          shutterSpeed: (p.settings as Record<string, string>)?.shutterSpeed || '',
+          iso: (p.settings as Record<string, string>)?.iso || '',
+          year: p.photographedAt
+            ? `${new Date(p.photographedAt).toLocaleString('en-US', { month: 'short' })} ${new Date(p.photographedAt).getFullYear()}`
+            : 'Feb 2026',
+          month: p.photographedAt
+            ? new Date(p.photographedAt).toLocaleString('en-US', { month: 'long', year: 'numeric' })
+            : 'February 2026',
+          createdAt: p.createdAt ? p.createdAt.toISOString() : undefined,
+          featured: p.isFeatured,
+          inHorizontalJourney: p.isFeatured,
+          published: p.status === 'published',
+          isPlaceholder: false,
+          sortOrder: p.sortOrder,
+        };
+      });
 
       const mappedCollections: Collection[] = colsList.map((c) => ({
         id: c.id,

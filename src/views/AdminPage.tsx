@@ -62,6 +62,15 @@ import type {
  VideoItem,
 } from '../types/portfolio';
 
+
+export const ADMIN_SUBJECT_CATEGORIES = [
+  { id: "mammals", label: "Mammals (বাঘ, হরিণ, মেছোবাঘ)" },
+  { id: "birds", label: "Birds (পাখি ও মাছরাঙা)" },
+  { id: "reptiles", label: "Reptiles & Amphibians (সাপ, ব্যাঙ)" },
+  { id: "landscapes", label: "Landscapes & Habitats (হাওর, বন, নদী)" },
+  { id: "insects", label: "Macro World (প্রজাপতি ও কীটপতঙ্গ)" },
+];
+
 export type AdminTab =
  | 'overview'
  | 'photographs'
