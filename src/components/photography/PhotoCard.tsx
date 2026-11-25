@@ -19,7 +19,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, classNam
 
   return (
     <div
-      className={`group relative rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer block w-full h-full bg-muted shadow-xs hover:shadow-xl transition-all duration-300 ${className}`}
+      className={`group relative rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer block w-full bg-muted shadow-xs hover:shadow-xl transition-all duration-300 break-inside-avoid ${className}`}
     >
       <a
         href={targetHref}
@@ -30,16 +30,16 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, classNam
             openPhotoModal(photo);
           }
         }}
-        className="block w-full h-full text-left focus:outline-none cursor-pointer relative"
+        className="block w-full text-left focus:outline-none cursor-pointer relative"
         aria-label={`Inspect ${photo.title} in lightbox`}
       >
-        {/* Photo Image Frame filling entire grid cell */}
-        <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-muted w-full h-full">
+        {/* Photo Image Frame displaying full natural aspect ratio */}
+        <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-muted w-full">
           <img
             src={photo.imageUrl}
             alt={photo.title}
             loading="lazy"
-            className="w-full h-full object-cover rounded-xl sm:rounded-2xl transition-transform duration-500 ease-out group-hover:scale-105"
+            className="w-full h-auto object-cover rounded-xl sm:rounded-2xl transition-transform duration-500 ease-out group-hover:scale-105"
           />
 
           {/* Hover Overlay - Clean Cinematic & Minimalist */}

@@ -93,29 +93,12 @@ export const AlbumDetailPage: React.FC<AlbumDetailPageProps> = ({ slug }) => {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5 auto-rows-[200px] sm:auto-rows-[230px] md:auto-rows-[260px] lg:auto-rows-[280px] grid-flow-dense">
-            {albumPhotos.map((photo, index) => {
-              // Dense mosaic styling matching Image 2
-              const isTall = photo.aspectRatio === '3:4' || index % 7 === 2;
-              const isWide =
-                photo.featured ||
-                photo.aspectRatio === '16:9' ||
-                index % 6 === 0 ||
-                index % 6 === 4;
-
-              let spanClass = 'col-span-1 row-span-1';
-              if (isTall) {
-                spanClass = 'col-span-1 row-span-1 sm:row-span-2';
-              } else if (isWide) {
-                spanClass = 'col-span-1 sm:col-span-2 row-span-1';
-              }
-
-              return (
-                <div key={photo.id} className={spanClass}>
-                  <PhotoCard photo={photo} />
-                </div>
-              );
-            })}
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 lg:gap-6 space-y-5 lg:space-y-6">
+            {albumPhotos.map((photo) => (
+              <div key={photo.id} className="break-inside-avoid">
+                <PhotoCard photo={photo} />
+              </div>
+            ))}
           </div>
         )}
       </section>
