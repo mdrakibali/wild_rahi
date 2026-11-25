@@ -53,3 +53,4 @@ export const HomeMasterWorks: React.FC<HomeMasterWorksProps> = ({ photographs })
     </section>
   );
 };
+

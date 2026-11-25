@@ -95,3 +95,4 @@ export const HomeAlbums: React.FC<HomeAlbumsProps> = ({
     </section>
   );
 };
+
