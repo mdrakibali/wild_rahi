@@ -194,12 +194,12 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
               Homepage About Portfolio Collage
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Upload multiple portfolio images for the Homepage About 2–3–3–2 grid. The first 10 appear in order; remaining slots fill automatically from published Gallery photos.
+              Upload up to 5 portfolio images for the Homepage About 2–3 collage grid. Remaining slots fill automatically from published Gallery photos.
             </p>
           </div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center rounded-lg border border-border bg-muted/60 px-2.5 py-1 text-[11px] font-medium text-foreground">
-              {Math.min(aboutImages.length, 10)} / 10 slots used
+              {Math.min(aboutImages.length, 5)} / 5 slots used
             </span>
             {aboutImages.length > 0 && (
               <button
@@ -217,7 +217,7 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
         <ImageDropzone
           multiple={true}
           folder="profile/about"
-          helperText="Drag & drop or select multiple images (JPEG, PNG, WebP · remembers click Save Profile below)"
+          helperText="Drag & drop or select images (JPEG, PNG, WebP · First 5 appear in Homepage About; click Save Profile to publish)"
           onMultipleUpload={(uploaded) => {
             const added = uploaded.map((u) => u.imageUrl);
             const merged = sanitizeImageUrlList([...aboutImages, ...added], 24);
@@ -240,13 +240,13 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
                 />
                 <span
                   className={`absolute top-1.5 left-1.5 rounded px-1.5 py-0.5 text-[10px] font-semibold tracking-wide ${
-                    idx < 10
+                    idx < 5
                       ? 'bg-black/70 text-white'
                       : 'bg-amber-500/90 text-black'
                   }`}
                 >
                   #{idx + 1}
-                  {idx >= 10 ? ' Reserve' : ''}
+                  {idx >= 5 ? ' Reserve' : ''}
                 </span>
                 <div className="absolute inset-x-0 bottom-0 p-1.5 bg-black/75 flex items-center justify-between gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
                   <div className="flex items-center gap-1">

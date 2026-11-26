@@ -17,6 +17,13 @@ test('splitIntoBentoRows produces exact 2-3-3-2 rhythm for 10 items', () => {
 
 test('splitIntoBentoRows balances shorter collections cleanly without holes', () => {
   assert.deepEqual(
+    splitIntoBentoRows([1, 2, 3, 4, 5]).map((r) => [r.variant, r.items.length]),
+    [
+      ['two', 2],
+      ['three', 3],
+    ]
+  );
+  assert.deepEqual(
     splitIntoBentoRows([1, 2, 3, 4, 5, 6]).map((r) => r.items.length),
     [2, 2, 2]
   );

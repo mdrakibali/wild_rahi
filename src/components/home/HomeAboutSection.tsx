@@ -17,6 +17,8 @@ interface HomeAboutSectionProps {
   profile: SiteProfile;
 }
 
+const MAX_ABOUT_FRAMES = 5;
+
 const FALLBACK_WILDLIFE_FRAMES = [
   {
     image: '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
@@ -24,39 +26,19 @@ const FALLBACK_WILDLIFE_FRAMES = [
   },
   {
     image: '/assets/images/bird_kingfisher_sylhet_1795067903243.jpg',
-    title: 'Common Kingfisher by Woodland Stream',
+    title: 'Common Kingfisher Perch',
   },
   {
     image: '/assets/images/mammal_fishing_cat_wetland_1795067902865.jpg',
-    title: 'Fishing Cat, Northern Wetlands',
+    title: 'Fishing Cat in Wetland Reeds',
   },
   {
     image: '/assets/images/reptile_green_pit_viper_1795067904040.jpg',
-    title: 'Green Pit Viper in Woodland Canopy',
+    title: 'Green Pit Viper',
   },
   {
     image: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
-    title: 'Dawn Mist Over Seasonal Wetlands',
-  },
-  {
-    image: '/assets/images/insect_swallowtail_butterfly_1795067901756.jpg',
-    title: 'Common Mormon Butterfly, Forest Edge',
-  },
-  {
-    image: '/assets/gear/tripod_gimbal.jpg',
-    title: 'Field Support & Gimbal Optics',
-  },
-  {
-    image: '/assets/gear/sony_a1.jpg',
-    title: 'Silent Field Camera System',
-  },
-  {
-    image: '/assets/gear/telephoto_lens.jpg',
-    title: 'Super-Telephoto Field Optics',
-  },
-  {
-    image: '/assets/gear/aerial_drone.jpg',
-    title: 'Wetland & Riverine Perspective',
+    title: 'Winter Mist Over Northern Wetland',
   },
 ];
 
@@ -67,7 +49,7 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
   const { openPhotoModal } = useLightbox();
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  // Build 10-frame 2 - 3 - 3 - 2 bento collage: prioritize admin-curated aboutImages, then published photographs, then fallbacks
+  // Build 5-frame 2 - 3 bento collage: prioritize admin-curated aboutImages, then published photographs, then wildlife fallbacks
   const bentoRows = useMemo(() => {
     const items: Array<{ id: string; src: string; alt: string; photo?: Photograph }> = [];
     const used = new Set<string>();
@@ -80,7 +62,7 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
     }
 
     const customImages = profile.aboutImages ?? [];
-    for (let i = 0; i < customImages.length && items.length < 10; i++) {
+    for (let i = 0; i < customImages.length && items.length < MAX_ABOUT_FRAMES; i++) {
       const imgUrl = customImages[i];
       if (!imgUrl || used.has(imgUrl)) continue;
       used.add(imgUrl);
@@ -94,27 +76,20 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
     }
 
     for (const p of photographs) {
-      if (items.length >= 10) break;
+      if (items.length >= MAX_ABOUT_FRAMES) break;
       if (!p.image || used.has(p.image)) continue;
       used.add(p.image);
       items.push({ id: p.id, src: p.image, alt: p.title, photo: p });
     }
 
-    for (let i = 0; i < FALLBACK_WILDLIFE_FRAMES.length && items.length < 10; i++) {
+    for (let i = 0; i < FALLBACK_WILDLIFE_FRAMES.length && items.length < MAX_ABOUT_FRAMES; i++) {
       const fb = FALLBACK_WILDLIFE_FRAMES[i];
       if (used.has(fb.image)) continue;
       used.add(fb.image);
       items.push({ id: `fb-${i}`, src: fb.image, alt: fb.title });
     }
 
-    let padIdx = 0;
-    while (items.length > 0 && items.length < 10) {
-      const base = items[padIdx % items.length];
-      items.push({ ...base, id: `${base.id}-pad-${padIdx}` });
-      padIdx += 1;
-    }
-
-    return splitIntoBentoRows(items.slice(0, 10));
+    return splitIntoBentoRows(items.slice(0, MAX_ABOUT_FRAMES));
   }, [photographs, profile.aboutImages, profile.photographerName]);
 
   useEffect(() => {
@@ -153,7 +128,7 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
       className="bg-background text-foreground py-20 lg:py-28 border-t border-border"
     >
       <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
-        {/* Left: 2 - 3 - 3 - 2 Bento Collage Block */}
+        {/* Left: 2 - 3 Bento Collage Block */}
         <div className="lg:col-span-7">
           <div className="space-y-2.5 sm:space-y-3">
             {bentoRows.map((row, rowIdx) => (
