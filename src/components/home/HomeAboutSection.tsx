@@ -19,32 +19,32 @@ interface HomeAboutSectionProps {
 
 const FALLBACK_WILDLIFE_FRAMES = [
   {
-    image: '/assets/images/hero_sundarbans_tiger_1795067902199.jpg',
-    title: 'Royal Bengal Tiger, Sundarbans',
+    image: '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
+    title: 'Pied Kingfisher in Flight, North Bengal',
   },
   {
     image: '/assets/images/bird_kingfisher_sylhet_1795067903243.jpg',
-    title: 'Common Kingfisher, Lawachara',
+    title: 'Common Kingfisher by Woodland Stream',
   },
   {
     image: '/assets/images/mammal_fishing_cat_wetland_1795067902865.jpg',
-    title: 'Fishing Cat, Tanguar Haor',
-  },
-  {
-    image: '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
-    title: 'Pied Kingfisher in Flight',
+    title: 'Fishing Cat, Northern Wetlands',
   },
   {
     image: '/assets/images/reptile_green_pit_viper_1795067904040.jpg',
-    title: 'Green Pit Viper, Rainforest Canopy',
+    title: 'Green Pit Viper in Woodland Canopy',
   },
   {
     image: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
-    title: 'Tanguar Haor Dawn Mist',
+    title: 'Dawn Mist Over Seasonal Wetlands',
   },
   {
     image: '/assets/images/insect_swallowtail_butterfly_1795067901756.jpg',
     title: 'Common Mormon Butterfly, Forest Edge',
+  },
+  {
+    image: '/assets/images/hero_sundarbans_tiger_1795067902199.jpg',
+    title: 'Wild Felid Portrait in Golden Light',
   },
   {
     image: '/assets/gear/sony_a1.jpg',
@@ -56,7 +56,7 @@ const FALLBACK_WILDLIFE_FRAMES = [
   },
   {
     image: '/assets/gear/aerial_drone.jpg',
-    title: 'Wetland & Mangrove Field Perspective',
+    title: 'Wetland & Riverine Perspective',
   },
 ];
 

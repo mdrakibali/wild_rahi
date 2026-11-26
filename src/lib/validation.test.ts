@@ -65,9 +65,12 @@ test('normalizeWildlifeCategory and getWildlifeCategoryLabel map categories accu
   assert.equal(normalizeWildlifeCategory('amphibians'), 'amphibians');
   assert.equal(normalizeWildlifeCategory('Macro World'), 'insects');
   assert.equal(normalizeWildlifeCategory('Sundarbans Mangrove'), 'landscapes');
+  assert.equal(normalizeWildlifeCategory('Chalan Beel wetland'), 'wetlands');
+  assert.equal(normalizeWildlifeCategory('Wild flora'), 'flora');
   assert.equal(normalizeWildlifeCategory(''), 'others');
   assert.equal(normalizeWildlifeCategory('Unclassified wildlife'), 'others');
   assert.equal(getWildlifeCategoryLabel('insects'), 'Insects');
+  assert.equal(getWildlifeCategoryLabel('wetlands'), 'Wetlands');
   assert.equal(getWildlifeCategoryLabel('others'), 'Others');
 });
 

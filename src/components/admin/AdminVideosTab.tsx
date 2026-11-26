@@ -215,7 +215,7 @@ export const AdminVideosTab: React.FC<AdminVideosTabProps> = ({
             className={inputCls}
             value={draft.title}
             onChange={(e) => setDraft((v) => ({ ...v, title: e.target.value }))}
-            placeholder="e.g. Eye to Eye with the Tiger of Sundarbans"
+            placeholder="e.g. Winter Migratory Birds Along the Padma Charlands"
           />
         </div>
 

@@ -20,7 +20,7 @@ export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
             </Link>
             <p className="text-sm sm:text-base text-white/70 max-w-md leading-relaxed">
               Independent wildlife photography, field videos, and visual stories across the
-              mangroves, haors, forests, and rivers of Bangladesh by{' '}
+              rivers, wetlands, charlands, and rural forests of North Bengal by{' '}
               <span className="text-white font-medium">{profile.photographerName}</span>.
             </p>
             <div className="pt-1 flex flex-wrap items-center gap-2.5">

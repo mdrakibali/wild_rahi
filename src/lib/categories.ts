@@ -4,7 +4,9 @@ export const WILDLIFE_CATEGORIES = [
   { id: 'reptiles', label: 'Reptiles', inFooter: true },
   { id: 'amphibians', label: 'Amphibians', inFooter: false },
   { id: 'insects', label: 'Insects', inFooter: false },
-  { id: 'landscapes', label: 'Landscapes', inFooter: true },
+  { id: 'wetlands', label: 'Wetlands', inFooter: true },
+  { id: 'landscapes', label: 'Landscapes', inFooter: false },
+  { id: 'flora', label: 'Flora', inFooter: false },
   { id: 'others', label: 'Others', inFooter: true },
 ] as const;
 

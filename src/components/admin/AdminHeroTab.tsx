@@ -137,7 +137,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
               className={inputCls}
               value={draft.altText}
               onChange={(e) => setDraft((s) => ({ ...s, altText: e.target.value }))}
-              placeholder="e.g. Royal Bengal Tiger at sunset in the Sundarbans"
+              placeholder="e.g. Pied Kingfisher hovering over morning river mist in North Bengal"
             />
           </div>
           <div>

@@ -42,11 +42,22 @@ export function normalizeWildlifeCategory(input?: string | null): WildlifeCatego
     return 'insects';
   }
   if (
+    val.includes('wetland') ||
+    val.includes('beel') ||
+    val.includes('char') ||
+    val.includes('river') ||
+    val.includes('haor')
+  ) {
+    return 'wetlands';
+  }
+  if (val.includes('flora') || val.includes('flower') || val.includes('plant') || val.includes('bloom')) {
+    return 'flora';
+  }
+  if (
     val.includes('landscape') ||
     val.includes('habitat') ||
-    val.includes('wetland') ||
+    val.includes('forest') ||
     val.includes('sundarban') ||
-    val.includes('haor') ||
     val.includes('mangrove')
   ) {
     return 'landscapes';

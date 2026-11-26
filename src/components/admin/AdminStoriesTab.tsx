@@ -138,7 +138,7 @@ export const AdminStoriesTab: React.FC<AdminStoriesTabProps> = ({
                   slug: editingId ? s.slug : toSafeSlug(e.target.value, 72),
                 }))
               }
-              placeholder="e.g. Dawn Along the Tidal Creeks of Sundarbans"
+              placeholder="e.g. Winter Mornings Along the River Charlands of North Bengal"
             />
           </div>
           <div>
