@@ -4,117 +4,65 @@ import React, { useMemo } from 'react';
 import Marquee from 'react-fast-marquee';
 import { PortfolioImage } from '@/components/common/PortfolioImage';
 import { useLightbox } from '@/context/LightboxContext';
+import { splitIntoBentoRows } from '@/lib/bentoLayout';
 import type { Photograph } from '@/types/portfolio';
 
 interface MarqueeFrame {
   id: string;
   src: string;
-  label: string;
-  caption?: string;
+  caption: string;
   photo?: Photograph;
 }
 
-const GEAR_FRAMES: MarqueeFrame[] = [
-  {
-    id: 'gear-camera',
-    src: '/assets/gear/sony_a1.jpg',
-    label: 'Field Body',
-    caption: 'Silent Electronic Shutter System',
-  },
-  {
-    id: 'gear-telephoto',
-    src: '/assets/gear/telephoto_lens.jpg',
-    label: 'Super-Telephoto',
-    caption: 'Long-Range Wildlife Optics',
-  },
-  {
-    id: 'gear-gimbal',
-    src: '/assets/gear/tripod_gimbal.jpg',
-    label: 'Stability Rig',
-    caption: 'Carbon Tripod & Fluid Gimbal',
-  },
-  {
-    id: 'gear-aerial',
-    src: '/assets/gear/aerial_drone.jpg',
-    label: 'Habitat Mapping',
-    caption: 'Wetland & Mangrove Perspective',
-  },
+const GEAR_AND_FIELD_FRAMES: Array<{ src: string; caption: string }> = [
+  { src: '/assets/gear/sony_a1.jpg', caption: 'Silent Electronic Shutter Body' },
+  { src: '/assets/gear/telephoto_lens.jpg', caption: 'Super-Telephoto Optics' },
+  { src: '/assets/gear/tripod_gimbal.jpg', caption: 'Carbon Tripod & Fluid Gimbal' },
+  { src: '/assets/gear/aerial_drone.jpg', caption: 'Habitat Aerial Documentation' },
+  { src: '/assets/images/insect_swallowtail_butterfly_1795067901756.jpg', caption: 'Macro Field Encounter' },
 ];
 
 export const AboutFieldMarquee: React.FC<{ photographs: Photograph[] }> = ({ photographs }) => {
   const { openPhotoModal } = useLightbox();
 
-  // Interleave camera/gear kit images and wildlife plates into structured 3-frame (col/row) clusters
-  const clusters = useMemo(() => {
+  // Build 10-card (or 20-card) blocks using the exact 2 - 3 - 3 - 2 rhythm
+  const bentoBlocks = useMemo(() => {
     const publishedPhotos = photographs.filter((p) => p.isPublished && p.image);
-    const mixed: MarqueeFrame[] = [];
-    const maxLen = Math.max(GEAR_FRAMES.length, publishedPhotos.length);
+    const pool: MarqueeFrame[] = [];
+    const used = new Set<string>();
 
-    for (let i = 0; i < maxLen; i++) {
-      const p = publishedPhotos[i % publishedPhotos.length];
-      if (p) {
-        mixed.push({
-          id: `photo-${p.id}-${i}`,
-          src: p.image,
-          label: 'Wildlife Plate',
-          caption: p.title,
-          photo: p,
-        });
-      }
-      const g = GEAR_FRAMES[i % GEAR_FRAMES.length];
-      if (g) {
-        mixed.push({
-          ...g,
-          id: `${g.id}-${i}`,
-        });
+    for (const p of publishedPhotos) {
+      if (!used.has(p.image)) {
+        used.add(p.image);
+        pool.push({ id: `photo-${p.id}`, src: p.image, caption: p.title, photo: p });
       }
     }
 
-    // Pad slightly so total slides divide nicely into groups of 3 (2-col, 2-row visual rhythm)
-    while (mixed.length > 0 && mixed.length % 3 !== 0) {
-      mixed.push({ ...mixed[mixed.length % mixed.length], id: `pad-${mixed.length}` });
+    GEAR_AND_FIELD_FRAMES.forEach((g, idx) => {
+      if (!used.has(g.src)) {
+        used.add(g.src);
+        pool.push({ id: `extra-${idx}`, src: g.src, caption: g.caption });
+      }
+    });
+
+    if (pool.length === 0) return [];
+
+    // Ensure at least one full 10-card 2-3-3-2 block, or multiples of 10
+    const targetCount = pool.length <= 10 ? 10 : Math.ceil(pool.length / 10) * 10;
+    const filled: MarqueeFrame[] = [];
+    for (let i = 0; i < targetCount; i++) {
+      const base = pool[i % pool.length];
+      filled.push({ ...base, id: `${base.id}-${i}` });
     }
 
-    const grouped: Array<[MarqueeFrame, MarqueeFrame, MarqueeFrame]> = [];
-    for (let i = 0; i + 2 < mixed.length; i += 3) {
-      grouped.push([mixed[i], mixed[i + 1], mixed[i + 2]]);
+    const blocks: Array<ReturnType<typeof splitIntoBentoRows<MarqueeFrame>>> = [];
+    for (let i = 0; i < filled.length; i += 10) {
+      blocks.push(splitIntoBentoRows(filled.slice(i, i + 10)));
     }
-    return grouped;
+    return blocks;
   }, [photographs]);
 
-  if (clusters.length === 0) return null;
-
-  const renderTile = (frame: MarqueeFrame, ratioClass: string, sizes: string) => {
-    return (
-      <div
-        key={frame.id}
-        onClick={() => {
-          if (frame.photo) openPhotoModal(frame.photo, photographs);
-        }}
-        className={`group relative overflow-hidden rounded-xl border border-border bg-muted ${ratioClass} ${
-          frame.photo ? 'cursor-pointer' : ''
-        }`}
-      >
-        <PortfolioImage
-          src={frame.src}
-          alt={frame.caption || frame.label}
-          fill
-          sizes={sizes}
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent opacity-85 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3.5 text-white">
-          <span className="text-[10px] uppercase tracking-[0.16em] text-white/70 font-medium">
-            {frame.label}
-          </span>
-          {frame.caption && (
-            <p className="text-sm font-serif font-medium text-white leading-snug line-clamp-1">
-              {frame.caption}
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  };
+  if (bentoBlocks.length === 0) return null;
 
   return (
     <section className="bg-background text-foreground py-16 lg:py-24 border-t border-border overflow-hidden">
@@ -126,27 +74,53 @@ export const AboutFieldMarquee: React.FC<{ photographs: Photograph[] }> = ({ pho
           Field Kit &amp; Moments
         </h2>
         <p className="text-sm sm:text-base text-muted-foreground max-w-xl leading-relaxed">
-          Cameras, optics, and natural-light encounters from years across Bangladesh&apos;s wetlands and forests.
+          Cameras, lenses, and wildlife encounters gliding across the field archive.
         </p>
       </div>
 
-      <Marquee speed={32} pauseOnHover gradient={false} autoFill className="py-2">
-        <div className="flex items-stretch gap-4 sm:gap-5 pr-4 sm:pr-5">
-          {clusters.map(([tall, topWide, bottomWide], idx) => (
+      <Marquee speed={28} pauseOnHover gradient={false} autoFill className="py-2">
+        <div className="flex items-start gap-4 sm:gap-5 pr-4 sm:pr-5">
+          {bentoBlocks.map((rows, blockIdx) => (
             <div
-              key={`cluster-${idx}`}
-              className="grid grid-cols-12 gap-4 sm:gap-5 w-[440px] sm:w-[560px] lg:w-[640px] shrink-0"
+              key={`marquee-block-${blockIdx}`}
+              className="w-[340px] sm:w-[430px] lg:w-[490px] shrink-0 rounded-xl bg-obsidian p-2.5 sm:p-3 border border-border space-y-2 sm:space-y-2.5"
             >
-              {/* Left Tall Column */}
-              <div className="col-span-5">
-                {renderTile(tall, 'h-full min-h-[290px] sm:min-h-[340px]', '280px')}
-              </div>
-
-              {/* Right 2-Row Stack */}
-              <div className="col-span-7 grid grid-rows-2 gap-4 sm:gap-5">
-                {renderTile(topWide, 'aspect-[16/10] w-full', '360px')}
-                {renderTile(bottomWide, 'aspect-[16/10] w-full', '360px')}
-              </div>
+              {rows.map((row, rowIdx) => (
+                <div
+                  key={`marquee-row-${blockIdx}-${rowIdx}`}
+                  className={
+                    row.variant === 'two'
+                      ? 'grid grid-cols-2 gap-2 sm:gap-2.5'
+                      : row.variant === 'three'
+                        ? 'grid grid-cols-3 gap-2 sm:gap-2.5'
+                        : 'grid grid-cols-1 gap-2 sm:gap-2.5'
+                  }
+                >
+                  {row.items.map((frame) => {
+                    const aspectClass =
+                      row.variant === 'three' ? 'aspect-[3/4]' : 'aspect-[16/10]';
+                    return (
+                      <div
+                        key={frame.id}
+                        onClick={() => {
+                          if (frame.photo) openPhotoModal(frame.photo, photographs);
+                        }}
+                        className={`group relative overflow-hidden rounded-xl bg-surface-dark ${aspectClass} ${
+                          frame.photo ? 'cursor-pointer' : ''
+                        }`}
+                      >
+                        <PortfolioImage
+                          src={frame.src}
+                          alt={frame.caption}
+                          fill
+                          sizes={row.variant === 'three' ? '160px' : '240px'}
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -154,4 +128,3 @@ export const AboutFieldMarquee: React.FC<{ photographs: Photograph[] }> = ({ pho
     </section>
   );
 };
-

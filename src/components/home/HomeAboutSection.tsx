@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
 import { useLightbox } from '@/context/LightboxContext';
 import { PortfolioImage } from '@/components/common/PortfolioImage';
+import { splitIntoBentoRows } from '@/lib/bentoLayout';
 import type { Photograph, SiteProfile } from '@/types/portfolio';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -41,6 +42,22 @@ const FALLBACK_WILDLIFE_FRAMES = [
     image: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
     title: 'Tanguar Haor Dawn Mist',
   },
+  {
+    image: '/assets/images/insect_swallowtail_butterfly_1795067901756.jpg',
+    title: 'Common Mormon Butterfly, Forest Edge',
+  },
+  {
+    image: '/assets/gear/sony_a1.jpg',
+    title: 'Silent Field Camera System',
+  },
+  {
+    image: '/assets/gear/telephoto_lens.jpg',
+    title: 'Super-Telephoto Field Optics',
+  },
+  {
+    image: '/assets/gear/aerial_drone.jpg',
+    title: 'Wetland & Mangrove Field Perspective',
+  },
 ];
 
 export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
@@ -50,25 +67,33 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
   const { openPhotoModal } = useLightbox();
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  const gridItems = useMemo(() => {
-    const items: Array<{ src: string; alt: string; photo?: Photograph }> = [];
+  // Build 10-frame 2 - 3 - 3 - 2 bento collage strictly from published/project wildlife frames
+  const bentoRows = useMemo(() => {
+    const items: Array<{ id: string; src: string; alt: string; photo?: Photograph }> = [];
     const used = new Set<string>();
 
     for (const p of photographs) {
-      if (items.length >= 6) break;
+      if (items.length >= 10) break;
       if (!p.image || used.has(p.image)) continue;
       used.add(p.image);
-      items.push({ src: p.image, alt: p.title, photo: p });
+      items.push({ id: p.id, src: p.image, alt: p.title, photo: p });
     }
 
-    for (const fb of FALLBACK_WILDLIFE_FRAMES) {
-      if (items.length >= 6) break;
+    for (let i = 0; i < FALLBACK_WILDLIFE_FRAMES.length && items.length < 10; i++) {
+      const fb = FALLBACK_WILDLIFE_FRAMES[i];
       if (used.has(fb.image)) continue;
       used.add(fb.image);
-      items.push({ src: fb.image, alt: fb.title });
+      items.push({ id: `fb-${i}`, src: fb.image, alt: fb.title });
     }
 
-    return items;
+    let padIdx = 0;
+    while (items.length > 0 && items.length < 10) {
+      const base = items[padIdx % items.length];
+      items.push({ ...base, id: `${base.id}-pad-${padIdx}` });
+      padIdx += 1;
+    }
+
+    return splitIntoBentoRows(items.slice(0, 10));
   }, [photographs]);
 
   useEffect(() => {
@@ -78,12 +103,12 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
       const ctx = gsap.context(() => {
         gsap.fromTo(
           '.about-grid-frame',
-          { y: 18, opacity: 0.25 },
+          { y: 16, opacity: 0.25 },
           {
             y: 0,
             opacity: 1,
-            duration: 0.7,
-            stagger: 0.07,
+            duration: 0.65,
+            stagger: 0.05,
             ease: 'power2.out',
             clearProps: 'transform,opacity',
             scrollTrigger: {
@@ -101,66 +126,60 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
     return () => mm.revert();
   }, []);
 
-  const renderFrame = (
-    item: { src: string; alt: string; photo?: Photograph } | undefined,
-    extraClass: string,
-    sizes: string
-  ) => {
-    if (!item) return null;
-    return (
-      <div
-        className={`about-grid-frame group relative overflow-hidden rounded-xl bg-muted border border-border ${extraClass} ${
-          item.photo ? 'cursor-pointer' : ''
-        }`}
-        onClick={() => {
-          if (item.photo) openPhotoModal(item.photo, photographs);
-        }}
-      >
-        <PortfolioImage
-          src={item.src}
-          alt={item.alt}
-          fill
-          sizes={sizes}
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-        />
-      </div>
-    );
-  };
-
   return (
     <section
       ref={sectionRef}
-      className="bg-background text-foreground py-20 lg:py-32 border-t border-border"
+      className="bg-background text-foreground py-20 lg:py-28 border-t border-border"
     >
-      <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-        {/* Left: Asymmetric 2 - 3 - 1 Photography Grid */}
-        <div className="lg:col-span-7 space-y-3 sm:space-y-4">
-          <div className="grid grid-cols-12 gap-3 sm:gap-4 items-end">
-            {renderFrame(gridItems[0], 'col-span-7 aspect-[16/10]', '(max-width: 1024px) 60vw, 35vw')}
-            {renderFrame(gridItems[1], 'col-span-5 aspect-[4/5]', '(max-width: 1024px) 40vw, 24vw')}
-          </div>
-
-          <div className="grid grid-cols-12 gap-3 sm:gap-4 items-start">
-            {renderFrame(gridItems[2], 'col-span-4 aspect-[4/5]', '(max-width: 1024px) 33vw, 20vw')}
-            {renderFrame(
-              gridItems[3],
-              'col-span-4 aspect-square sm:translate-y-4',
-              '(max-width: 1024px) 33vw, 20vw'
-            )}
-            {renderFrame(gridItems[4], 'col-span-4 aspect-[4/5]', '(max-width: 1024px) 33vw, 20vw')}
-          </div>
-
-          <div className="grid grid-cols-12 gap-3 sm:gap-4 pt-1 sm:pt-3">
-            {renderFrame(
-              gridItems[5],
-              'col-span-10 col-start-2 sm:col-span-9 sm:col-start-3 aspect-[16/9]',
-              '(max-width: 1024px) 80vw, 45vw'
-            )}
+      <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+        {/* Left: 2 - 3 - 3 - 2 Bento Collage Block */}
+        <div className="lg:col-span-7">
+          <div className="rounded-xl bg-obsidian p-2.5 sm:p-3.5 border border-border shadow-sm space-y-2.5 sm:space-y-3">
+            {bentoRows.map((row, rowIdx) => (
+              <div
+                key={`home-bento-row-${rowIdx}`}
+                className={
+                  row.variant === 'two'
+                    ? 'grid grid-cols-2 gap-2.5 sm:gap-3'
+                    : row.variant === 'three'
+                      ? 'grid grid-cols-3 gap-2.5 sm:gap-3'
+                      : 'grid grid-cols-1 gap-2.5 sm:gap-3'
+                }
+              >
+                {row.items.map((item) => {
+                  const aspectClass =
+                    row.variant === 'three' ? 'aspect-[3/4]' : 'aspect-[16/10]';
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        if (item.photo) openPhotoModal(item.photo, photographs);
+                      }}
+                      className={`about-grid-frame group relative overflow-hidden rounded-xl bg-surface-dark ${aspectClass} ${
+                        item.photo ? 'cursor-pointer' : ''
+                      }`}
+                    >
+                      <PortfolioImage
+                        src={item.src}
+                        alt={item.alt}
+                        fill
+                        sizes={
+                          row.variant === 'three'
+                            ? '(max-width: 1024px) 32vw, 18vw'
+                            : '(max-width: 1024px) 48vw, 27vw'
+                        }
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Right: Editorial Biography */}
-        <div className="lg:col-span-5 space-y-6 lg:pl-4">
+        <div className="lg:col-span-5 space-y-6 lg:pl-2">
           <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
             01 &middot; About the Photographer
           </p>

@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PhotoCard } from '@/components/photography/PhotoCard';
+import { splitIntoBentoRows } from '@/lib/bentoLayout';
 import { filterPhotographs, WILDLIFE_CATEGORIES } from '@/lib/validation';
 import type { Photograph } from '@/types/portfolio';
 
@@ -26,6 +27,8 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photograp
       }),
     [photographs, activeCategory]
   );
+
+  const bentoRows = useMemo(() => splitIntoBentoRows(filteredPhotos), [filteredPhotos]);
 
   const updateCategory = (next: string) => {
     setSelectedCategory(next);
@@ -88,7 +91,7 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photograp
         </div>
       </section>
 
-      {/* Uniform 3-4 Column Card Grid */}
+      {/* 2 - 3 - 3 - 2 Bento Collage Gallery (matching homepage & marquee style) */}
       <section className="site-container py-10 lg:py-16">
         {filteredPhotos.length === 0 ? (
           <div className="py-20 text-center space-y-4 rounded-xl border border-border bg-card p-8 max-w-md mx-auto">
@@ -107,9 +110,34 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photograp
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
-            {filteredPhotos.map((photo) => (
-              <PhotoCard key={photo.id} photo={photo} allPhotos={filteredPhotos} />
+          <div className="rounded-xl bg-obsidian p-2.5 sm:p-4 lg:p-5 border border-border space-y-2.5 sm:space-y-3.5 lg:space-y-4">
+            {bentoRows.map((row, rowIdx) => (
+              <div
+                key={`gallery-row-${rowIdx}`}
+                className={
+                  row.variant === 'two'
+                    ? 'grid grid-cols-2 gap-2.5 sm:gap-3.5 lg:gap-4'
+                    : row.variant === 'three'
+                      ? 'grid grid-cols-3 gap-2.5 sm:gap-3.5 lg:gap-4'
+                      : 'grid grid-cols-1 gap-2.5 sm:gap-3.5 lg:gap-4'
+                }
+              >
+                {row.items.map((photo) => (
+                  <PhotoCard
+                    key={photo.id}
+                    photo={photo}
+                    allPhotos={filteredPhotos}
+                    aspectClass={row.variant === 'three' ? 'aspect-[3/4]' : 'aspect-[16/10]'}
+                    sizes={
+                      row.variant === 'three'
+                        ? '(max-width: 640px) 32vw, 33vw'
+                        : row.variant === 'two'
+                          ? '(max-width: 640px) 48vw, 50vw'
+                          : '100vw'
+                    }
+                  />
+                ))}
+              </div>
             ))}
           </div>
         )}
