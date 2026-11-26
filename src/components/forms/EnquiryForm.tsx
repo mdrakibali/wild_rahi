@@ -50,8 +50,8 @@ export const EnquiryForm: React.FC<{ photographerName?: string }> = ({ photograp
 
   if (submitted) {
     return (
-      <div className="p-8 rounded-xl border border-border bg-card text-foreground space-y-4">
-        <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-primary-foreground">
+      <div className="p-8 rounded-lg border border-border bg-card text-foreground space-y-4">
+        <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
           <Check className="w-5 h-5" />
         </div>
         <h3 className="text-2xl font-serif font-semibold tracking-tight">Message Received</h3>
@@ -69,7 +69,7 @@ export const EnquiryForm: React.FC<{ photographerName?: string }> = ({ photograp
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-6 sm:p-8 rounded-xl border border-border bg-card text-foreground space-y-5"
+      className="p-6 sm:p-8 rounded-lg border border-border bg-card text-foreground space-y-5"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
@@ -112,7 +112,7 @@ export const EnquiryForm: React.FC<{ photographerName?: string }> = ({ photograp
       />
 
       {serverError && (
-        <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
+        <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
           {serverError}
         </div>
       )}

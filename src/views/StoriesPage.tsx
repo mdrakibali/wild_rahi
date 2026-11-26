@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check, Share2, X } from 'lucide-react';
 import { estimateReadingTimeMinutes, sanitizeArticleHtml } from '@/lib/sanitizeHtml';
+import { useScrollLock } from '@/lib/useScrollLock';
 import { PortfolioImage } from '@/components/common/PortfolioImage';
 import type { Story } from '@/types/portfolio';
 
@@ -15,6 +16,7 @@ interface StoriesPageProps {
 export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
   const [copiedLink, setCopiedLink] = useState(false);
   const [zoomImage, setZoomImage] = useState<string | null>(null);
+  useScrollLock(Boolean(zoomImage));
 
   const publishedStories = useMemo(
     () => stories.filter((s) => s.isPublished),
@@ -61,7 +63,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
           </p>
           <Link
             href="/stories"
-            className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-6 py-2.5 text-xs font-semibold uppercase tracking-wider"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-6 py-2.5 text-xs font-semibold uppercase tracking-wider"
           >
             <ArrowLeft className="w-4 h-4" />
             All Stories
@@ -81,7 +83,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
             <div className="flex items-center justify-between gap-4">
               <Link
                 href="/stories"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 All Stories
@@ -90,7 +92,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
               <button
                 type="button"
                 onClick={handleCopyShareLink}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors cursor-pointer"
               >
                 {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
                 {copiedLink ? 'Copied' : 'Share'}
@@ -122,7 +124,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
 
         {/* Cover Photograph */}
         <figure className="site-container max-w-5xl mt-10 lg:mt-14">
-          <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-muted border border-border">
+          <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-muted border border-border">
             <PortfolioImage
               src={activeStory.coverImage}
               alt={activeStory.title}
@@ -153,7 +155,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
                     key={`${imgUrl}-${idx}`}
                     type="button"
                     onClick={() => setZoomImage(imgUrl)}
-                    className={`group relative rounded-xl overflow-hidden bg-muted border border-border text-left focus:outline-none cursor-pointer ${
+                    className={`group relative rounded-lg overflow-hidden bg-muted border border-border text-left focus:outline-none cursor-pointer ${
                       storyImages.length > 2 && idx === 0
                         ? 'sm:col-span-2 aspect-[16/10]'
                         : 'aspect-[4/3]'
@@ -181,7 +183,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
               {prevStory ? (
                 <Link
                   href={`/stories/${encodeURIComponent(prevStory.slug)}`}
-                  className="group p-5 rounded-xl border border-border bg-card hover:border-foreground/40 transition-colors text-left"
+                  className="group p-5 rounded-lg border border-border bg-card hover:border-foreground/40 transition-colors text-left"
                 >
                   <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground flex items-center gap-1.5">
                     <ArrowLeft className="w-3.5 h-3.5" />
@@ -198,7 +200,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
               {nextStory && (
                 <Link
                   href={`/stories/${encodeURIComponent(nextStory.slug)}`}
-                  className="group p-5 rounded-xl border border-border bg-card hover:border-foreground/40 transition-colors text-right"
+                  className="group p-5 rounded-lg border border-border bg-card hover:border-foreground/40 transition-colors text-right"
                 >
                   <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground flex items-center justify-end gap-1.5">
                     Next Story
@@ -224,10 +226,10 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
             <button
               type="button"
               onClick={() => setZoomImage(null)}
-              className="absolute top-5 right-5 z-10 p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+              className="absolute top-4 right-4 z-10 w-8 h-8 inline-flex items-center justify-center rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700/80 text-zinc-200 cursor-pointer"
               aria-label="Close photograph"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
             <div
               className="relative w-full max-w-[90vw] h-[82vh]"
@@ -239,7 +241,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
                 fill
                 sizes="90vw"
                 priority
-                className="object-contain rounded-xl"
+                className="object-contain rounded-lg"
               />
             </div>
           </div>
@@ -267,7 +269,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
 
       <section className="site-container py-12 lg:py-20">
         {publishedStories.length === 0 ? (
-          <div className="py-16 text-center rounded-xl bg-card border border-border p-8 max-w-lg mx-auto">
+          <div className="py-16 text-center rounded-lg bg-card border border-border p-8 max-w-lg mx-auto">
             <h2 className="text-2xl font-serif font-semibold text-foreground">
               No stories published yet
             </h2>
@@ -280,7 +282,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
             {publishedStories.map((story) => (
               <article
                 key={story.id}
-                className="group rounded-xl bg-card border border-border overflow-hidden flex flex-col transition-all duration-300 hover:border-foreground/25 hover:shadow-md"
+                className="group rounded-lg bg-card border border-border overflow-hidden flex flex-col transition-all duration-300 hover:border-foreground/25 hover:shadow-md"
               >
                 <Link
                   href={`/stories/${encodeURIComponent(story.slug)}`}

@@ -10,7 +10,7 @@ interface ContactDirectChannelsProps {
 export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ profile }) => {
   return (
     <aside className="lg:col-span-5 space-y-8">
-      <div className="rounded-xl border border-border bg-card p-6 sm:p-7 space-y-6">
+      <div className="rounded-lg border border-border bg-card p-6 sm:p-7 space-y-6">
         <h2 className="text-2xl font-serif font-semibold tracking-tight text-foreground">
           Direct Channels
         </h2>
@@ -38,13 +38,13 @@ export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ pr
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2.5 pt-2">
+        <div className="flex flex-wrap gap-2 pt-2">
           {profile.facebookUrl && (
             <a
               href={profile.facebookUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-background text-foreground px-4 py-2 text-xs font-medium hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background text-foreground px-3 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
             >
               <FacebookIcon className="w-3.5 h-3.5" />
               Facebook
@@ -55,7 +55,7 @@ export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ pr
               href={profile.instagramUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-background text-foreground px-4 py-2 text-xs font-medium hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background text-foreground px-3 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
             >
               <InstagramIcon className="w-3.5 h-3.5" />
               Instagram
@@ -66,7 +66,7 @@ export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ pr
               href={profile.youtubeUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-background text-foreground px-4 py-2 text-xs font-medium hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background text-foreground px-3 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
             >
               <YoutubeIcon className="w-3.5 h-3.5" />
               YouTube
@@ -77,7 +77,7 @@ export const ContactDirectChannels: React.FC<ContactDirectChannelsProps> = ({ pr
               href={profile.tiktokUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-background text-foreground px-4 py-2 text-xs font-medium hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background text-foreground px-3 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
             >
               <TikTokIcon className="w-3.5 h-3.5" />
               TikTok

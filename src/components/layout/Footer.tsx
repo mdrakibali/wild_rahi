@@ -21,13 +21,13 @@ export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
               Wildlife photography, visual stories, and field films across Bangladesh by{' '}
               <span className="text-white">{profile.photographerName}</span>.
             </p>
-            <div className="pt-2 flex flex-wrap items-center gap-3">
+            <div className="pt-2 flex flex-wrap items-center gap-2">
               {profile.facebookUrl && (
                 <a
                   href={profile.facebookUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 text-white/85 px-3.5 py-2 text-xs tracking-wider hover:border-white/55 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 text-white/85 px-3 py-1.5 text-[11px] tracking-wider hover:border-white/55 hover:text-white transition-colors"
                   aria-label="Facebook Profile"
                 >
                   <FacebookIcon className="w-3.5 h-3.5" />
@@ -39,7 +39,7 @@ export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
                   href={profile.instagramUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 text-white/85 px-3.5 py-2 text-xs tracking-wider hover:border-white/55 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 text-white/85 px-3 py-1.5 text-[11px] tracking-wider hover:border-white/55 hover:text-white transition-colors"
                   aria-label="Instagram Profile"
                 >
                   <InstagramIcon className="w-3.5 h-3.5" />
@@ -51,7 +51,7 @@ export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
                   href={profile.youtubeUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 text-white/85 px-3.5 py-2 text-xs tracking-wider hover:border-white/55 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 text-white/85 px-3 py-1.5 text-[11px] tracking-wider hover:border-white/55 hover:text-white transition-colors"
                   aria-label="YouTube Channel"
                 >
                   <YoutubeIcon className="w-3.5 h-3.5" />
@@ -63,7 +63,7 @@ export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
                   href={profile.tiktokUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 text-white/85 px-3.5 py-2 text-xs tracking-wider hover:border-white/55 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 text-white/85 px-3 py-1.5 text-[11px] tracking-wider hover:border-white/55 hover:text-white transition-colors"
                   aria-label="TikTok Profile"
                 >
                   <TikTokIcon className="w-3.5 h-3.5" />
@@ -73,7 +73,7 @@ export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
               {profile.contactEmail && (
                 <a
                   href={`mailto:${profile.contactEmail}`}
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 text-white/85 px-3.5 py-2 text-xs tracking-wider hover:border-white/55 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 text-white/85 px-3 py-1.5 text-[11px] tracking-wider hover:border-white/55 hover:text-white transition-colors"
                   aria-label="Send Email"
                 >
                   <Mail className="w-3.5 h-3.5" />

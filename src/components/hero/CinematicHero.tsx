@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import type { HeroSlide, SiteProfile } from '@/types/portfolio';
 import { PortfolioImage } from '@/components/common/PortfolioImage';
 
@@ -37,7 +35,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides, profile })
 
   return (
     <section className="relative min-h-[88vh] lg:min-h-screen w-full bg-obsidian text-white flex flex-col justify-end overflow-hidden">
-      {/* Stacked Crossfading Photography Layers (no key remount or ScrollTrigger jolt) */}
+      {/* Stacked Crossfading Photography Layers */}
       <div className="absolute inset-0 overflow-hidden">
         {publishedSlides.map((slide, index) => {
           const isActive = index === safeIndex;
@@ -86,19 +84,9 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides, profile })
           <p className="text-sm sm:text-base lg:text-lg text-white/80 max-w-xl leading-relaxed font-normal">
             {profile.heroSubheadline}
           </p>
-
-          <div className="pt-3 flex flex-wrap items-center justify-between gap-4">
-            <Link
-              href="/gallery"
-              className="group inline-flex items-center gap-2.5 rounded-xl bg-white/12 hover:bg-white text-white hover:text-obsidian backdrop-blur-sm border border-white/25 px-5 py-2.5 text-xs sm:text-sm uppercase tracking-[0.14em] font-semibold transition-all duration-300"
-            >
-              Explore Gallery
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-          </div>
         </div>
 
-        {/* Subtle Non-Interactive Auto Slide Indicators */}
+        {/* Subtle Auto Slide Indicators */}
         {publishedSlides.length > 1 && (
           <div className="mt-8 flex items-center justify-between gap-4">
             <div className="flex items-center gap-2" aria-hidden="true">

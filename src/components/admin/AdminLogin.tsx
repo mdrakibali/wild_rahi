@@ -45,13 +45,13 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
       <div className="max-w-md w-full mx-auto space-y-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3.5 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to Wild Rahi
         </Link>
 
-        <div className="bg-card border border-border rounded-xl p-7 sm:p-8 space-y-6">
+        <div className="bg-card border border-border rounded-lg p-7 sm:p-8 space-y-6">
           <div className="space-y-1.5">
             <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
               Authorized Access Only
@@ -86,7 +86,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
             />
 
             {error && (
-              <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
+              <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
                 {error}
               </div>
             )}

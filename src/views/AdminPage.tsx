@@ -146,7 +146,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
 
         <Link
           href="/"
-          className="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary"
+          className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary"
         >
           View Site
           <ArrowUpRight className="w-3 h-3" />
@@ -167,7 +167,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 <button
                   type="button"
                   onClick={() => setMobileNavOpen(false)}
-                  className="p-1.5 rounded-xl hover:bg-secondary text-muted-foreground"
+                  className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -184,7 +184,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                         setActiveTab(tab.id);
                         setMobileNavOpen(false);
                       }}
-                      className={`inline-flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-xs font-semibold tracking-wide transition-all text-left cursor-pointer ${
+                      className={`inline-flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-xs font-semibold tracking-wide transition-all text-left cursor-pointer ${
                         active
                           ? 'bg-primary text-primary-foreground'
                           : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
@@ -206,7 +206,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
               <button
                 type="button"
                 onClick={signOutAdmin}
-                className="inline-flex items-center justify-center w-8 h-8 rounded-xl border border-border hover:bg-secondary"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-border hover:bg-secondary"
                 title="Sign out"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -227,7 +227,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           </div>
           <Link
             href="/"
-            className="inline-flex items-center gap-1 rounded-xl border border-border hover:bg-secondary px-3 py-1.5 text-xs font-medium text-foreground"
+            className="inline-flex items-center gap-1 rounded-lg border border-border hover:bg-secondary px-3 py-1.5 text-xs font-medium text-foreground"
           >
             View
             <ArrowUpRight className="w-3 h-3" />
@@ -243,7 +243,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`shrink-0 inline-flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-xs font-semibold tracking-wide transition-all text-left cursor-pointer ${
+                className={`shrink-0 inline-flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-xs font-semibold tracking-wide transition-all text-left cursor-pointer ${
                   active
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
@@ -264,7 +264,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           <button
             type="button"
             onClick={signOutAdmin}
-            className="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-border hover:bg-secondary text-muted-foreground hover:text-foreground cursor-pointer"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border hover:bg-secondary text-muted-foreground hover:text-foreground cursor-pointer"
             title="Sign out"
             aria-label="Sign out"
           >
@@ -279,7 +279,7 @@ export const AdminPage: React.FC<{ initialTab?: AdminTab }> = ({ initialTab }) =
           {toast && (
             <div
               role="status"
-              className={`px-4 py-3 rounded-xl border text-sm flex items-center gap-2 ${
+              className={`px-4 py-3 rounded-lg border text-sm flex items-center gap-2 ${
                 toast.type === 'ok'
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-red-50 text-red-800 border-red-200'

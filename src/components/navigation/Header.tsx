@@ -103,7 +103,7 @@ export const Header: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
           <button
             type="button"
             onClick={() => setMobileOpen((prev) => !prev)}
-            className={`md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border transition-colors cursor-pointer ${
+            className={`md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border transition-colors cursor-pointer ${
               isHomeHero
                 ? 'border-white/25 text-white hover:bg-white/10'
                 : 'border-border text-foreground hover:bg-secondary'
@@ -139,7 +139,7 @@ export const Header: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex items-center justify-center w-10 h-10 rounded-xl border border-border text-foreground hover:bg-secondary cursor-pointer"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-border text-foreground hover:bg-secondary cursor-pointer"
               aria-label="Close navigation menu"
             >
               <X className="w-5 h-5" />

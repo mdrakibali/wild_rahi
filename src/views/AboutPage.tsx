@@ -1,15 +1,13 @@
-import React from 'react';
-import { AboutHero } from '@/components/about/AboutHero';
-import { AboutNarrative } from '@/components/about/AboutNarrative';
-import { AboutFieldMarquee } from '@/components/about/AboutFieldMarquee';
-import type { Photograph, SiteProfile } from '@/types/portfolio';
+import { AboutHero } from "@/components/about/AboutHero";
+import { AboutNarrative } from "@/components/about/AboutNarrative";
+import type { SiteProfile } from "@/types/portfolio";
+import React from "react";
 
 interface AboutPageProps {
   profile: SiteProfile;
-  photographs: Photograph[];
 }
 
-export const AboutPage: React.FC<AboutPageProps> = ({ profile, photographs }) => {
+export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
   return (
     <div className="bg-background text-foreground pt-20">
       {/* First Section: Info Left + Portrait Right */}
@@ -21,9 +19,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile, photographs }) =>
           <AboutNarrative profile={profile} />
         </div>
       </section>
-
-      {/* Lower Auto-Scrolling Camera & Wildlife Collage */}
-      <AboutFieldMarquee photographs={photographs} />
     </div>
   );
 };

@@ -64,20 +64,20 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-md bg-card border border-border rounded-xl p-6 z-10"
+        className="relative w-full max-w-md bg-card border border-border rounded-lg p-6 z-10"
       >
         <button
           type="button"
           onClick={onClose}
           disabled={loading}
-          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-xl hover:bg-secondary disabled:opacity-50"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-secondary disabled:opacity-50"
           aria-label="Close dialog"
         >
           <X className="w-4 h-4" />
         </button>
 
         <div className="flex items-start gap-3.5">
-          <div className="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center bg-secondary border border-border">
+          <div className="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center bg-secondary border border-border">
             {icons[variant]}
           </div>
 
@@ -90,7 +90,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
             </p>
 
             {itemName && (
-              <div className="mt-3 px-3 py-1.5 bg-secondary border border-border rounded-xl text-xs font-mono text-foreground break-all">
+              <div className="mt-3 px-3 py-1.5 bg-secondary border border-border rounded-lg text-xs font-mono text-foreground break-all">
                 {itemName}
               </div>
             )}

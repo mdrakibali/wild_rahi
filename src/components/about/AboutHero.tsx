@@ -33,13 +33,13 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
             </p>
           )}
 
-          <div className="pt-3 flex flex-wrap items-center gap-3">
+          <div className="pt-3 flex flex-wrap items-center gap-2.5">
             <Link
               href="/contact"
-              className="group inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 px-5 py-2.5 text-xs uppercase tracking-[0.14em] font-semibold transition-colors"
+              className="group inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.12em] font-semibold transition-colors"
             >
               Get in Touch
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
 
             {profile.facebookUrl && (
@@ -47,7 +47,7 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
                 href={profile.facebookUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
               >
                 <FacebookIcon className="w-3.5 h-3.5" />
                 Facebook
@@ -58,7 +58,7 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
                 href={profile.instagramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
               >
                 <InstagramIcon className="w-3.5 h-3.5" />
                 Instagram
@@ -69,7 +69,7 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
                 href={profile.youtubeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
               >
                 <YoutubeIcon className="w-3.5 h-3.5" />
                 YouTube
@@ -80,7 +80,7 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
                 href={profile.tiktokUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
               >
                 <TikTokIcon className="w-3.5 h-3.5" />
                 TikTok
@@ -91,7 +91,7 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
 
         {/* Right: Photographer Portrait */}
         <div className="lg:col-span-5 order-1 lg:order-2">
-          <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-muted border border-border shadow-sm">
+          <div className="relative aspect-[4/5] rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
             <PortfolioImage
               src={
                 profile.portraitUrl ||

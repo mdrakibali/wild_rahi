@@ -326,7 +326,7 @@ export const AdminStoriesTab: React.FC<AdminStoriesTabProps> = ({
                 {story.isPublished && (
                   <Link
                     href={`/stories/${encodeURIComponent(story.slug)}`}
-                    className="rounded-xl border border-border hover:bg-secondary px-3 py-1.5 text-xs"
+                    className="rounded-lg border border-border hover:bg-secondary px-3 py-1.5 text-xs"
                   >
                     View
                   </Link>

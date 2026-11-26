@@ -30,7 +30,7 @@ export const VideosPage: React.FC<{ videos: VideoItem[] }> = ({ videos }) => {
 
       <section className="site-container py-12 lg:py-20">
         {publishedVideos.length === 0 ? (
-          <div className="py-16 text-center rounded-xl bg-card border border-border p-8 max-w-lg mx-auto">
+          <div className="py-16 text-center rounded-lg bg-card border border-border p-8 max-w-lg mx-auto">
             <h2 className="text-2xl font-serif font-semibold text-foreground">
               No videos published yet
             </h2>

@@ -1,21 +1,19 @@
-'use client';
+"use client";
 
-import React, { useMemo, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { PhotoCard } from '@/components/photography/PhotoCard';
-import { splitIntoBentoRows } from '@/lib/bentoLayout';
-import { filterPhotographs, WILDLIFE_CATEGORIES } from '@/lib/validation';
-import type { Photograph } from '@/types/portfolio';
+import { PhotoCard } from "@/components/photography/PhotoCard";
+import { filterPhotographs, WILDLIFE_CATEGORIES } from "@/lib/validation";
+import type { Photograph } from "@/types/portfolio";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useMemo, useState } from "react";
 
-const GALLERY_TABS = [
-  { id: 'all', label: 'All' },
-  ...WILDLIFE_CATEGORIES,
-];
+const GALLERY_TABS = [{ id: "all", label: "All" }, ...WILDLIFE_CATEGORIES];
 
-export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photographs }) => {
+export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({
+  photographs,
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const urlCategory = searchParams.get('category') || 'all';
+  const urlCategory = searchParams.get("category") || "all";
   const [selectedCategory, setSelectedCategory] = useState<string>(urlCategory);
 
   const activeCategory = urlCategory || selectedCategory;
@@ -25,21 +23,19 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photograp
       filterPhotographs(photographs, {
         category: activeCategory,
       }),
-    [photographs, activeCategory]
+    [photographs, activeCategory],
   );
-
-  const bentoRows = useMemo(() => splitIntoBentoRows(filteredPhotos), [filteredPhotos]);
 
   const updateCategory = (next: string) => {
     setSelectedCategory(next);
     const params = new URLSearchParams(searchParams.toString());
-    if (next === 'all') {
-      params.delete('category');
+    if (next === "all") {
+      params.delete("category");
     } else {
-      params.set('category', next);
+      params.set("category", next);
     }
     const qs = params.toString();
-    router.replace(qs ? `/gallery?${qs}` : '/gallery', { scroll: false });
+    router.replace(qs ? `/gallery?${qs}` : "/gallery", { scroll: false });
   };
 
   return (
@@ -54,7 +50,8 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photograp
             Gallery
           </h1>
           <p className="text-base text-muted-foreground max-w-xl leading-relaxed">
-            Wild birds, mammals, reptiles, amphibians, and landscapes across Bangladesh.
+            Wild birds, mammals, reptiles, amphibians, and landscapes across
+            Bangladesh.
           </p>
         </div>
       </section>
@@ -73,10 +70,10 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photograp
                   key={cat.id}
                   type="button"
                   onClick={() => updateCategory(cat.id)}
-                  className={`shrink-0 rounded-xl px-4 py-2 text-xs sm:text-[13px] tracking-[0.04em] transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`shrink-0 rounded-lg px-3 py-1.5 text-xs tracking-[0.03em] transition-colors cursor-pointer whitespace-nowrap ${
                     active
-                      ? 'bg-primary text-primary-foreground font-semibold'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                      ? "bg-primary text-primary-foreground font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
                   {cat.label}
@@ -84,17 +81,13 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photograp
               );
             })}
           </nav>
-
-          <span className="hidden sm:inline-block text-xs font-mono text-muted-foreground shrink-0">
-            {filteredPhotos.length}
-          </span>
         </div>
       </section>
 
-      {/* 2 - 3 - 3 - 2 Bento Collage Gallery (matching homepage & marquee style) */}
+      {/* Standard 3-Column Card Grid */}
       <section className="site-container py-10 lg:py-16">
         {filteredPhotos.length === 0 ? (
-          <div className="py-20 text-center space-y-4 rounded-xl border border-border bg-card p-8 max-w-md mx-auto">
+          <div className="py-20 text-center space-y-4 rounded-lg border border-border bg-card p-8 max-w-md mx-auto">
             <h2 className="text-2xl font-serif font-semibold text-foreground">
               No photographs in this category yet
             </h2>
@@ -103,41 +96,22 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({ photograp
             </p>
             <button
               type="button"
-              onClick={() => updateCategory('all')}
-              className="inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider cursor-pointer"
+              onClick={() => updateCategory("all")}
+              className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider cursor-pointer"
             >
               Show All
             </button>
           </div>
         ) : (
-          <div className="rounded-xl bg-obsidian p-2.5 sm:p-4 lg:p-5 border border-border space-y-2.5 sm:space-y-3.5 lg:space-y-4">
-            {bentoRows.map((row, rowIdx) => (
-              <div
-                key={`gallery-row-${rowIdx}`}
-                className={
-                  row.variant === 'two'
-                    ? 'grid grid-cols-2 gap-2.5 sm:gap-3.5 lg:gap-4'
-                    : row.variant === 'three'
-                      ? 'grid grid-cols-3 gap-2.5 sm:gap-3.5 lg:gap-4'
-                      : 'grid grid-cols-1 gap-2.5 sm:gap-3.5 lg:gap-4'
-                }
-              >
-                {row.items.map((photo) => (
-                  <PhotoCard
-                    key={photo.id}
-                    photo={photo}
-                    allPhotos={filteredPhotos}
-                    aspectClass={row.variant === 'three' ? 'aspect-[3/4]' : 'aspect-[16/10]'}
-                    sizes={
-                      row.variant === 'three'
-                        ? '(max-width: 640px) 32vw, 33vw'
-                        : row.variant === 'two'
-                          ? '(max-width: 640px) 48vw, 50vw'
-                          : '100vw'
-                    }
-                  />
-                ))}
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+            {filteredPhotos.map((photo) => (
+              <PhotoCard
+                key={photo.id}
+                photo={photo}
+                allPhotos={filteredPhotos}
+                aspectClass="aspect-[4/3]"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
             ))}
           </div>
         )}

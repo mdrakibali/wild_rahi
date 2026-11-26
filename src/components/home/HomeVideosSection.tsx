@@ -35,10 +35,10 @@ export const HomeVideosSection: React.FC<HomeVideosSectionProps> = ({ videos }) 
 
           <Link
             href="/videos"
-            className="group inline-flex items-center gap-2 rounded-xl border border-border bg-background hover:bg-secondary px-5 py-2.5 text-xs uppercase tracking-[0.14em] font-semibold text-foreground transition-colors self-start md:self-auto"
+            className="group inline-flex items-center gap-1.5 rounded-lg border border-border bg-background hover:bg-secondary px-3.5 py-1.5 text-[11px] uppercase tracking-[0.12em] font-semibold text-foreground transition-colors self-start md:self-auto"
           >
             All Videos
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
 

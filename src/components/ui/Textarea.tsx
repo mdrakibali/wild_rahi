@@ -24,7 +24,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           ref={ref}
           id={areaId}
-          className={`w-full rounded-xl border bg-card text-foreground px-3.5 py-2.5 text-sm transition-all duration-150 placeholder:text-muted-foreground/50 hover:border-primary/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50 min-h-[96px] ${
+          className={`w-full rounded-lg border bg-card text-foreground px-3.5 py-2.5 text-sm transition-all duration-150 placeholder:text-muted-foreground/50 hover:border-primary/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50 min-h-[96px] ${
             error
               ? 'border-destructive focus:border-destructive focus:ring-destructive/10'
               : 'border-border'

@@ -134,7 +134,7 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
       <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
         {/* Left: 2 - 3 - 3 - 2 Bento Collage Block */}
         <div className="lg:col-span-7">
-          <div className="rounded-xl bg-obsidian p-2.5 sm:p-3.5 border border-border shadow-sm space-y-2.5 sm:space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {bentoRows.map((row, rowIdx) => (
               <div
                 key={`home-bento-row-${rowIdx}`}
@@ -155,7 +155,7 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
                       onClick={() => {
                         if (item.photo) openPhotoModal(item.photo, photographs);
                       }}
-                      className={`about-grid-frame group relative overflow-hidden rounded-xl bg-surface-dark ${aspectClass} ${
+                      className={`about-grid-frame group relative overflow-hidden rounded-lg bg-muted border border-border ${aspectClass} ${
                         item.photo ? 'cursor-pointer' : ''
                       }`}
                     >
@@ -199,10 +199,10 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
           <div className="pt-2">
             <Link
               href="/about"
-              className="group inline-flex items-center gap-2.5 rounded-xl border border-border bg-card hover:bg-secondary px-5 py-2.5 text-xs uppercase tracking-[0.14em] font-semibold text-foreground transition-colors"
+              className="group inline-flex items-center gap-1.5 rounded-lg border border-border bg-card hover:bg-secondary px-3.5 py-1.5 text-[11px] uppercase tracking-[0.12em] font-semibold text-foreground transition-colors"
             >
               Discover More
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>

@@ -28,7 +28,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 
   return (
     <article
-      className={`group relative rounded-xl overflow-hidden bg-surface-dark border border-border/60 shadow-xs hover:shadow-xl transition-all duration-300 ${className}`}
+      className={`group relative rounded-lg overflow-hidden bg-card border border-border shadow-xs hover:shadow-xl transition-all duration-300 ${className}`}
     >
       <a
         href={targetHref}
@@ -52,7 +52,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-2.5 sm:p-4 lg:p-5 text-white">
             <div className="flex justify-end">
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white/95 border border-white/20">
+              <span className="inline-flex items-center gap-1 rounded-lg bg-black/55 backdrop-blur-md px-2 py-0.5 text-[11px] font-medium text-white/95 border border-white/15">
                 <Expand className="w-3 h-3" />
                 <span className="hidden sm:inline">Fullscreen</span>
               </span>

@@ -31,10 +31,10 @@ export const HomeStoriesSection: React.FC<HomeStoriesSectionProps> = ({ stories 
 
           <Link
             href="/stories"
-            className="group inline-flex items-center gap-2 rounded-xl border border-border bg-card hover:bg-muted px-5 py-2.5 text-xs uppercase tracking-[0.14em] font-semibold text-foreground transition-colors self-start md:self-auto"
+            className="group inline-flex items-center gap-1.5 rounded-lg border border-border bg-card hover:bg-muted px-3.5 py-1.5 text-[11px] uppercase tracking-[0.12em] font-semibold text-foreground transition-colors self-start md:self-auto"
           >
             All Stories
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
 
@@ -42,7 +42,7 @@ export const HomeStoriesSection: React.FC<HomeStoriesSectionProps> = ({ stories 
           {displayStories.map((story) => (
             <article
               key={story.id}
-              className="group rounded-xl bg-card border border-border overflow-hidden flex flex-col transition-all duration-300 hover:border-foreground/25 hover:shadow-md"
+              className="group rounded-lg bg-card border border-border overflow-hidden flex flex-col transition-all duration-300 hover:border-foreground/25 hover:shadow-md"
             >
               <Link
                 href={`/stories/${encodeURIComponent(story.slug)}`}

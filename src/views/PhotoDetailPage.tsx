@@ -64,32 +64,32 @@ export const PhotoDetailPage: React.FC<PhotoDetailPageProps> = ({ slug, photogra
       <div className="site-container py-4 flex items-center justify-between gap-4 border-b border-white/10">
         <Link
           href="/gallery"
-          className="inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white/75 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-300 hover:text-white hover:bg-zinc-900 transition-colors cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
           Back to Gallery
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {currentIndex !== -1 && (
-            <span className="text-xs font-mono px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-white/80">
+            <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300">
               {currentIndex + 1} / {publishedPhotos.length}
             </span>
           )}
 
           {copied ? (
-            <span className="text-xs text-emerald-400 font-medium bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-xl">
+            <span className="text-[11px] text-emerald-400 font-medium bg-emerald-950/70 border border-emerald-500/30 px-2.5 py-1 rounded-lg">
               Link copied!
             </span>
           ) : (
             <button
               type="button"
               onClick={handleShare}
-              className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-colors cursor-pointer"
+              className="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 transition-colors cursor-pointer"
               title="Copy link"
               aria-label="Share Photograph"
             >
-              <Share2 className="w-4 h-4" />
+              <Share2 className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
@@ -100,10 +100,10 @@ export const PhotoDetailPage: React.FC<PhotoDetailPageProps> = ({ slug, photogra
         {prevPhoto && (
           <Link
             href={`/gallery/${encodeURIComponent(prevPhoto.id)}`}
-            className="absolute left-2 sm:left-6 z-20 p-3 sm:p-3.5 rounded-xl bg-black/60 hover:bg-black/90 text-white border border-white/20 backdrop-blur-md transition-all hover:scale-105"
+            className="absolute left-2 sm:left-6 z-20 w-8 h-8 sm:w-9 sm:h-9 inline-flex items-center justify-center rounded-lg bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 border border-zinc-700/80 backdrop-blur-md transition-colors"
             aria-label="Previous photograph"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronLeft className="w-4 h-4" />
           </Link>
         )}
 
@@ -114,51 +114,51 @@ export const PhotoDetailPage: React.FC<PhotoDetailPageProps> = ({ slug, photogra
             fill
             sizes="90vw"
             priority
-            className="object-contain rounded-xl"
+            className="object-contain rounded-lg"
           />
         </div>
 
         {nextPhoto && (
           <Link
             href={`/gallery/${encodeURIComponent(nextPhoto.id)}`}
-            className="absolute right-2 sm:right-6 z-20 p-3 sm:p-3.5 rounded-xl bg-black/60 hover:bg-black/90 text-white border border-white/20 backdrop-blur-md transition-all hover:scale-105"
+            className="absolute right-2 sm:right-6 z-20 w-8 h-8 sm:w-9 sm:h-9 inline-flex items-center justify-center rounded-lg bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 border border-zinc-700/80 backdrop-blur-md transition-colors"
             aria-label="Next photograph"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronRight className="w-4 h-4" />
           </Link>
         )}
       </div>
 
       {/* Bottom Area: Details + Thumbnail Filmstrip */}
-      <div className="site-container space-y-6 pt-4 border-t border-white/10">
-        <div className="space-y-2 text-left max-w-3xl">
-          <span className="inline-block text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-xl bg-white/15 text-white font-semibold">
+      <div className="site-container space-y-5 pt-4 border-t border-white/10">
+        <div className="space-y-1.5 text-left max-w-3xl">
+          <span className="inline-block text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 font-medium">
             {getWildlifeCategoryLabel(photo.category)}
           </span>
 
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-white tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight leading-tight">
             {photo.title}
           </h1>
 
           {photo.description && (
-            <p className="text-sm sm:text-base text-white/80 leading-relaxed italic">
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed italic">
               &ldquo;{photo.description}&rdquo;
             </p>
           )}
         </div>
 
-        <div className="pt-4 border-t border-white/10">
-          <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-2">
+        <div className="pt-3 border-t border-white/10">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {publishedPhotos.map((p, idx) => {
               const isSelected = idx === currentIndex;
               return (
                 <Link
                   key={p.id}
                   href={`/gallery/${encodeURIComponent(p.id)}`}
-                  className={`relative shrink-0 w-16 h-12 sm:w-20 sm:h-14 rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
+                  className={`relative shrink-0 w-12 h-9 sm:w-14 sm:h-10 rounded-lg overflow-hidden transition-all duration-200 cursor-pointer ${
                     isSelected
-                      ? 'ring-2 ring-white border-2 border-white scale-105 opacity-100 z-10'
-                      : 'opacity-50 hover:opacity-90 border border-white/20'
+                      ? 'border border-emerald-400/75 ring-1 ring-emerald-400/35 opacity-100'
+                      : 'border border-zinc-800 opacity-50 hover:opacity-85'
                   }`}
                   title={p.title}
                 >
@@ -166,7 +166,7 @@ export const PhotoDetailPage: React.FC<PhotoDetailPageProps> = ({ slug, photogra
                     src={p.thumbnailUrl || p.image}
                     alt={p.title}
                     fill
-                    sizes="80px"
+                    sizes="56px"
                     className="object-cover"
                   />
                 </Link>

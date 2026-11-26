@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { ExternalLink, X } from 'lucide-react';
 import type { VideoItem } from '../../types/portfolio';
 import { parseVideoUrl } from '../../lib/videoEmbed';
+import { useScrollLock } from '@/lib/useScrollLock';
 
 interface VideoModalProps {
   video: VideoItem | null;
@@ -16,10 +17,10 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
   const backdropRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
+  useScrollLock(Boolean(video));
+
   useEffect(() => {
     if (!video) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
 
     if (backdropRef.current && dialogRef.current) {
       gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.22 });
@@ -35,7 +36,6 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => {
-      document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKeyDown);
     };
   }, [video, onClose]);
@@ -45,7 +45,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
   return (
     <div
       ref={backdropRef}
-      className="fixed inset-0 z-50 bg-obsidian/92 backdrop-blur-xs flex items-center justify-center p-4 sm:p-8"
+      className="fixed inset-0 z-50 bg-obsidian/92 backdrop-blur-xs flex items-center justify-center p-4 sm:p-8 overscroll-none"
       role="dialog"
       aria-modal="true"
       aria-label={`Video player: ${video.title}`}
@@ -53,7 +53,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
     >
       <div
         ref={dialogRef}
-        className="w-full max-w-4xl rounded-xl bg-obsidian text-white border border-white/15 overflow-hidden max-h-[92vh] flex flex-col"
+        className="w-full max-w-4xl rounded-lg bg-obsidian text-white border border-white/15 overflow-hidden max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-5 sm:px-7 py-4 border-b border-white/12 flex items-center justify-between gap-4">
@@ -68,10 +68,10 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-white/25 px-4 py-1.5 text-xs font-medium text-white hover:bg-card hover:text-obsidian transition-colors cursor-pointer"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-zinc-700/80 bg-zinc-900/70 px-3 py-1 text-[11px] font-medium text-zinc-200 hover:bg-card hover:text-obsidian transition-colors cursor-pointer"
             aria-label="Close video modal"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
             Close
           </button>
         </div>
@@ -105,7 +105,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
                 href={video.videoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-card text-obsidian px-6 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg bg-card text-obsidian px-6 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
               >
                 {parsed.fallbackLabel}
                 <ExternalLink className="w-4 h-4" />
@@ -128,7 +128,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, onClose }) => {
             href={video.videoUrl}
             target="_blank"
             rel="noreferrer"
-            className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 px-5 py-2 text-xs sm:text-sm font-medium text-white hover:bg-card hover:text-obsidian transition-colors self-start sm:self-center"
+            className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-lg border border-zinc-700/80 px-3.5 py-1.5 text-xs font-medium text-zinc-200 hover:bg-card hover:text-obsidian transition-colors self-start sm:self-center"
           >
             {parsed.fallbackLabel}
             <ExternalLink className="w-3.5 h-3.5" />

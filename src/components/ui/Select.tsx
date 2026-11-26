@@ -129,7 +129,7 @@ export const Select: React.FC<CustomSelectProps> = ({
           aria-label={ariaLabel || label}
           disabled={disabled}
           onClick={() => setIsOpen((prev) => !prev)}
-          className={`w-full flex items-center justify-between rounded-xl border bg-card text-foreground px-3.5 py-2.5 text-sm transition-all duration-150 text-left hover:border-primary/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer ${
+          className={`w-full flex items-center justify-between rounded-lg border bg-card text-foreground px-3.5 py-2.5 text-sm transition-all duration-150 text-left hover:border-primary/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer ${
             error
               ? 'border-destructive focus:border-destructive focus:ring-destructive/10'
               : 'border-border'
@@ -149,7 +149,7 @@ export const Select: React.FC<CustomSelectProps> = ({
 
         {isOpen && (
           <div
-            className="absolute z-50 mt-1.5 w-full rounded-xl border border-border bg-card p-1.5 text-foreground shadow-lg max-h-60 overflow-y-auto no-scrollbar"
+            className="absolute z-50 mt-1.5 w-full rounded-lg border border-border bg-card p-1.5 text-foreground shadow-lg max-h-60 overflow-y-auto no-scrollbar"
             role="listbox"
           >
             {options.length === 0 ? (
