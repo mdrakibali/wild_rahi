@@ -1,6 +1,7 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { getCachedPublicPortfolio } from '@/lib/cache';
-import { PhotoDetailPage } from '@/views/PhotoDetailPage';
+import { GalleryPage } from '@/views/GalleryPage';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -8,11 +9,12 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const decoded = decodeURIComponent(slug);
   const { photographs } = await getCachedPublicPortfolio();
-  const photo = photographs.find((p) => p.id === slug);
+  const photo = photographs.find((p) => p.id === decoded);
 
   if (!photo) {
-    return { title: 'Photograph — Wild Rahi' };
+    return { title: 'Gallery — Wild Rahi' };
   }
 
   return {
@@ -26,9 +28,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function Page({ params }: PageProps) {
-  const { slug } = await params;
+export default async function Page() {
   const { photographs } = await getCachedPublicPortfolio();
 
-  return <PhotoDetailPage slug={slug} photographs={photographs} />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <GalleryPage photographs={photographs} />
+    </Suspense>
+  );
 }

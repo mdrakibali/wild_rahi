@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import type { Photograph } from '@/types/portfolio';
 
 interface LightboxContextValue {
@@ -13,16 +14,33 @@ interface LightboxContextValue {
 
 const LightboxContext = createContext<LightboxContextValue | null>(null);
 
+function extractPhotoIdFromPath(pathname: string | null): string | null {
+  if (!pathname || !pathname.startsWith('/gallery/')) return null;
+  const raw = pathname.slice('/gallery/'.length).split('/')[0];
+  if (!raw) return null;
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
 export const LightboxProvider: React.FC<{
   photographs: Photograph[];
   children: React.ReactNode;
 }> = ({ photographs, children }) => {
+  const pathname = usePathname();
+  const router = useRouter();
+
   const [publishedPhotos, setPublishedPhotos] = useState<Photograph[]>(() =>
     photographs.filter((p) => p.isPublished).sort((a, b) => a.sortOrder - b.sortOrder)
   );
   const [modalList, setModalList] = useState<Photograph[]>(publishedPhotos);
-  const [activePhotoId, setActivePhotoId] = useState<string | null>(null);
+  const [activePhotoId, setActivePhotoId] = useState<string | null>(() =>
+    extractPhotoIdFromPath(pathname)
+  );
   const returnUrlRef = useRef<string | null>(null);
+  const wasOnPhotoRouteRef = useRef<boolean>(Boolean(extractPhotoIdFromPath(pathname)));
 
   useEffect(() => {
     const sorted = photographs
@@ -32,6 +50,17 @@ export const LightboxProvider: React.FC<{
     setModalList((prev) => (prev.length === 0 ? sorted : prev));
   }, [photographs]);
 
+  // Sync modal automatically on direct /gallery/[slug] visits, reloads, or Next router navigation
+  useEffect(() => {
+    const routeId = extractPhotoIdFromPath(pathname);
+    if (routeId) {
+      setActivePhotoId(routeId);
+    } else if (wasOnPhotoRouteRef.current) {
+      setActivePhotoId(null);
+    }
+    wasOnPhotoRouteRef.current = Boolean(routeId);
+  }, [pathname]);
+
   const openPhotoModal = useCallback(
     (photo: Photograph, customList?: Photograph[]) => {
       if (customList && customList.length > 0) {
@@ -39,13 +68,19 @@ export const LightboxProvider: React.FC<{
       } else {
         setModalList(publishedPhotos);
       }
-      if (typeof window !== 'undefined' && returnUrlRef.current === null) {
+      if (
+        typeof window !== 'undefined' &&
+        returnUrlRef.current === null &&
+        !extractPhotoIdFromPath(pathname)
+      ) {
         returnUrlRef.current = window.location.pathname + window.location.search;
+        window.history.replaceState(null, '', `/gallery/${encodeURIComponent(photo.id)}`);
+      } else if (typeof window !== 'undefined') {
         window.history.replaceState(null, '', `/gallery/${encodeURIComponent(photo.id)}`);
       }
       setActivePhotoId(photo.id);
     },
-    [publishedPhotos]
+    [pathname, publishedPhotos]
   );
 
   const closePhotoModal = useCallback(() => {
@@ -53,8 +88,12 @@ export const LightboxProvider: React.FC<{
     if (typeof window !== 'undefined' && returnUrlRef.current !== null) {
       window.history.replaceState(null, '', returnUrlRef.current);
       returnUrlRef.current = null;
+      return;
     }
-  }, []);
+    if (extractPhotoIdFromPath(pathname)) {
+      router.replace('/gallery', { scroll: false });
+    }
+  }, [pathname, router]);
 
   const activeModalPhoto = useMemo(() => {
     if (!activePhotoId) return null;
