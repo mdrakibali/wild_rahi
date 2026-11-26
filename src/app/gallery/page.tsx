@@ -5,7 +5,8 @@ import { GalleryPage } from '@/views/GalleryPage';
 
 export const metadata: Metadata = {
   title: 'Gallery — Wild Rahi',
-  description: 'Wild birds, mammals, reptiles, amphibians, and landscapes across Bangladesh.',
+  description:
+    'Birds, mammals, reptiles, amphibians, insects, wetlands, landscapes, and wild flora across North Bengal and Bangladesh.',
 };
 
 export default async function Page() {

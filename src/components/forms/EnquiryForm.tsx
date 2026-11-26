@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Check, Send } from 'lucide-react';
 import { validateEnquiryInput, type EnquiryInput } from '@/lib/validation';
 import { Input } from '@/components/ui/Input';
@@ -8,12 +9,22 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
 
 export const EnquiryForm: React.FC<{ photographerName?: string }> = ({ photographerName }) => {
-  const [form, setForm] = useState<EnquiryInput>({
+  const searchParams = useSearchParams();
+  const presetSubject = searchParams.get('subject')?.trim() || '';
+
+  const [form, setForm] = useState<EnquiryInput>(() => ({
     name: '',
     email: '',
-    subject: '',
+    subject: presetSubject.slice(0, 200),
     message: '',
-  });
+  }));
+
+  useEffect(() => {
+    if (!presetSubject) return;
+    setForm((prev) =>
+      prev.subject.trim() ? prev : { ...prev, subject: presetSubject.slice(0, 200) }
+    );
+  }, [presetSubject]);
   const [errors, setErrors] = useState<Partial<Record<keyof EnquiryInput, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);

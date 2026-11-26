@@ -3,25 +3,40 @@ import './globals.css';
 import { getCachedPublicPortfolio } from '@/lib/cache';
 import { AppShell } from '@/components/layout/AppShell';
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL || 'http://localhost:3000'),
-  title: 'Wild Rahi — Razaul Hafiz Rahi | Wildlife Photography, Bangladesh',
-  description:
-    "Documenting the beauty, diversity, and untold stories of Bangladesh's wildlife. Wildlife photography, field videos, and stories by Razaul Hafiz Rahi (Wild Rahi).",
-  openGraph: {
-    title: 'Wild Rahi — Razaul Hafiz Rahi | Wildlife Photography',
-    description:
-      "Documenting the beauty, diversity, and untold stories of Bangladesh's wildlife. Wildlife photography, field videos, and stories by Razaul Hafiz Rahi.",
-    images: ['/assets/images/hero_sundarbans_tiger_1795067902199.jpg'],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Wild Rahi — Wildlife Photography',
-    description: "Documenting the beauty, diversity, and untold stories of Bangladesh's wildlife.",
-    images: ['/assets/images/hero_sundarbans_tiger_1795067902199.jpg'],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { profile, heroSlides } = await getCachedPublicPortfolio();
+  const baseUrl = process.env.APP_URL || 'http://localhost:3000';
+  const primaryImage =
+    heroSlides.find((s) => s.isPublished && s.image)?.image ||
+    '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg';
+  const siteTitle = `${profile.brandName} — ${profile.photographerName} | Wildlife Photography`;
+  const siteDescription =
+    profile.heroSubheadline ||
+    `Documenting birds, mammals, wetlands, and wild flora across ${profile.location || 'North Bengal, Bangladesh'}.`;
+
+  return {
+    metadataBase: new URL(baseUrl),
+    title: siteTitle,
+    description: siteDescription,
+    icons: {
+      icon: '/icon.png',
+      shortcut: '/favicon.png',
+      apple: '/apple-icon.png',
+    },
+    openGraph: {
+      title: siteTitle,
+      description: siteDescription,
+      images: [primaryImage],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: siteTitle,
+      description: siteDescription,
+      images: [primaryImage],
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -30,6 +45,22 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { profile, photographs } = await getCachedPublicPortfolio();
+  const baseUrl = process.env.APP_URL || 'https://wildrahi.com';
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: profile.photographerName,
+    alternateName: profile.brandName,
+    description: profile.bioSummary,
+    url: baseUrl,
+    homeLocation: {
+      '@type': 'Place',
+      name: profile.location || 'Thakurgaon, Rangpur, North Bengal',
+    },
+    sameAs: [profile.facebookUrl, profile.instagramUrl, profile.youtubeUrl, profile.tiktokUrl].filter(
+      Boolean
+    ),
+  };
 
   return (
     <html lang="en" className="bg-background text-foreground">
@@ -42,6 +73,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <AppShell profile={profile} photographs={photographs}>
           {children}
         </AppShell>

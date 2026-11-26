@@ -19,13 +19,13 @@ export const HomeStoriesSection: React.FC<HomeStoriesSectionProps> = ({ stories 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-7">
           <div className="max-w-2xl space-y-2.5">
             <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
-              04 &middot; Field Notes &amp; Essays
+              04 &middot; Field Notes
             </p>
             <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-serif font-semibold tracking-tight leading-[1.12] text-foreground">
-              Stories from the Wild
+              Field Stories
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Visual essays and personal encounters from expeditions across Bangladesh.
+              Notes and photo essays written from time spent outdoors.
             </p>
           </div>
 

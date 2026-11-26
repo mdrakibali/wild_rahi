@@ -5,16 +5,16 @@ export default function NotFound() {
     <div className="min-h-[70vh] flex flex-col items-center justify-center px-5 text-center">
       <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">404 — Page Not Found</p>
       <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-foreground mb-6">
-        Lost in the Wilderness
+        Page Not Found
       </h1>
       <p className="text-base text-muted-foreground max-w-md mb-8">
-        The page you are looking for does not exist or may have been relocated.
+        The page you are looking for does not exist or may have been moved.
       </p>
       <Link
         href="/"
         className="rounded-lg bg-primary text-primary-foreground px-4 py-2 text-xs font-medium hover:bg-primary/90 transition-colors"
       >
-        Return to Sanctuary
+        Back to Home
       </Link>
     </div>
   );

@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import gsap from 'gsap';
-import { ChevronLeft, ChevronRight, Share2, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Mail, Share2, X } from 'lucide-react';
 import { useLightbox } from '@/context/LightboxContext';
 import { getWildlifeCategoryLabel } from '@/lib/validation';
 import { useScrollLock } from '@/lib/useScrollLock';
@@ -101,6 +102,15 @@ export const PhotoModal: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <Link
+            href={`/contact?subject=${encodeURIComponent(`Photo Enquiry: ${activeModalPhoto.title}`)}`}
+            onClick={closePhotoModal}
+            className="h-8 px-2.5 inline-flex items-center gap-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700/80 text-[11px] font-medium text-zinc-200 transition-colors"
+            title="Enquire about licensing or print"
+          >
+            <Mail className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Enquire</span>
+          </Link>
           {copied ? (
             <span className="text-[11px] text-emerald-400 font-medium bg-emerald-950/70 border border-emerald-500/30 px-2.5 py-1 rounded-lg">
               Link copied!
@@ -204,7 +214,7 @@ export const PhotoModal: React.FC = () => {
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => openPhotoModal(p)}
+                  onClick={() => openPhotoModal(p, displayList)}
                   className={`relative shrink-0 w-12 h-9 sm:w-14 sm:h-10 rounded-lg overflow-hidden transition-all duration-200 cursor-pointer ${
                     isSelected
                       ? 'border border-emerald-400/75 ring-1 ring-emerald-400/35 opacity-100'

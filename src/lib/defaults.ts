@@ -4,18 +4,18 @@ export const DEFAULT_PROFILE: SiteProfile = {
   photographerName: 'Razaul Hafiz Rahi',
   brandName: 'Wild Rahi',
   location: 'Thakurgaon, Rangpur, North Bengal',
-  heroHeadline: 'Through the lens, a voice for the wild.',
+  heroHeadline: 'Wildlife of North Bengal.',
   heroSubheadline:
-    "Documenting the birds, elusive mammals, and untamed riverine landscapes of North Bengal and Bangladesh.",
+    'Birds, mammals, wetlands, and flora photographed in natural light by Razaul Hafiz Rahi.',
   bioHeadline: 'Razaul Hafiz Rahi',
   bioSummary:
-    'Wildlife photographer and naturalist based in Thakurgaon, North Bengal. Spending quiet mornings along northern rivers, seasonal wetlands, sal groves, and river charlands to document wild species in natural light.',
+    'Wildlife photographer based in Thakurgaon, North Bengal. Documenting birds, mammals, wetlands, and rural landscapes in natural light.',
   passionNote:
-    'Guided by patience and deep respect for every living creature—capturing fleeting encounters across North Bengal without disturbing natural habitats.',
+    'Working quietly along northern rivers, wetlands, and woodlands to photograph species in their natural habitat without disturbing them.',
   journeyNote:
-    'What began along quiet riverbanks in North Bengal photographing kingfishers and shy wetland mammals grew into dedicated field documentation across Chalan Beel wetlands, Padma–Jamuna charlands, and northern sal forests.',
+    'What started along local riverbanks in Thakurgaon photographing kingfishers and shy wetland mammals grew into ongoing documentation across North Bengal.',
   philosophy:
-    'The welfare and serenity of the living subject always precedes the photograph. No baiting, no artificial playback calls during nesting seasons, and never disclosing sensitive breeding sites.',
+    'The safety and calm of the animal always come before getting a shot—no baiting, no nesting disturbance, and keeping sensitive sites private.',
   portraitUrl: '/assets/images/portrait_photographer_field_1795067902652.jpg',
   aboutImages: [],
   contactEmail: 'contact@wildrahi.com',

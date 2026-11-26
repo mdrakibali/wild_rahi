@@ -108,13 +108,13 @@ export const FeaturedVisualSequence: React.FC<FeaturedVisualSequenceProps> = ({
       >
         <div className="site-container mb-7 lg:mb-8 space-y-2 max-w-2xl">
           <p className="text-[11px] uppercase tracking-[0.22em] text-white/55 font-medium">
-            02 &middot; Featured Visual Sequence
+            02 &middot; Selected Photographs
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-serif font-semibold tracking-tight leading-[1.12] text-white">
-            Featured Visual Sequence
+            Featured Frames
           </h2>
           <p className="text-sm sm:text-base text-white/70">
-            A Visual Journey Across Wild Bangladesh
+            Recent wildlife photographs from North Bengal and across Bangladesh.
           </p>
         </div>
 

@@ -43,8 +43,8 @@ const FALLBACK_WILDLIFE_FRAMES = [
     title: 'Common Mormon Butterfly, Forest Edge',
   },
   {
-    image: '/assets/images/hero_sundarbans_tiger_1795067902199.jpg',
-    title: 'Wild Felid Portrait in Golden Light',
+    image: '/assets/gear/tripod_gimbal.jpg',
+    title: 'Field Support & Gimbal Optics',
   },
   {
     image: '/assets/gear/sony_a1.jpg',

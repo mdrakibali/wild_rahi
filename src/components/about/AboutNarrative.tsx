@@ -11,10 +11,10 @@ export const AboutNarrative: React.FC<AboutNarrativeProps> = ({ profile }) => {
       {profile.journeyNote && (
         <div className="rounded-lg border border-border bg-background p-6 sm:p-8 space-y-3">
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
-            01 &middot; Field Journey
+            01 &middot; Background
           </p>
           <h2 className="text-2xl sm:text-3xl font-serif font-semibold tracking-tight text-foreground">
-            In the Wild
+            Field Work
           </h2>
           <p className="text-base text-foreground/85 leading-relaxed">
             {profile.journeyNote}

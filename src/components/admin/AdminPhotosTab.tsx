@@ -188,7 +188,7 @@ export const AdminPhotosTab: React.FC<AdminPhotosTabProps> = ({
               className={inputCls}
               value={draft.title}
               onChange={(e) => setDraft((p) => ({ ...p, title: e.target.value }))}
-              placeholder="e.g. Canopy Sentinel: Common Kingfisher"
+              placeholder="e.g. Common Kingfisher by Riverbank"
             />
           </div>
           <div>

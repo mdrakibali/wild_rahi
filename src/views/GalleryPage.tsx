@@ -17,6 +17,22 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({
 
   const activeCategory = urlCategory || selectedCategory;
 
+  const publishedPhotos = useMemo(
+    () =>
+      filterPhotographs(photographs, {
+        category: "all",
+      }),
+    [photographs],
+  );
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: publishedPhotos.length };
+    for (const p of publishedPhotos) {
+      counts[p.category] = (counts[p.category] || 0) + 1;
+    }
+    return counts;
+  }, [publishedPhotos]);
+
   const filteredPhotos = useMemo(
     () =>
       filterPhotographs(photographs, {
@@ -49,8 +65,7 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({
             Gallery
           </h1>
           <p className="text-base text-muted-foreground max-w-xl leading-relaxed">
-            Wild birds, mammals, reptiles, amphibians, and landscapes across
-            Bangladesh.
+            Birds, mammals, reptiles, amphibians, insects, wetlands, landscapes, and wild flora across North Bengal and Bangladesh.
           </p>
         </div>
       </section>
@@ -64,6 +79,7 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({
           >
             {GALLERY_FILTER_TABS.map((cat) => {
               const active = activeCategory === cat.id;
+              const count = categoryCounts[cat.id] || 0;
               return (
                 <button
                   key={cat.id}
@@ -76,6 +92,11 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({
                   }`}
                 >
                   {cat.label}
+                  {count > 0 && (
+                    <span className="ml-1.5 text-[10px] opacity-70 tabular-nums">
+                      {count}
+                    </span>
+                  )}
                 </button>
               );
             })}

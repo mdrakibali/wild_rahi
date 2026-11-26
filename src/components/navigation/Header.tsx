@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
+import { useScrollLock } from '@/lib/useScrollLock';
 import type { SiteProfile } from '@/types/portfolio';
 
 const NAV_ITEMS = [
@@ -32,14 +33,7 @@ export const Header: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
     setMobileOpen(false);
   }, [pathname]);
 
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [mobileOpen]);
+  useScrollLock(mobileOpen);
 
   return (
     <>
@@ -179,7 +173,7 @@ export const Header: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
                 </a>
               )}
               <p className="text-xs text-muted-foreground tracking-wide">
-                Wildlife Photography &middot; Bangladesh
+                {profile.location || 'Thakurgaon, Rangpur, North Bengal'}
               </p>
             </div>
           </nav>

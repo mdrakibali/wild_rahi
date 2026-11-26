@@ -34,7 +34,7 @@ export const PortfolioImage: React.FC<PortfolioImageProps> = ({
   fill,
   ...rest
 }) => {
-  const safeSrc = src || '/assets/images/hero_sundarbans_tiger_1795067902199.jpg';
+  const safeSrc = src || '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg';
   const shouldUnoptimize =
     typeof unoptimized === 'boolean' ? unoptimized : !isOptimizableImageSrc(safeSrc);
 

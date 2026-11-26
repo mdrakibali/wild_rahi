@@ -29,7 +29,7 @@ export const HomeVideosSection: React.FC<HomeVideosSectionProps> = ({ videos }) 
               Videos
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Moving moments from the wild—quiet encounters across rivers, wetlands, and rural forests.
+              Short wildlife clips filmed along rivers, wetlands, and rural trees.
             </p>
           </div>
 

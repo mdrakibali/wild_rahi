@@ -4,6 +4,7 @@ import { FeaturedVisualSequence } from '@/components/home/FeaturedVisualSequence
 import { HomeAboutSection } from '@/components/home/HomeAboutSection';
 import { HomeStoriesSection } from '@/components/home/HomeStoriesSection';
 import { HomeVideosSection } from '@/components/home/HomeVideosSection';
+import { HomeHabitatsCta } from '@/components/home/HomeHabitatsCta';
 import type { HeroSlide, Photograph, SiteProfile, Story, VideoItem } from '@/types/portfolio';
 
 interface HomePageProps {
@@ -51,6 +52,9 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 5. Featured Stories (3-Card Grid) */}
       <HomeStoriesSection stories={displayStories} />
+
+      {/* 6. North Bengal Habitats & Collaboration CTA */}
+      <HomeHabitatsCta profile={profile} />
     </div>
   );
 };
