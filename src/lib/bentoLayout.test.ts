@@ -32,6 +32,14 @@ test('splitIntoBentoRows balances shorter collections cleanly without holes', ()
     [2, 3, 2]
   );
   assert.deepEqual(
+    splitIntoBentoRows([1, 2, 3, 4, 5, 6, 7, 8]).map((r) => [r.variant, r.items.length]),
+    [
+      ['two', 2],
+      ['three', 3],
+      ['three', 3],
+    ]
+  );
+  assert.deepEqual(
     splitIntoBentoRows([1]).map((r) => r.items.length),
     [1]
   );

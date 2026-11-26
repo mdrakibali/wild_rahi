@@ -41,8 +41,8 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* 1. Cinematic Multi-Image Auto-Sliding Hero */}
       <CinematicHero slides={heroSlides} profile={profile} />
 
-      {/* 2. Editorial Asymmetric About Section (2 - 3 - 1 Grid) */}
-      <HomeAboutSection photographs={publishedPhotos} profile={profile} />
+      {/* 2. Editorial Asymmetric About Section */}
+      <HomeAboutSection profile={profile} />
 
       {/* 3. Featured Visual Sequence (Horizontal Journey) */}
       <FeaturedVisualSequence photographs={publishedPhotos} />

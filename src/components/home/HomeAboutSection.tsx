@@ -5,92 +5,67 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
-import { useLightbox } from '@/context/LightboxContext';
 import { PortfolioImage } from '@/components/common/PortfolioImage';
 import { splitIntoBentoRows } from '@/lib/bentoLayout';
-import type { Photograph, SiteProfile } from '@/types/portfolio';
+import type { SiteProfile } from '@/types/portfolio';
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface HomeAboutSectionProps {
-  photographs: Photograph[];
   profile: SiteProfile;
 }
 
-const MAX_ABOUT_FRAMES = 5;
+const MAX_ABOUT_FRAMES = 8;
 
-const FALLBACK_WILDLIFE_FRAMES = [
-  {
-    image: '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
-    title: 'Pied Kingfisher in Flight, North Bengal',
-  },
-  {
-    image: '/assets/images/bird_kingfisher_sylhet_1795067903243.jpg',
-    title: 'Common Kingfisher Perch',
-  },
-  {
-    image: '/assets/images/mammal_fishing_cat_wetland_1795067902865.jpg',
-    title: 'Fishing Cat in Wetland Reeds',
-  },
-  {
-    image: '/assets/images/reptile_green_pit_viper_1795067904040.jpg',
-    title: 'Green Pit Viper',
-  },
-  {
-    image: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
-    title: 'Winter Mist Over Northern Wetland',
-  },
+const FALLBACK_ABOUT_FRAMES = [
+  '/assets/images/portrait_photographer_field_1795067902652.jpg',
+  '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
+  '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
+  '/assets/images/bird_kingfisher_sylhet_1795067903243.jpg',
+  '/assets/images/mammal_fishing_cat_wetland_1795067902865.jpg',
+  '/assets/images/reptile_green_pit_viper_1795067904040.jpg',
+  '/assets/images/insect_swallowtail_butterfly_1795067901756.jpg',
 ];
 
-export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
-  photographs,
-  profile,
-}) => {
-  const { openPhotoModal } = useLightbox();
+export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({ profile }) => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  // Build 5-frame 2 - 3 bento collage: prioritize admin-curated aboutImages, then published photographs, then wildlife fallbacks
+  // Build compact bento collage strictly from photographer personal images (no gallery links)
   const bentoRows = useMemo(() => {
-    const items: Array<{ id: string; src: string; alt: string; photo?: Photograph }> = [];
+    const items: Array<{ id: string; src: string; alt: string }> = [];
     const used = new Set<string>();
-    const photoByImage = new Map<string, Photograph>();
+    const customImages = (profile.aboutImages ?? []).filter(Boolean);
 
-    for (const p of photographs) {
-      if (p.image && !photoByImage.has(p.image)) {
-        photoByImage.set(p.image, p);
+    if (customImages.length > 0) {
+      for (let i = 0; i < customImages.length && items.length < MAX_ABOUT_FRAMES; i++) {
+        const imgUrl = customImages[i];
+        if (used.has(imgUrl)) continue;
+        used.add(imgUrl);
+        items.push({
+          id: `about-personal-${i}`,
+          src: imgUrl,
+          alt: `${profile.photographerName || 'Wild Rahi'} — frame ${i + 1}`,
+        });
+      }
+    } else {
+      const demoSources = [
+        profile.portraitUrl,
+        ...FALLBACK_ABOUT_FRAMES,
+      ].filter(Boolean);
+      for (let i = 0; i < demoSources.length && items.length < MAX_ABOUT_FRAMES; i++) {
+        const imgUrl = demoSources[i];
+        if (!imgUrl || used.has(imgUrl)) continue;
+        used.add(imgUrl);
+        items.push({
+          id: `about-demo-${i}`,
+          src: imgUrl,
+          alt: `${profile.photographerName || 'Wild Rahi'} — frame ${i + 1}`,
+        });
       }
     }
 
-    const customImages = profile.aboutImages ?? [];
-    for (let i = 0; i < customImages.length && items.length < MAX_ABOUT_FRAMES; i++) {
-      const imgUrl = customImages[i];
-      if (!imgUrl || used.has(imgUrl)) continue;
-      used.add(imgUrl);
-      const matchedPhoto = photoByImage.get(imgUrl);
-      items.push({
-        id: `about-custom-${i}`,
-        src: imgUrl,
-        alt: matchedPhoto?.title || `${profile.photographerName} portfolio frame ${i + 1}`,
-        photo: matchedPhoto,
-      });
-    }
-
-    for (const p of photographs) {
-      if (items.length >= MAX_ABOUT_FRAMES) break;
-      if (!p.image || used.has(p.image)) continue;
-      used.add(p.image);
-      items.push({ id: p.id, src: p.image, alt: p.title, photo: p });
-    }
-
-    for (let i = 0; i < FALLBACK_WILDLIFE_FRAMES.length && items.length < MAX_ABOUT_FRAMES; i++) {
-      const fb = FALLBACK_WILDLIFE_FRAMES[i];
-      if (used.has(fb.image)) continue;
-      used.add(fb.image);
-      items.push({ id: `fb-${i}`, src: fb.image, alt: fb.title });
-    }
-
     return splitIntoBentoRows(items.slice(0, MAX_ABOUT_FRAMES));
-  }, [photographs, profile.aboutImages, profile.photographerName]);
+  }, [profile.aboutImages, profile.photographerName, profile.portraitUrl]);
 
   useEffect(() => {
     const mm = gsap.matchMedia();
@@ -127,33 +102,28 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
       ref={sectionRef}
       className="bg-background text-foreground py-20 lg:py-28 border-t border-border"
     >
-      <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
-        {/* Left: 2 - 3 Bento Collage Block */}
-        <div className="lg:col-span-7">
-          <div className="space-y-2.5 sm:space-y-3">
+      <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        {/* Left: Compact 2 - 3 Bento Collage Block */}
+        <div className="lg:col-span-5">
+          <div className="max-w-[440px] mx-auto lg:mx-0 space-y-2">
             {bentoRows.map((row, rowIdx) => (
               <div
                 key={`home-bento-row-${rowIdx}`}
                 className={
                   row.variant === 'two'
-                    ? 'grid grid-cols-2 gap-2.5 sm:gap-3'
+                    ? 'grid grid-cols-2 gap-2'
                     : row.variant === 'three'
-                      ? 'grid grid-cols-3 gap-2.5 sm:gap-3'
-                      : 'grid grid-cols-1 gap-2.5 sm:gap-3'
+                      ? 'grid grid-cols-3 gap-2'
+                      : 'grid grid-cols-1 gap-2'
                 }
               >
                 {row.items.map((item) => {
                   const aspectClass =
-                    row.variant === 'three' ? 'aspect-[3/4]' : 'aspect-[16/10]';
+                    row.variant === 'three' ? 'aspect-[4/3]' : 'aspect-[3/2]';
                   return (
                     <div
                       key={item.id}
-                      onClick={() => {
-                        if (item.photo) openPhotoModal(item.photo, photographs);
-                      }}
-                      className={`about-grid-frame group relative overflow-hidden rounded-lg bg-muted border border-border ${aspectClass} ${
-                        item.photo ? 'cursor-pointer' : ''
-                      }`}
+                      className={`about-grid-frame group relative overflow-hidden rounded-lg bg-muted border border-border ${aspectClass}`}
                     >
                       <PortfolioImage
                         src={item.src}
@@ -161,10 +131,10 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
                         fill
                         sizes={
                           row.variant === 'three'
-                            ? '(max-width: 1024px) 32vw, 18vw'
-                            : '(max-width: 1024px) 48vw, 27vw'
+                            ? '(max-width: 1024px) 30vw, 150px'
+                            : '(max-width: 1024px) 45vw, 220px'
                         }
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        className="object-cover"
                       />
                     </div>
                   );
@@ -175,7 +145,7 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
         </div>
 
         {/* Right: Editorial Biography */}
-        <div className="lg:col-span-5 space-y-6 lg:pl-2">
+        <div className="lg:col-span-7 space-y-6 lg:pl-4">
           <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
             01 &middot; About the Photographer
           </p>

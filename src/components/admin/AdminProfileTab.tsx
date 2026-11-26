@@ -186,20 +186,20 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
         </div>
       </div>
 
-      {/* Homepage About Portfolio Collage */}
+      {/* Homepage About Personal Images */}
       <div className="bg-card border border-border rounded-lg p-6 space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
           <div>
             <h3 className="text-base font-serif font-bold text-foreground">
-              Homepage About Portfolio Collage
+              Homepage About Personal Photos
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Upload up to 5 portfolio images for the Homepage About 2–3 collage grid. Remaining slots fill automatically from published Gallery photos.
+              Upload up to 8 personal photographs of the photographer for the Homepage About collage. Only these personal images show there and they do not link to Gallery pages.
             </p>
           </div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center rounded-lg border border-border bg-muted/60 px-2.5 py-1 text-[11px] font-medium text-foreground">
-              {Math.min(aboutImages.length, 5)} / 5 slots used
+              {Math.min(aboutImages.length, 8)} / 8 slots used
             </span>
             {aboutImages.length > 0 && (
               <button
@@ -217,17 +217,17 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
         <ImageDropzone
           multiple={true}
           folder="profile/about"
-          helperText="Drag & drop or select images (JPEG, PNG, WebP · First 5 appear in Homepage About; click Save Profile to publish)"
+          helperText="Drag & drop or select personal photos (JPEG, PNG, WebP · Up to 8 shown in Homepage About; click Save Profile to publish)"
           onMultipleUpload={(uploaded) => {
             const added = uploaded.map((u) => u.imageUrl);
             const merged = sanitizeImageUrlList([...aboutImages, ...added], 24);
             setDraft((p) => ({ ...p, aboutImages: merged }));
-            onNotify(`Added ${added.length} portfolio image(s). Click Save Profile to publish.`);
+            onNotify(`Added ${added.length} personal image(s). Click Save Profile to publish.`);
           }}
         />
 
         {aboutImages.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {aboutImages.map((imgUrl, idx) => (
               <div
                 key={`${imgUrl}-${idx}`}
@@ -235,18 +235,18 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
               >
                 <img
                   src={imgUrl}
-                  alt={`About portfolio frame ${idx + 1}`}
+                  alt={`Personal photo ${idx + 1}`}
                   className="w-full h-full object-cover"
                 />
                 <span
                   className={`absolute top-1.5 left-1.5 rounded px-1.5 py-0.5 text-[10px] font-semibold tracking-wide ${
-                    idx < 5
+                    idx < 8
                       ? 'bg-black/70 text-white'
                       : 'bg-amber-500/90 text-black'
                   }`}
                 >
                   #{idx + 1}
-                  {idx >= 5 ? ' Reserve' : ''}
+                  {idx >= 8 ? ' Reserve' : ''}
                 </span>
                 <div className="absolute inset-x-0 bottom-0 p-1.5 bg-black/75 flex items-center justify-between gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
                   <div className="flex items-center gap-1">
@@ -283,7 +283,7 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
           </div>
         ) : (
           <p className="text-xs text-muted-foreground rounded-lg border border-dashed border-border bg-muted/30 px-4 py-3">
-            No custom collage images set yet — the Homepage About collage is currently auto-populating from published Gallery photographs.
+            No personal collage photos uploaded yet — upload images above and click Save Profile to replace the placeholder grid.
           </p>
         )}
       </div>
