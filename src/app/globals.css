@@ -185,11 +185,38 @@
 }
 
 .article-prose img {
-  border-radius: 6px;
-  margin: 2.5rem 0;
+  border-radius: 2px;
+  margin: 2rem 0 0.75rem;
   width: 100%;
   height: auto;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+}
+
+.article-prose figure {
+  margin: 2.25rem 0;
+}
+
+.article-prose figcaption {
+  font-size: 0.8125rem;
+  color: var(--color-muted-foreground);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.article-prose div[data-gallery="true"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 2.25rem 0;
+}
+
+.article-prose div[data-gallery="true"] figure {
+  margin: 0;
+}
+
+.article-prose div[data-gallery="true"] img {
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
 }
 
 .article-prose iframe {

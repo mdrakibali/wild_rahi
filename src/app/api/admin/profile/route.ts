@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db, siteProfiles } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
+import { revalidatePortfolioCache } from '@/lib/cache';
 
 export async function PUT(request: Request) {
   const session = await getAdminSessionFromRequest(request);
@@ -48,6 +49,7 @@ export async function PUT(request: Request) {
       result = inserted;
     }
 
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true, profile: result });
   } catch (err) {
     console.error('[Admin Profile PUT] Error:', err);

@@ -1,42 +1,41 @@
-"use client";
+'use client';
 
-import { Link, useLocation } from "@/lib/router-compat";
-import { Menu, X } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-import React, { useEffect, useState } from "react";
-import { usePortfolio } from "../../context/PortfolioContext";
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Menu, X } from 'lucide-react';
+import type { SiteProfile } from '@/types/portfolio';
 
 const NAV_ITEMS = [
-  { label: "Gallery", to: "/gallery" },
-  { label: "Albums", to: "/albums" },
-  { label: "Videos", to: "/videos" },
-  { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
+  { label: 'Home', href: '/' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Video', href: '/videos' },
+  { label: 'Story', href: '/stories' },
+  { label: 'Contact', href: '/contact' },
 ];
 
-export const Header: React.FC = () => {
-  const { profile } = usePortfolio();
-  const location = useLocation();
+export const Header: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
+  const pathname = usePathname() || '/';
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isHomeHero = location.pathname === "/" && !scrolled;
+  const isHomeHero = pathname === '/' && !scrolled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
     setMobileOpen(false);
-  }, [location.pathname, location.search]);
+  }, [pathname]);
 
   useEffect(() => {
     if (!mobileOpen) return;
     const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = prev;
     };
@@ -47,190 +46,145 @@ export const Header: React.FC = () => {
       <header
         className={`fixed top-0 inset-x-0 z-40 transition-colors duration-300 ${
           isHomeHero
-            ? "bg-gradient-to-b from-obsidian/85 via-obsidian/40 to-transparent text-white"
-            : "bg-card/95 backdrop-blur-md text-foreground border-b border-border"
+            ? 'bg-gradient-to-b from-obsidian/80 via-obsidian/35 to-transparent text-white'
+            : 'bg-card/95 backdrop-blur-md text-foreground border-b border-border'
         }`}
       >
         <div className="site-container h-20 flex items-center justify-between gap-6">
           <Link
-            to="/"
+            href="/"
             className="group inline-flex flex-col leading-none focus:outline-none"
             aria-label="Wild Rahi — Home"
           >
-            <span className="text-xl sm:text-2xl font-serif font-bold tracking-tight">
-              {profile.brandName || "Wild Rahi"}
+            <span className="text-xl sm:text-2xl font-serif font-semibold tracking-tight">
+              {profile.brandName || 'Wild Rahi'}
             </span>
             <span
-              className={`text-[11px] tracking-[0.16em] uppercase mt-0.5 transition-colors ${
-                isHomeHero ? "text-white/70" : "text-muted-foreground"
+              className={`text-[10px] tracking-[0.2em] uppercase mt-1 transition-colors ${
+                isHomeHero ? 'text-white/70' : 'text-muted-foreground'
               }`}
             >
-              {profile.photographerName || "Razaul Hafiz Rahi"}
+              {profile.photographerName || 'Razaul Hafiz Rahi'}
             </span>
           </Link>
 
-          <nav
-            aria-label="Primary Navigation"
-            className="hidden lg:flex items-center gap-7"
-          >
+          <nav aria-label="Primary Navigation" className="hidden md:flex items-center gap-8">
             {NAV_ITEMS.map((item) => {
               const active =
-                location.pathname === item.to ||
-                (item.to !== "/" &&
-                  location.pathname.startsWith(`${item.to}/`));
+                pathname === item.href ||
+                (item.href !== '/' && pathname.startsWith(`${item.href}/`));
               return (
                 <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`relative text-[14px] font-medium transition-colors py-1 ${
+                  key={item.href}
+                  href={item.href}
+                  className={`relative text-[13px] tracking-[0.06em] uppercase transition-colors py-1.5 ${
                     isHomeHero
                       ? active
-                        ? "text-white font-semibold"
-                        : "text-white/80 hover:text-white"
+                        ? 'text-white font-semibold'
+                        : 'text-white/75 hover:text-white'
                       : active
-                        ? "text-foreground font-semibold"
-                        : "text-muted-foreground hover:text-foreground"
+                        ? 'text-foreground font-semibold'
+                        : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {item.label}
                   {active && (
                     <span
-                      className={`absolute left-0 right-0 -bottom-0.5 h-[2px] rounded-full ${
-                        isHomeHero ? "bg-accent" : "bg-primary"
+                      className={`absolute left-0 right-0 bottom-0 h-[1.5px] rounded-full ${
+                        isHomeHero ? 'bg-white' : 'bg-foreground'
                       }`}
                     />
                   )}
                 </Link>
               );
             })}
-
-            <Link
-              to="/contact"
-              className={`ml-2 inline-flex items-center justify-center rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                isHomeHero
-                  ? "bg-white text-obsidian hover:bg-secondary"
-                  : "bg-primary text-primary-foreground hover:bg-primary/90"
-              }`}
-            >
-              Contact
-            </Link>
           </nav>
 
           <button
             type="button"
             onClick={() => setMobileOpen((prev) => !prev)}
-            className={`lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md border transition-colors ${
+            className={`md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border transition-colors cursor-pointer ${
               isHomeHero
-                ? "border-white/30 text-white hover:bg-white/10"
-                : "border-border text-foreground hover:bg-secondary"
+                ? 'border-white/25 text-white hover:bg-white/10'
+                : 'border-border text-foreground hover:bg-secondary'
             }`}
-            aria-label={
-              mobileOpen ? "Close navigation menu" : "Open navigation menu"
-            }
+            aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={mobileOpen}
           >
-            {mobileOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </header>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-background text-foreground flex flex-col"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Mobile Navigation"
-          >
-            <div className="px-5 sm:px-8 h-20 flex items-center justify-between border-b border-border">
-              <Link
-                to="/"
-                onClick={() => setMobileOpen(false)}
-                className="inline-flex flex-col leading-none"
-              >
-                <span className="text-xl font-serif font-bold tracking-tight">
-                  {profile.brandName || "Wild Rahi"}
-                </span>
-                <span className="text-[11px] tracking-[0.14em] uppercase text-muted-foreground mt-0.5">
-                  {profile.photographerName}
-                </span>
-              </Link>
-              <button
-                type="button"
-                onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-border text-foreground hover:bg-secondary"
-                aria-label="Close navigation menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-background text-foreground flex flex-col animate-in fade-in duration-200"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile Navigation"
+        >
+          <div className="px-5 sm:px-8 h-20 flex items-center justify-between border-b border-border">
+            <Link
+              href="/"
+              onClick={() => setMobileOpen(false)}
+              className="inline-flex flex-col leading-none"
+            >
+              <span className="text-xl font-serif font-semibold tracking-tight">
+                {profile.brandName || 'Wild Rahi'}
+              </span>
+              <span className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground mt-1">
+                {profile.photographerName}
+              </span>
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="inline-flex items-center justify-center w-10 h-10 rounded-xl border border-border text-foreground hover:bg-secondary cursor-pointer"
+              aria-label="Close navigation menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <nav className="flex-1 overflow-y-auto px-6 py-12 flex flex-col justify-between">
+            <div className="space-y-3">
+              {NAV_ITEMS.map((item) => {
+                const active =
+                  pathname === item.href ||
+                  (item.href !== '/' && pathname.startsWith(`${item.href}/`));
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`block py-2.5 text-3xl font-serif tracking-tight transition-colors ${
+                      active
+                        ? 'text-foreground font-semibold'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
 
-            <nav className="flex-1 overflow-y-auto px-6 py-10 flex flex-col justify-between">
-              <div className="space-y-2">
-                {[{ label: "Home", to: "/" }, ...NAV_ITEMS].map((item, idx) => {
-                  const active =
-                    location.pathname === item.to ||
-                    (item.to !== "/" &&
-                      location.pathname.startsWith(`${item.to}/`));
-                  return (
-                    <motion.div
-                      key={item.to}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.03 }}
-                    >
-                      <Link
-                        to={item.to}
-                        onClick={() => setMobileOpen(false)}
-                        className={`block py-2.5 text-2xl font-serif tracking-tight transition-colors ${
-                          active
-                            ? "text-primary font-semibold"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              <div className="pt-8 border-t border-border space-y-5">
-                <div className="flex flex-wrap gap-2.5">
-                  <Link
-                    to="/contact"
-                    onClick={() => setMobileOpen(false)}
-                    className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-5 py-2 text-sm font-medium"
-                  >
-                    Start a Conversation
-                  </Link>
-                  {profile.facebookUrl && (
-                    <a
-                      href={profile.facebookUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-md border border-border text-foreground px-4 py-2 text-sm font-medium hover:bg-secondary"
-                    >
-                      Facebook
-                    </a>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Bangladesh Wildlife &amp; Biodiversity Documentation
-                </p>
-              </div>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="pt-8 border-t border-border space-y-4">
+              {profile.contactEmail && (
+                <a
+                  href={`mailto:${profile.contactEmail}`}
+                  className="block text-sm text-foreground hover:underline"
+                >
+                  {profile.contactEmail}
+                </a>
+              )}
+              <p className="text-xs text-muted-foreground tracking-wide">
+                Wildlife Photography &middot; Bangladesh
+              </p>
+            </div>
+          </nav>
+        </div>
+      )}
     </>
   );
 };

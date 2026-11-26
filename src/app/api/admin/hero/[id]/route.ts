@@ -4,6 +4,7 @@ import { db, heroSlides } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storage';
 import { isValidUuid } from '@/lib/validation';
+import { revalidatePortfolioCache } from '@/lib/cache';
 
 export async function PUT(
   request: Request,
@@ -53,6 +54,7 @@ export async function PUT(
       result = inserted;
     }
 
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true, slide: result });
   } catch (err) {
     console.error('[Admin Hero PUT] Error:', err);
@@ -82,9 +84,11 @@ export async function DELETE(
       }
       await db.delete(heroSlides).where(eq(heroSlides.id, id));
     }
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[Admin Hero DELETE] Error:', err);
     return NextResponse.json({ error: 'Failed to delete hero slide.' }, { status: 500 });
   }
 }
+

@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60 * 60 * 24, // 24-hour image cache TTL
     remotePatterns: [
       {

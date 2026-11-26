@@ -1,17 +1,17 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { PortfolioProvider } from '@/context/PortfolioContext';
+import { getCachedPublicPortfolio } from '@/lib/cache';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL || 'http://localhost:3000'),
   title: 'Wild Rahi — Razaul Hafiz Rahi | Wildlife Photography, Bangladesh',
   description:
-    "Documenting the beauty, diversity, and untold stories of Bangladesh's wildlife. Editorial wildlife photography portfolio, biodiversity archive, articles, and video showcase by Razaul Hafiz Rahi (Wild Rahi).",
+    "Documenting the beauty, diversity, and untold stories of Bangladesh's wildlife. Wildlife photography, field videos, and stories by Razaul Hafiz Rahi (Wild Rahi).",
   openGraph: {
     title: 'Wild Rahi — Razaul Hafiz Rahi | Wildlife Photography',
     description:
-      "Documenting the beauty, diversity, and untold stories of Bangladesh's wildlife. Editorial wildlife photography portfolio and biodiversity archive by Razaul Hafiz Rahi.",
+      "Documenting the beauty, diversity, and untold stories of Bangladesh's wildlife. Wildlife photography, field videos, and stories by Razaul Hafiz Rahi.",
     images: ['/assets/images/hero_sundarbans_tiger_1795067902199.jpg'],
     type: 'website',
   },
@@ -28,7 +28,9 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { profile, photographs } = await getCachedPublicPortfolio();
+
   return (
     <html lang="en" className="bg-background text-foreground">
       <head>
@@ -40,9 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground min-h-screen">
-        <PortfolioProvider>
-          <AppShell>{children}</AppShell>
-        </PortfolioProvider>
+        <AppShell profile={profile} photographs={photographs}>
+          {children}
+        </AppShell>
       </body>
     </html>
   );

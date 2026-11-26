@@ -3,17 +3,13 @@ import { AdminPage, type AdminTab } from '@/views/AdminPage';
 export function generateStaticParams() {
   return [
     { tab: 'overview' },
+    { tab: 'hero' },
     { tab: 'photographs' },
     { tab: 'photos' },
-    { tab: 'articles' },
-    { tab: 'stories' },
     { tab: 'videos' },
-    { tab: 'collections' },
-    { tab: 'wildlife' },
-    { tab: 'species' },
-    { tab: 'content' },
-    { tab: 'locations' },
+    { tab: 'stories' },
     { tab: 'profile' },
+    { tab: 'messages' },
     { tab: 'enquiries' },
     { tab: 'settings' },
   ];
@@ -27,13 +23,12 @@ export default async function AdminTabPage({ params }: TabPageProps) {
   const { tab } = await params;
 
   let mappedTab: AdminTab = 'overview';
-  if (tab === 'photographs' || tab === 'photos') mappedTab = 'photographs';
-  else if (tab === 'articles' || tab === 'stories') mappedTab = 'articles';
+  if (tab === 'hero') mappedTab = 'hero';
+  else if (tab === 'photographs' || tab === 'photos') mappedTab = 'photographs';
   else if (tab === 'videos') mappedTab = 'videos';
-  else if (tab === 'collections') mappedTab = 'collections';
-  else if (tab === 'wildlife' || tab === 'species') mappedTab = 'wildlife';
-  else if (tab === 'locations' || tab === 'profile' || tab === 'content') mappedTab = 'content';
-  else if (tab === 'enquiries') mappedTab = 'enquiries';
+  else if (tab === 'stories') mappedTab = 'stories';
+  else if (tab === 'profile') mappedTab = 'profile';
+  else if (tab === 'messages' || tab === 'enquiries') mappedTab = 'messages';
   else if (tab === 'settings') mappedTab = 'settings';
 
   return <AdminPage initialTab={mappedTab} />;

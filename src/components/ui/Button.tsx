@@ -22,24 +22,24 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseCls =
-      'inline-flex items-center justify-center font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 cursor-pointer rounded-md';
+      'inline-flex items-center justify-center font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 cursor-pointer rounded-xl';
 
     const variants: Record<string, string> = {
-      primary: 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-md',
-      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-md',
+      primary: 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl',
+      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-xl',
       outline:
-        'border border-border bg-card text-foreground hover:bg-secondary rounded-md',
-      ghost: 'text-foreground hover:bg-secondary/80 rounded-md',
-      accent: 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-md',
-      destructive: 'bg-foreground text-background hover:bg-foreground/90 rounded-md',
-      dark: 'bg-obsidian text-white hover:bg-surface-dark border border-white/10 rounded-md',
+        'border border-border bg-card text-foreground hover:bg-secondary rounded-xl',
+      ghost: 'text-foreground hover:bg-secondary/80 rounded-xl',
+      accent: 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl',
+      destructive: 'bg-foreground text-background hover:bg-foreground/90 rounded-xl',
+      dark: 'bg-obsidian text-white hover:bg-surface-dark border border-white/10 rounded-xl',
     };
 
     const sizes: Record<string, string> = {
-      sm: 'text-xs px-3 py-1.5 gap-1.5 rounded-md',
-      md: 'text-sm px-4 py-2 gap-2 rounded-md',
-      lg: 'text-base px-6 py-2.5 gap-2.5 rounded-md',
-      icon: 'h-9 w-9 p-0 rounded-md',
+      sm: 'text-xs px-3 py-1.5 gap-1.5 rounded-xl',
+      md: 'text-sm px-4 py-2 gap-2 rounded-xl',
+      lg: 'text-base px-6 py-2.5 gap-2.5 rounded-xl',
+      icon: 'h-9 w-9 p-0 rounded-xl',
     };
 
     return (

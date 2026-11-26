@@ -2,77 +2,63 @@
 
 import React from 'react';
 import { Expand } from 'lucide-react';
-import type { Photograph } from '../../types/portfolio';
-import { formatExifMetadata } from '../../lib/validation';
-import { usePortfolio } from '../../context/PortfolioContext';
+import type { Photograph } from '@/types/portfolio';
+import { getWildlifeCategoryLabel } from '@/lib/validation';
+import { useLightbox } from '@/context/LightboxContext';
+import { PortfolioImage } from '@/components/common/PortfolioImage';
 
 interface PhotoCardProps {
   photo: Photograph;
-  onInspect?: () => void;
+  allPhotos?: Photograph[];
   className?: string;
 }
 
-export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onInspect, className = '' }) => {
-  const { openPhotoModal } = usePortfolio();
-  const exif = formatExifMetadata(photo);
-  const targetHref = `/gallery/${encodeURIComponent(photo.slug || photo.id)}`;
+export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, allPhotos, className = '' }) => {
+  const { openPhotoModal } = useLightbox();
+  const targetHref = `/gallery/${encodeURIComponent(photo.id)}`;
+  const categoryLabel = getWildlifeCategoryLabel(photo.category);
 
   return (
-    <div
-      className={`group relative rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer block w-full bg-muted shadow-xs hover:shadow-xl transition-all duration-300 break-inside-avoid ${className}`}
+    <article
+      className={`group relative rounded-xl overflow-hidden bg-card border border-border shadow-xs hover:shadow-xl transition-all duration-300 ${className}`}
     >
       <a
         href={targetHref}
         onClick={(e) => {
           if (!e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0) {
             e.preventDefault();
-            if (onInspect) onInspect();
-            openPhotoModal(photo);
+            openPhotoModal(photo, allPhotos);
           }
         }}
         className="block w-full text-left focus:outline-none cursor-pointer relative"
         aria-label={`Inspect ${photo.title} in lightbox`}
       >
-        {/* Photo Image Frame displaying full natural aspect ratio */}
-        <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-muted w-full">
-          <img
-            src={photo.imageUrl}
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+          <PortfolioImage
+            src={photo.image}
             alt={photo.title}
-            loading="lazy"
-            className="w-full h-auto object-cover rounded-xl sm:rounded-2xl transition-transform duration-500 ease-out group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           />
 
-          {/* Hover Overlay - Clean Cinematic & Minimalist */}
-          <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-3.5 sm:p-5 text-white">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 text-white">
             <div className="flex justify-end">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-xs font-medium text-white/90 border border-white/20">
+              <span className="inline-flex items-center gap-1.5 rounded-xl bg-black/60 backdrop-blur-md px-3 py-1 text-xs font-medium text-white/95 border border-white/20">
                 <Expand className="w-3 h-3" />
                 Fullscreen
               </span>
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-sm sm:text-base lg:text-lg font-serif font-bold tracking-tight text-white leading-snug drop-shadow-sm">
+              <h3 className="text-base font-serif font-bold tracking-tight text-white leading-snug drop-shadow-sm line-clamp-1">
                 {photo.title}
               </h3>
-              <p className="text-xs text-white/80 font-medium flex items-center gap-1.5">
-                <span>{photo.speciesName || 'Wildlife'}</span>
-                {photo.year && (
-                  <>
-                    <span>&middot;</span>
-                    <span>{photo.year}</span>
-                  </>
-                )}
-              </p>
-              {exif && (
-                <p className="text-[11px] font-mono text-white/70 pt-0.5 tracking-wide truncate">
-                  {exif}
-                </p>
-              )}
+              <p className="text-xs text-white/80 font-medium">{categoryLabel}</p>
             </div>
           </div>
         </div>
       </a>
-    </div>
+    </article>
   );
 };

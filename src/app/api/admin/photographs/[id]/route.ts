@@ -4,6 +4,7 @@ import { db, photographs } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storage';
 import { isValidUuid, normalizeWildlifeCategory } from '@/lib/validation';
+import { revalidatePortfolioCache } from '@/lib/cache';
 
 export async function PUT(
   request: Request,
@@ -58,6 +59,7 @@ export async function PUT(
       result = inserted;
     }
 
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true, photograph: result });
   } catch (err) {
     console.error('[Admin Photo PUT] Error:', err);
@@ -87,6 +89,7 @@ export async function DELETE(
       }
       await db.delete(photographs).where(eq(photographs.id, id));
     }
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[Admin Photo DELETE] Error:', err);

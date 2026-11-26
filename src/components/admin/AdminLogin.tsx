@@ -60,7 +60,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
               Studio Sign In
             </h1>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Authenticate to manage photographs, articles, species dossiers, and archive records.
+              Authenticate to manage hero images, photographs, videos, stories, and profile settings.
             </p>
           </div>
 

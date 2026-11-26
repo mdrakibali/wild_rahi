@@ -7,14 +7,14 @@ interface AboutNarrativeProps {
 
 export const AboutNarrative: React.FC<AboutNarrativeProps> = ({ profile }) => {
   return (
-    <div className="lg:col-span-7 space-y-10">
+    <div className="max-w-3xl space-y-12">
       {profile.journeyNote && (
         <div className="space-y-3">
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-            Field Journey
+          <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
+            01 &middot; Field Journey
           </p>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
-            How Wild Rahi Began
+          <h2 className="text-2xl sm:text-3xl font-serif font-semibold tracking-tight text-foreground">
+            In the Wild
           </h2>
           <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
             {profile.journeyNote}
@@ -22,27 +22,13 @@ export const AboutNarrative: React.FC<AboutNarrativeProps> = ({ profile }) => {
         </div>
       )}
 
-      {profile.whyWildlifeMatters && (
-        <div className="space-y-3 pt-8 border-t border-border">
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-            Why It Matters
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
-            Biodiversity &amp; Public Awareness
-          </h2>
-          <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
-            {profile.whyWildlifeMatters}
-          </p>
-        </div>
-      )}
-
       {profile.philosophy && (
-        <div className="space-y-3 pt-8 border-t border-border">
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-            Approach
+        <div className="space-y-3 pt-10 border-t border-border">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
+            02 &middot; Approach
           </p>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
-            Photographic Philosophy
+          <h2 className="text-2xl sm:text-3xl font-serif font-semibold tracking-tight text-foreground">
+            Field Philosophy
           </h2>
           <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
             {profile.philosophy}
@@ -52,4 +38,3 @@ export const AboutNarrative: React.FC<AboutNarrativeProps> = ({ profile }) => {
     </div>
   );
 };
-

@@ -5,6 +5,7 @@ import { getAdminSessionFromRequest } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storage';
 import { isValidUuid } from '@/lib/validation';
 import { parseVideoUrl } from '@/lib/videoEmbed';
+import { revalidatePortfolioCache } from '@/lib/cache';
 
 export async function PUT(
   request: Request,
@@ -64,6 +65,7 @@ export async function PUT(
       result = inserted;
     }
 
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true, video: result });
   } catch (err) {
     console.error('[Admin Video PUT] Error:', err);
@@ -93,6 +95,7 @@ export async function DELETE(
       }
       await db.delete(videos).where(eq(videos.id, id));
     }
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[Admin Video DELETE] Error:', err);

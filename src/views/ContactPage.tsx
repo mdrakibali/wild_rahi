@@ -10,17 +10,17 @@ export const ContactPage: React.FC = () => {
   const { profile } = usePortfolio();
 
   useEffect(() => {
-    document.title = 'Contact & Enquiries — Wild Rahi';
+    document.title = 'Contact — Wild Rahi';
   }, []);
 
   return (
     <div className="bg-background text-foreground pt-20">
       <ContactHeader />
 
-      <section className="site-container py-16 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+      <section className="site-container py-14 lg:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           <div className="lg:col-span-7">
-            <EnquiryForm theme="light" />
+            <EnquiryForm />
           </div>
 
           <ContactDirectChannels profile={profile} />

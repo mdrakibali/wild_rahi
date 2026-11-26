@@ -3,32 +3,16 @@
 import React, { useState } from 'react';
 import { Check, Send } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
-import {
-  ALLOWED_ENQUIRY_TYPES,
-  validateEnquiryInput,
-  type EnquiryInput,
-} from '../../lib/validation';
-import type { EnquiryType } from '../../types/portfolio';
+import { validateEnquiryInput, type EnquiryInput } from '../../lib/validation';
 import { Input } from '../ui/Input';
-import { Select } from '../ui/Select';
 import { Textarea } from '../ui/Textarea';
 import { Button } from '../ui/Button';
 
-interface EnquiryFormProps {
-  defaultType?: EnquiryType;
-  theme?: 'light' | 'dark';
-}
-
-export const EnquiryForm: React.FC<EnquiryFormProps> = ({
-  defaultType = 'Professional Photography',
-  theme = 'light',
-}) => {
-  const { submitEnquiry } = usePortfolio();
+export const EnquiryForm: React.FC = () => {
+  const { submitEnquiry, profile } = usePortfolio();
   const [form, setForm] = useState<EnquiryInput>({
     name: '',
     email: '',
-    organization: '',
-    enquiryType: defaultType,
     subject: '',
     message: '',
   });
@@ -36,8 +20,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
-
-  const isLight = theme === 'light';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,16 +34,9 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
     try {
       await submitEnquiry(check.sanitized);
       setSubmitted(true);
-      setForm({
-        name: '',
-        email: '',
-        organization: '',
-        enquiryType: defaultType,
-        subject: '',
-        message: '',
-      });
+      setForm({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Unable to send enquiry right now.');
+      setServerError(err instanceof Error ? err.message : 'Unable to send message right now.');
     } finally {
       setSubmitting(false);
     }
@@ -69,96 +44,61 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
   if (submitted) {
     return (
-      <div
-        className={`p-7 rounded-md border ${
-          isLight
-            ? 'bg-card border-border text-foreground'
-            : 'bg-card-dark border-border-dark text-white'
-        } space-y-4`}
-      >
-        <div className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-primary text-primary-foreground">
+      <div className="p-8 border border-border bg-card text-foreground space-y-4">
+        <div className="inline-flex items-center justify-center w-9 h-9 bg-primary text-primary-foreground">
           <Check className="w-5 h-5" />
         </div>
-        <h3 className="text-2xl font-serif font-bold tracking-tight">Enquiry Received</h3>
-        <p className={`text-sm leading-relaxed ${isLight ? 'text-muted-foreground' : 'text-white/70'}`}>
-          Thank you for writing to Wild Rahi. Your message has been recorded and Razaul Hafiz Rahi
-          will respond as soon as he returns from field assignments.
+        <h3 className="text-2xl font-serif font-semibold tracking-tight">Message Received</h3>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Thank you for reaching out. {profile.photographerName || 'Razaul Hafiz Rahi'} will reply
+          as soon as possible.
         </p>
-        <Button
-          type="button"
-          variant={isLight ? 'primary' : 'accent'}
-          onClick={() => setSubmitted(false)}
-        >
+        <Button type="button" variant="primary" onClick={() => setSubmitted(false)}>
           Send Another Message
         </Button>
       </div>
     );
   }
-  
-  const selectOptions = ALLOWED_ENQUIRY_TYPES.map((t) => ({ value: t, label: t }));
 
   return (
     <form
       onSubmit={handleSubmit}
-      className={`p-6 sm:p-8 rounded-md border ${
-        isLight
-          ? 'bg-card border-border text-foreground'
-          : 'bg-card-dark border-border-dark text-white'
-      } space-y-5`}
+      className="p-6 sm:p-8 border border-border bg-card text-foreground space-y-5"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
-          label="Your Name"
+          label="Name"
           required
-          placeholder="e.g. Tanvir Ahmed"
+          placeholder="Your name"
           value={form.name}
           onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
           error={errors.name}
         />
 
         <Input
-          label="Email Address"
+          label="Email"
           type="email"
           required
-          placeholder="e.g. tanvir@example.com"
+          placeholder="you@example.com"
           value={form.email}
           onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
           error={errors.email}
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Input
-          label="Organization / Publication"
-          placeholder="e.g. NatGeo Traveller / WWF"
-          value={form.organization || ''}
-          onChange={(e) => setForm((p) => ({ ...p, organization: e.target.value }))}
-          error={errors.organization}
-        />
-
-        <Select
-          label="Nature of Enquiry"
-          required
-          value={form.enquiryType}
-          onChange={(e) => setForm((p) => ({ ...p, enquiryType: e.target.value as EnquiryType }))}
-          options={selectOptions}
-          error={errors.enquiryType}
-        />
-      </div>
-
       <Input
-        label="Subject Line"
+        label="Subject"
         required
-        placeholder="e.g. Sundarbans Field Documentation Commission"
+        placeholder="Collaboration or general inquiry"
         value={form.subject}
         onChange={(e) => setForm((p) => ({ ...p, subject: e.target.value }))}
         error={errors.subject}
       />
 
       <Textarea
-        label="Message / Project Brief"
+        label="Message"
         required
-        placeholder="Describe the scope, timeline, publication channel, or target species..."
+        placeholder="Write your message..."
         rows={5}
         value={form.message}
         onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
@@ -166,22 +106,19 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       />
 
       {serverError && (
-        <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
+        <div className="bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
           {serverError}
         </div>
       )}
 
-      <div className="pt-2 flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          Direct inquiry to Razaul Hafiz Rahi.
-        </p>
+      <div className="pt-2 flex justify-end">
         <Button
           type="submit"
           variant="primary"
           loading={submitting}
           icon={<Send className="w-4 h-4" />}
         >
-          Dispatch Message
+          Send Message
         </Button>
       </div>
     </form>

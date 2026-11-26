@@ -5,6 +5,7 @@ import { getAdminSessionFromRequest } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storage';
 import { sanitizeArticleHtml } from '@/lib/sanitizeHtml';
 import { isValidUuid, toSafeSlug } from '@/lib/validation';
+import { revalidatePortfolioCache } from '@/lib/cache';
 
 async function ensureUniqueSlug(desired: string, excludeId?: string): Promise<string> {
   const base = toSafeSlug(desired, 72);
@@ -104,6 +105,7 @@ export async function PUT(
       result = inserted;
     }
 
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true, story: result });
   } catch (err) {
     console.error('[Admin Story PUT] Error:', err);
@@ -133,9 +135,11 @@ export async function DELETE(
       }
       await db.delete(stories).where(eq(stories.id, id));
     }
+    revalidatePortfolioCache();
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[Admin Story DELETE] Error:', err);
     return NextResponse.json({ error: 'Failed to delete story.' }, { status: 500 });
   }
 }
+
