@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db, videos } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
-import { deleteStorageFile } from '@/lib/storage';
+import { deleteMediaAssets, diffRemovedMediaTargets } from '@/lib/storage';
 import { isValidUuid } from '@/lib/validation';
 import { parseVideoUrl } from '@/lib/videoEmbed';
 import { revalidatePortfolioCache } from '@/lib/cache';
@@ -51,6 +51,13 @@ export async function PUT(
 
     let result;
     if (existing.length > 0) {
+      const removed = diffRemovedMediaTargets(
+        [existing[0].thumbnailPath, existing[0].thumbnail],
+        [videoValues.thumbnailPath, videoValues.thumbnail]
+      );
+      if (removed.length > 0) {
+        await deleteMediaAssets(removed);
+      }
       const [updated] = await db
         .update(videos)
         .set(videoValues)
@@ -90,9 +97,7 @@ export async function DELETE(
   try {
     const existing = await db.select().from(videos).where(eq(videos.id, id));
     if (existing.length > 0) {
-      if (existing[0].thumbnailPath) {
-        await deleteStorageFile(existing[0].thumbnailPath);
-      }
+      await deleteMediaAssets([existing[0].thumbnailPath, existing[0].thumbnail]);
       await db.delete(videos).where(eq(videos.id, id));
     }
     revalidatePortfolioCache();

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { DEFAULT_HERO_SLIDES, DEFAULT_PROFILE } from '../lib/defaults';
+import { DEFAULT_PROFILE } from '../lib/defaults';
 import type {
   AdminUser,
   DatabaseInfo,
@@ -114,7 +114,7 @@ interface PortfolioResponse {
 }
 
 export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(DEFAULT_HERO_SLIDES);
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [photographs, setPhotographs] = useState<Photograph[]>([]);
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [stories, setStories] = useState<Story[]>([]);

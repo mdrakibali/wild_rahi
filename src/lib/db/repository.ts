@@ -71,10 +71,7 @@ export class DatabaseRepository {
           title: v.title,
           description: v.description || '',
           videoUrl: v.videoUrl,
-          thumbnail:
-            v.thumbnail ||
-            parsed.thumbnailUrl ||
-            '/assets/images/hero_sundarbans_tiger_1795067902199.jpg',
+          thumbnail: v.thumbnail || parsed.thumbnailUrl || '',
           thumbnailPath: v.thumbnailPath || undefined,
           platform: parsed.platform || 'youtube',
           embedUrl: parsed.embedUrl,
@@ -118,7 +115,7 @@ export class DatabaseRepository {
               asText(social.passionNote) || asText(social.introBody) || DEFAULT_PROFILE.passionNote,
             journeyNote: asText(social.journeyNote) || DEFAULT_PROFILE.journeyNote,
             philosophy: asText(social.philosophy) || DEFAULT_PROFILE.philosophy,
-            portraitUrl: profile.profileImage || DEFAULT_PROFILE.portraitUrl,
+            portraitUrl: profile.profileImage || '',
             aboutImages: sanitizeImageUrlList(social.aboutImages, 24),
             contactEmail: profile.email || DEFAULT_PROFILE.contactEmail,
             facebookUrl: asText(social.facebook) || DEFAULT_PROFILE.facebookUrl,
@@ -129,7 +126,7 @@ export class DatabaseRepository {
         : DEFAULT_PROFILE;
 
       return {
-        heroSlides: mappedSlides.length > 0 ? mappedSlides : DEFAULT_HERO_SLIDES,
+        heroSlides: mappedSlides,
         photographs: mappedPhotos,
         videos: mappedVideos,
         stories: mappedStories,
@@ -137,7 +134,7 @@ export class DatabaseRepository {
         databaseInfo: {
           mode: 'supabase-postgresql',
           dbName: 'Supabase PostgreSQL (Drizzle ORM)',
-          storage: `Supabase Storage (${process.env.SUPABASE_STORAGE_BUCKET || 'wild_rakib'})`,
+          storage: `Supabase Storage (${process.env.SUPABASE_STORAGE_BUCKET || 'wild_rahi'})`,
         },
       };
     } catch (err) {

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { and, eq, ne } from 'drizzle-orm';
 import { db, stories } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
-import { deleteStorageFile } from '@/lib/storage';
+import { deleteMediaAssets, diffRemovedMediaTargets } from '@/lib/storage';
 import { sanitizeArticleHtml } from '@/lib/sanitizeHtml';
 import { isValidUuid, toSafeSlug } from '@/lib/validation';
 import { revalidatePortfolioCache } from '@/lib/cache';
@@ -91,6 +91,14 @@ export async function PUT(
 
     let result;
     if (existing.length > 0) {
+      const prevGallery = Array.isArray(existing[0].images) ? existing[0].images : [];
+      const removed = diffRemovedMediaTargets(
+        [existing[0].coverImagePath, existing[0].coverImage, ...prevGallery],
+        [storyValues.coverImagePath, storyValues.coverImage, ...images]
+      );
+      if (removed.length > 0) {
+        await deleteMediaAssets(removed);
+      }
       const [updated] = await db
         .update(stories)
         .set(storyValues)
@@ -130,9 +138,12 @@ export async function DELETE(
   try {
     const existing = await db.select().from(stories).where(eq(stories.id, id));
     if (existing.length > 0) {
-      if (existing[0].coverImagePath) {
-        await deleteStorageFile(existing[0].coverImagePath);
-      }
+      const prevGallery = Array.isArray(existing[0].images) ? existing[0].images : [];
+      await deleteMediaAssets([
+        existing[0].coverImagePath,
+        existing[0].coverImage,
+        ...prevGallery,
+      ]);
       await db.delete(stories).where(eq(stories.id, id));
     }
     revalidatePortfolioCache();

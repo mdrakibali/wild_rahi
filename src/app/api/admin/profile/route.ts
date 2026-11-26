@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { db, siteProfiles } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
 import { revalidatePortfolioCache } from '@/lib/cache';
+import { deleteMediaAssets, diffRemovedMediaTargets } from '@/lib/storage';
 import { sanitizeImageUrlList } from '@/lib/validation';
 
 export async function PUT(request: Request) {
@@ -43,6 +44,14 @@ export async function PUT(request: Request) {
 
     let result;
     if (existing.length > 0) {
+      const prevAboutImages = sanitizeImageUrlList(existingSocial.aboutImages, 24);
+      const removed = diffRemovedMediaTargets(
+        [existing[0].profileImage, ...prevAboutImages],
+        [profileValues.profileImage, ...profileValues.socialLinks.aboutImages]
+      );
+      if (removed.length > 0) {
+        await deleteMediaAssets(removed);
+      }
       const [updated] = await db
         .update(siteProfiles)
         .set(profileValues)

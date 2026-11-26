@@ -17,55 +17,28 @@ interface HomeAboutSectionProps {
 
 const MAX_ABOUT_FRAMES = 8;
 
-const FALLBACK_ABOUT_FRAMES = [
-  '/assets/images/portrait_photographer_field_1795067902652.jpg',
-  '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
-  '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
-  '/assets/images/bird_kingfisher_sylhet_1795067903243.jpg',
-  '/assets/images/mammal_fishing_cat_wetland_1795067902865.jpg',
-  '/assets/images/reptile_green_pit_viper_1795067904040.jpg',
-  '/assets/images/insect_swallowtail_butterfly_1795067901756.jpg',
-];
-
 export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({ profile }) => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  // Build compact bento collage strictly from photographer personal images (no gallery links)
+  // Render strictly admin-managed personal photographs from the database (zero static fallback photos)
   const bentoRows = useMemo(() => {
     const items: Array<{ id: string; src: string; alt: string }> = [];
     const used = new Set<string>();
     const customImages = (profile.aboutImages ?? []).filter(Boolean);
 
-    if (customImages.length > 0) {
-      for (let i = 0; i < customImages.length && items.length < MAX_ABOUT_FRAMES; i++) {
-        const imgUrl = customImages[i];
-        if (used.has(imgUrl)) continue;
-        used.add(imgUrl);
-        items.push({
-          id: `about-personal-${i}`,
-          src: imgUrl,
-          alt: `${profile.photographerName || 'Wild Rahi'} — frame ${i + 1}`,
-        });
-      }
-    } else {
-      const demoSources = [
-        profile.portraitUrl,
-        ...FALLBACK_ABOUT_FRAMES,
-      ].filter(Boolean);
-      for (let i = 0; i < demoSources.length && items.length < MAX_ABOUT_FRAMES; i++) {
-        const imgUrl = demoSources[i];
-        if (!imgUrl || used.has(imgUrl)) continue;
-        used.add(imgUrl);
-        items.push({
-          id: `about-demo-${i}`,
-          src: imgUrl,
-          alt: `${profile.photographerName || 'Wild Rahi'} — frame ${i + 1}`,
-        });
-      }
+    for (let i = 0; i < customImages.length && items.length < MAX_ABOUT_FRAMES; i++) {
+      const imgUrl = customImages[i];
+      if (!imgUrl || used.has(imgUrl)) continue;
+      used.add(imgUrl);
+      items.push({
+        id: `about-personal-${i}`,
+        src: imgUrl,
+        alt: `${profile.photographerName || 'Wild Rahi'} — frame ${i + 1}`,
+      });
     }
 
     return splitIntoBentoRows(items.slice(0, MAX_ABOUT_FRAMES));
-  }, [profile.aboutImages, profile.photographerName, profile.portraitUrl]);
+  }, [profile.aboutImages, profile.photographerName]);
 
   useEffect(() => {
     const mm = gsap.matchMedia();
@@ -103,49 +76,55 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({ profile }) =
       className="bg-background text-foreground py-20 lg:py-28 border-t border-border"
     >
       <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-        {/* Left: Compact 2 - 3 Bento Collage Block */}
-        <div className="lg:col-span-5">
-          <div className="max-w-[440px] mx-auto lg:mx-0 space-y-2">
-            {bentoRows.map((row, rowIdx) => (
-              <div
-                key={`home-bento-row-${rowIdx}`}
-                className={
-                  row.variant === 'two'
-                    ? 'grid grid-cols-2 gap-2'
-                    : row.variant === 'three'
-                      ? 'grid grid-cols-3 gap-2'
-                      : 'grid grid-cols-1 gap-2'
-                }
-              >
-                {row.items.map((item) => {
-                  const aspectClass =
-                    row.variant === 'three' ? 'aspect-[4/3]' : 'aspect-[3/2]';
-                  return (
-                    <div
-                      key={item.id}
-                      className={`about-grid-frame group relative overflow-hidden rounded-lg bg-muted border border-border ${aspectClass}`}
-                    >
-                      <PortfolioImage
-                        src={item.src}
-                        alt={item.alt}
-                        fill
-                        sizes={
-                          row.variant === 'three'
-                            ? '(max-width: 1024px) 30vw, 150px'
-                            : '(max-width: 1024px) 45vw, 220px'
-                        }
-                        className="object-cover"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
+        {/* Left: Compact Bento Collage Block (only shown when personal photos exist in DB) */}
+        {bentoRows.length > 0 && (
+          <div className="lg:col-span-5">
+            <div className="max-w-[440px] mx-auto lg:mx-0 space-y-2">
+              {bentoRows.map((row, rowIdx) => (
+                <div
+                  key={`home-bento-row-${rowIdx}`}
+                  className={
+                    row.variant === 'two'
+                      ? 'grid grid-cols-2 gap-2'
+                      : row.variant === 'three'
+                        ? 'grid grid-cols-3 gap-2'
+                        : 'grid grid-cols-1 gap-2'
+                  }
+                >
+                  {row.items.map((item) => {
+                    const aspectClass =
+                      row.variant === 'three' ? 'aspect-[4/3]' : 'aspect-[3/2]';
+                    return (
+                      <div
+                        key={item.id}
+                        className={`about-grid-frame group relative overflow-hidden rounded-lg bg-muted border border-border ${aspectClass}`}
+                      >
+                        <PortfolioImage
+                          src={item.src}
+                          alt={item.alt}
+                          fill
+                          sizes={
+                            row.variant === 'three'
+                              ? '(max-width: 1024px) 30vw, 150px'
+                              : '(max-width: 1024px) 45vw, 220px'
+                          }
+                          className="object-cover"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Right: Editorial Biography */}
-        <div className="lg:col-span-7 space-y-6 lg:pl-4">
+        <div
+          className={`${
+            bentoRows.length > 0 ? 'lg:col-span-7 lg:pl-4' : 'lg:col-span-8 max-w-2xl'
+          } space-y-6`}
+        >
           <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
             01 &middot; About the Photographer
           </p>

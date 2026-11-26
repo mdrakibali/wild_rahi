@@ -14,7 +14,11 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
     <section className="bg-background border-b border-border py-14 lg:py-24">
       <div className="site-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         {/* Left: Photographer Information */}
-        <div className="lg:col-span-7 space-y-6 order-2 lg:order-1">
+        <div
+          className={`${
+            profile.portraitUrl ? 'lg:col-span-7' : 'lg:col-span-9 max-w-3xl'
+          } space-y-6 order-2 lg:order-1`}
+        >
           <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
             Wildlife Photographer &mdash; {profile.location}
           </p>
@@ -89,22 +93,21 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ profile }) => {
           </div>
         </div>
 
-        {/* Right: Photographer Portrait */}
-        <div className="lg:col-span-5 order-1 lg:order-2">
-          <div className="relative aspect-[4/5] rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
-            <PortfolioImage
-              src={
-                profile.portraitUrl ||
-                '/assets/images/portrait_photographer_field_1795067902652.jpg'
-              }
-              alt={profile.photographerName}
-              fill
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              priority
-              className="object-cover"
-            />
+        {/* Right: Photographer Portrait (only rendered when uploaded in Admin Profile) */}
+        {profile.portraitUrl && (
+          <div className="lg:col-span-5 order-1 lg:order-2">
+            <div className="relative aspect-[4/5] rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
+              <PortfolioImage
+                src={profile.portraitUrl}
+                alt={profile.photographerName}
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                priority
+                className="object-cover"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

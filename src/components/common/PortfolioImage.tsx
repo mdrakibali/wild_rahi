@@ -34,7 +34,15 @@ export const PortfolioImage: React.FC<PortfolioImageProps> = ({
   fill,
   ...rest
 }) => {
-  const safeSrc = src || '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg';
+  const safeSrc = typeof src === 'string' ? src.trim() : '';
+  if (!safeSrc) {
+    return (
+      <div
+        aria-label={alt || 'Empty image frame'}
+        className={`bg-muted ${fill ? 'absolute inset-0' : 'w-full h-full'} ${rest.className || ''}`}
+      />
+    );
+  }
   const shouldUnoptimize =
     typeof unoptimized === 'boolean' ? unoptimized : !isOptimizableImageSrc(safeSrc);
 

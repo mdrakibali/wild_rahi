@@ -3,7 +3,7 @@ import path from 'node:path';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import sharp from 'sharp';
 
-export const BUCKET_NAME = process.env.SUPABASE_STORAGE_BUCKET || 'wild_rakib';
+export const BUCKET_NAME = process.env.SUPABASE_STORAGE_BUCKET || 'wild_rahi';
 
 let supabaseClient: SupabaseClient | null = null;
 
@@ -184,31 +184,126 @@ export async function uploadImage(
 }
 
 /**
- * Deletes a file from Supabase Storage or local uploads fallback.
+ * Extracts a bucket/upload relative storage path from a URL or stored relative path.
+ * Returns null for external URLs or non-upload static paths (/assets/...).
  */
-export async function deleteStorageFile(storagePath: string): Promise<boolean> {
-  if (!storagePath) return false;
+export function extractManagedStoragePath(target?: string | null): string | null {
+  if (!target || typeof target !== 'string') return null;
+  const trimmed = target.trim();
+  if (!trimmed || trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return null;
+
+  if (trimmed.startsWith('/uploads/')) {
+    return trimmed.slice('/uploads/'.length).replace(/^\/+/, '') || null;
+  }
+
+  if (trimmed.startsWith('/')) {
+    // Non-upload public paths like /assets/... are static repo assets, not mutable storage objects
+    return null;
+  }
+
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    try {
+      const { pathname } = new URL(trimmed);
+      const marker = `/storage/v1/object/public/${BUCKET_NAME}/`;
+      const idx = pathname.indexOf(marker);
+      if (idx !== -1) {
+        return decodeURIComponent(pathname.slice(idx + marker.length)).replace(/^\/+/, '') || null;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  return trimmed.replace(/^\/+/, '') || null;
+}
+
+function deriveThumbnailPath(storagePath: string): string | null {
+  const dir = path.posix.dirname(storagePath);
+  const base = path.posix.basename(storagePath);
+  if (!base || dir.endsWith('/thumbnails') || dir === 'thumbnails' || base.includes('-thumb.')) {
+    return null;
+  }
+  const ext = path.posix.extname(base);
+  const stem = ext ? base.slice(0, -ext.length) : base;
+  if (!stem) return null;
+  const thumbDir = dir === '.' ? 'thumbnails' : `${dir}/thumbnails`;
+  return `${thumbDir}/${stem}-thumb.webp`;
+}
+
+/**
+ * Computes storage assets present in `previousTargets` that were removed or replaced in `nextTargets`.
+ */
+export function diffRemovedMediaTargets(
+  previousTargets: Array<string | null | undefined>,
+  nextTargets: Array<string | null | undefined>
+): string[] {
+  const activePaths = new Set<string>();
+  for (const item of nextTargets) {
+    const resolved = extractManagedStoragePath(item);
+    if (resolved) activePaths.add(resolved);
+  }
+
+  const removed: string[] = [];
+  for (const item of previousTargets) {
+    const resolved = extractManagedStoragePath(item);
+    if (resolved && !activePaths.has(resolved)) {
+      removed.push(resolved);
+    }
+  }
+  return removed;
+}
+
+/**
+ * Deletes one or more managed media files (and their companion thumbnails) from
+ * Supabase Storage or local public/uploads fallback.
+ */
+export async function deleteMediaAssets(
+  targets: Array<string | null | undefined>
+): Promise<boolean> {
+  const pathSet = new Set<string>();
+  for (const raw of targets) {
+    const resolved = extractManagedStoragePath(raw);
+    if (!resolved) continue;
+    pathSet.add(resolved);
+    const thumb = deriveThumbnailPath(resolved);
+    if (thumb) pathSet.add(thumb);
+  }
+
+  const paths = Array.from(pathSet);
+  if (paths.length === 0) return false;
 
   const supabase = getSupabaseStorageClient();
   if (supabase) {
-    const { error } = await supabase.storage.from(BUCKET_NAME).remove([storagePath]);
+    const { error } = await supabase.storage.from(BUCKET_NAME).remove(paths);
     if (error) {
-      console.warn(`[Supabase Storage] Delete error for ${storagePath}:`, error.message);
+      console.warn(`[Supabase Storage] Delete error:`, error.message);
       return false;
     }
     return true;
   }
 
-  // Local fallback deletion
-  try {
-    const localPath = path.resolve(process.cwd(), 'public', 'uploads', storagePath);
-    if (fs.existsSync(localPath)) {
-      fs.unlinkSync(localPath);
-      return true;
+  const uploadsRoot = path.resolve(process.cwd(), 'public', 'uploads');
+  let removedAny = false;
+  for (const relPath of paths) {
+    try {
+      const resolvedFile = path.resolve(uploadsRoot, relPath);
+      if (!resolvedFile.startsWith(`${uploadsRoot}${path.sep}`)) continue;
+      if (fs.existsSync(resolvedFile)) {
+        fs.unlinkSync(resolvedFile);
+        removedAny = true;
+      }
+    } catch (err) {
+      console.warn(`[Local Storage] Could not delete ${relPath}:`, err);
     }
-  } catch (err) {
-    console.warn(`[Local Storage] Could not delete ${storagePath}:`, err);
   }
-  return false;
+  return removedAny;
+}
+
+/**
+ * Deletes a single file (and companion thumbnail) from Supabase Storage or local uploads fallback.
+ */
+export async function deleteStorageFile(storagePath: string): Promise<boolean> {
+  return deleteMediaAssets([storagePath]);
 }
 

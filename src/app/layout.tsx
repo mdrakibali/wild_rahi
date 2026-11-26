@@ -8,7 +8,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = process.env.APP_URL || 'http://localhost:3000';
   const primaryImage =
     heroSlides.find((s) => s.isPublished && s.image)?.image ||
-    '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg';
+    profile.portraitUrl ||
+    '/icon.png';
   const siteTitle = `${profile.brandName} — ${profile.photographerName} | Wildlife Photography`;
   const siteDescription =
     profile.heroSubheadline ||

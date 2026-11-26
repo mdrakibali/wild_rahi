@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db, photographs } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
-import { deleteStorageFile } from '@/lib/storage';
+import { deleteMediaAssets, diffRemovedMediaTargets } from '@/lib/storage';
 import { isValidUuid, normalizeWildlifeCategory } from '@/lib/validation';
 import { revalidatePortfolioCache } from '@/lib/cache';
 
@@ -45,6 +45,13 @@ export async function PUT(
 
     let result;
     if (existing.length > 0) {
+      const removed = diffRemovedMediaTargets(
+        [existing[0].storagePath, existing[0].imageUrl, existing[0].thumbnailUrl],
+        [photoValues.storagePath, photoValues.imageUrl, photoValues.thumbnailUrl]
+      );
+      if (removed.length > 0) {
+        await deleteMediaAssets(removed);
+      }
       const [updated] = await db
         .update(photographs)
         .set(photoValues)
@@ -84,9 +91,11 @@ export async function DELETE(
   try {
     const existing = await db.select().from(photographs).where(eq(photographs.id, id));
     if (existing.length > 0) {
-      if (existing[0].storagePath) {
-        await deleteStorageFile(existing[0].storagePath);
-      }
+      await deleteMediaAssets([
+        existing[0].storagePath,
+        existing[0].imageUrl,
+        existing[0].thumbnailUrl,
+      ]);
       await db.delete(photographs).where(eq(photographs.id, id));
     }
     revalidatePortfolioCache();
