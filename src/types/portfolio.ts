@@ -1,13 +1,7 @@
 import type { VideoPlatform } from '../lib/videoEmbed';
+import type { WildlifeCategory } from '../lib/categories';
 
-export type WildlifeCategory =
-  | 'birds'
-  | 'mammals'
-  | 'reptiles'
-  | 'amphibians'
-  | 'insects'
-  | 'landscapes'
-  | 'others';
+export type { WildlifeCategory };
 
 export type EnquiryStatus = 'new' | 'reviewed' | 'replied' | 'archived';
 

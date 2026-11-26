@@ -1,18 +1,11 @@
-import type { Photograph, WildlifeCategory } from '../types/portfolio';
+import type { Photograph } from '../types/portfolio';
+import {
+  ALLOWED_WILDLIFE_CATEGORIES,
+  WILDLIFE_CATEGORIES,
+  type WildlifeCategory,
+} from './categories';
 
-export const WILDLIFE_CATEGORIES: ReadonlyArray<{ id: WildlifeCategory; label: string }> = [
-  { id: 'birds', label: 'Birds of Bangladesh' },
-  { id: 'mammals', label: 'Bengal Mammals' },
-  { id: 'reptiles', label: 'Reptiles & Snakes' },
-  { id: 'amphibians', label: 'Frogs & Amphibians' },
-  { id: 'insects', label: 'Butterflies & Macro' },
-  { id: 'landscapes', label: 'Sundarbans & Haors' },
-  { id: 'others', label: 'Others' },
-] as const;
-
-export const ALLOWED_WILDLIFE_CATEGORIES: readonly WildlifeCategory[] = WILDLIFE_CATEGORIES.map(
-  (c) => c.id
-);
+export { ALLOWED_WILDLIFE_CATEGORIES, WILDLIFE_CATEGORIES };
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

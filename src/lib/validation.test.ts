@@ -67,7 +67,7 @@ test('normalizeWildlifeCategory and getWildlifeCategoryLabel map categories accu
   assert.equal(normalizeWildlifeCategory('Sundarbans Mangrove'), 'landscapes');
   assert.equal(normalizeWildlifeCategory(''), 'others');
   assert.equal(normalizeWildlifeCategory('Unclassified wildlife'), 'others');
-  assert.equal(getWildlifeCategoryLabel('insects'), 'Butterflies & Macro');
+  assert.equal(getWildlifeCategoryLabel('insects'), 'Insects');
   assert.equal(getWildlifeCategoryLabel('others'), 'Others');
 });
 

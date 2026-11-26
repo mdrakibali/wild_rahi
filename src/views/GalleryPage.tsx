@@ -1,12 +1,11 @@
 "use client";
 
 import { PhotoCard } from "@/components/photography/PhotoCard";
-import { filterPhotographs, WILDLIFE_CATEGORIES } from "@/lib/validation";
+import { GALLERY_FILTER_TABS } from "@/lib/categories";
+import { filterPhotographs } from "@/lib/validation";
 import type { Photograph } from "@/types/portfolio";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useMemo, useState } from "react";
-
-const GALLERY_TABS = [{ id: "all", label: "All" }, ...WILDLIFE_CATEGORIES];
 
 export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({
   photographs,
@@ -63,7 +62,7 @@ export const GalleryPage: React.FC<{ photographs: Photograph[] }> = ({
             aria-label="Wildlife categories"
             className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1"
           >
-            {GALLERY_TABS.map((cat) => {
+            {GALLERY_FILTER_TABS.map((cat) => {
               const active = activeCategory === cat.id;
               return (
                 <button

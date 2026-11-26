@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Mail } from 'lucide-react';
 import type { SiteProfile } from '@/types/portfolio';
+import { FOOTER_CATEGORY_LINKS } from '@/lib/categories';
 import { FacebookIcon, InstagramIcon, TikTokIcon, YoutubeIcon } from '../common/SocialIcons';
 
 export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
@@ -129,31 +130,13 @@ export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
               Collections
             </p>
             <ul className="space-y-2.5 text-sm text-white/80">
-              <li>
-                <Link href="/gallery?category=birds" className="hover:text-white transition-colors">
-                  Birds of Bangladesh
-                </Link>
-              </li>
-              <li>
-                <Link href="/gallery?category=mammals" className="hover:text-white transition-colors">
-                  Bengal Mammals
-                </Link>
-              </li>
-              <li>
-                <Link href="/gallery?category=reptiles" className="hover:text-white transition-colors">
-                  Reptiles &amp; Snakes
-                </Link>
-              </li>
-              <li>
-                <Link href="/gallery?category=landscapes" className="hover:text-white transition-colors">
-                  Sundarbans &amp; Haors
-                </Link>
-              </li>
-              <li>
-                <Link href="/gallery?category=others" className="hover:text-white transition-colors">
-                  Others
-                </Link>
-              </li>
+              {FOOTER_CATEGORY_LINKS.map((cat) => (
+                <li key={cat.id}>
+                  <Link href={cat.href} className="hover:text-white transition-colors">
+                    {cat.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
