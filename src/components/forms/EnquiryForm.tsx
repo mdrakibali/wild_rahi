@@ -2,14 +2,12 @@
 
 import React, { useState } from 'react';
 import { Check, Send } from 'lucide-react';
-import { usePortfolio } from '../../context/PortfolioContext';
-import { validateEnquiryInput, type EnquiryInput } from '../../lib/validation';
-import { Input } from '../ui/Input';
-import { Textarea } from '../ui/Textarea';
-import { Button } from '../ui/Button';
+import { validateEnquiryInput, type EnquiryInput } from '@/lib/validation';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Button } from '@/components/ui/Button';
 
-export const EnquiryForm: React.FC = () => {
-  const { submitEnquiry, profile } = usePortfolio();
+export const EnquiryForm: React.FC<{ photographerName?: string }> = ({ photographerName }) => {
   const [form, setForm] = useState<EnquiryInput>({
     name: '',
     email: '',
@@ -32,7 +30,15 @@ export const EnquiryForm: React.FC = () => {
     setErrors({});
     setSubmitting(true);
     try {
-      await submitEnquiry(check.sanitized);
+      const res = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(check.sanitized),
+      });
+      if (!res.ok) {
+        const errPayload = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(errPayload.error || 'Unable to send message right now.');
+      }
       setSubmitted(true);
       setForm({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
@@ -44,14 +50,14 @@ export const EnquiryForm: React.FC = () => {
 
   if (submitted) {
     return (
-      <div className="p-8 border border-border bg-card text-foreground space-y-4">
-        <div className="inline-flex items-center justify-center w-9 h-9 bg-primary text-primary-foreground">
+      <div className="p-8 rounded-xl border border-border bg-card text-foreground space-y-4">
+        <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-primary-foreground">
           <Check className="w-5 h-5" />
         </div>
         <h3 className="text-2xl font-serif font-semibold tracking-tight">Message Received</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Thank you for reaching out. {profile.photographerName || 'Razaul Hafiz Rahi'} will reply
-          as soon as possible.
+          Thank you for reaching out. {photographerName || 'Razaul Hafiz Rahi'} will reply as soon
+          as possible.
         </p>
         <Button type="button" variant="primary" onClick={() => setSubmitted(false)}>
           Send Another Message
@@ -63,7 +69,7 @@ export const EnquiryForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-6 sm:p-8 border border-border bg-card text-foreground space-y-5"
+      className="p-6 sm:p-8 rounded-xl border border-border bg-card text-foreground space-y-5"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
@@ -106,7 +112,7 @@ export const EnquiryForm: React.FC = () => {
       />
 
       {serverError && (
-        <div className="bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
+        <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
           {serverError}
         </div>
       )}

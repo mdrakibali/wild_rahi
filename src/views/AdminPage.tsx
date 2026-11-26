@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Link } from '@/lib/router-compat';
+import Link from 'next/link';
 import {
   ArrowUpRight,
   BookOpen,

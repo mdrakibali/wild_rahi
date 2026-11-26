@@ -1,26 +1,29 @@
-'use client';
+import React from 'react';
+import { AboutHero } from '@/components/about/AboutHero';
+import { AboutNarrative } from '@/components/about/AboutNarrative';
+import { AboutFieldMarquee } from '@/components/about/AboutFieldMarquee';
+import type { Photograph, SiteProfile } from '@/types/portfolio';
 
-import React, { useEffect } from 'react';
-import { usePortfolio } from '../context/PortfolioContext';
-import { AboutHero } from '../components/about/AboutHero';
-import { AboutNarrative } from '../components/about/AboutNarrative';
+interface AboutPageProps {
+  profile: SiteProfile;
+  photographs: Photograph[];
+}
 
-export const AboutPage: React.FC = () => {
-  const { profile } = usePortfolio();
-
-  useEffect(() => {
-    document.title = `About ${profile.photographerName} — Wild Rahi`;
-  }, [profile.photographerName]);
-
+export const AboutPage: React.FC<AboutPageProps> = ({ profile, photographs }) => {
   return (
     <div className="bg-background text-foreground pt-20">
+      {/* First Section: Info Left + Portrait Right */}
       <AboutHero profile={profile} />
 
+      {/* Middle Narrative Cards */}
       <section className="bg-card py-16 lg:py-24">
         <div className="site-container">
           <AboutNarrative profile={profile} />
         </div>
       </section>
+
+      {/* Lower Auto-Scrolling Camera & Wildlife Collage */}
+      <AboutFieldMarquee photographs={photographs} />
     </div>
   );
 };

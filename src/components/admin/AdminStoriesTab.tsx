@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Eye, EyeOff, Plus, Save, Trash2, X } from 'lucide-react';
-import { Link } from '@/lib/router-compat';
+import Link from 'next/link';
 import type { Story } from '../../types/portfolio';
 import { toSafeSlug } from '../../lib/validation';
 import { ImageDropzone } from '../ui/ImageDropzone';
@@ -325,8 +325,8 @@ export const AdminStoriesTab: React.FC<AdminStoriesTabProps> = ({
                 </button>
                 {story.isPublished && (
                   <Link
-                    to={`/stories/${encodeURIComponent(story.slug)}`}
-                    className="rounded-md border border-border hover:bg-secondary px-3 py-1.5 text-xs"
+                    href={`/stories/${encodeURIComponent(story.slug)}`}
+                    className="rounded-xl border border-border hover:bg-secondary px-3 py-1.5 text-xs"
                   >
                     View
                   </Link>

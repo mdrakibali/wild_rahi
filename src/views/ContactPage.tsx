@@ -1,18 +1,10 @@
-'use client';
+import React from 'react';
+import { EnquiryForm } from '@/components/forms/EnquiryForm';
+import { ContactHeader } from '@/components/contact/ContactHeader';
+import { ContactDirectChannels } from '@/components/contact/ContactDirectChannels';
+import type { SiteProfile } from '@/types/portfolio';
 
-import React, { useEffect } from 'react';
-import { usePortfolio } from '../context/PortfolioContext';
-import { EnquiryForm } from '../components/forms/EnquiryForm';
-import { ContactHeader } from '../components/contact/ContactHeader';
-import { ContactDirectChannels } from '../components/contact/ContactDirectChannels';
-
-export const ContactPage: React.FC = () => {
-  const { profile } = usePortfolio();
-
-  useEffect(() => {
-    document.title = 'Contact — Wild Rahi';
-  }, []);
-
+export const ContactPage: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
   return (
     <div className="bg-background text-foreground pt-20">
       <ContactHeader />
@@ -20,7 +12,7 @@ export const ContactPage: React.FC = () => {
       <section className="site-container py-14 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           <div className="lg:col-span-7">
-            <EnquiryForm />
+            <EnquiryForm photographerName={profile.photographerName} />
           </div>
 
           <ContactDirectChannels profile={profile} />
