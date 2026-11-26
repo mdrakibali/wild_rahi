@@ -122,32 +122,39 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
           </div>
         </header>
 
-        {/* Cover Photograph */}
-        <figure className="site-container max-w-5xl mt-10 lg:mt-14">
-          <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-muted border border-border">
+        {/* Cover Photograph (compact editorial proportion aligned to article width) */}
+        <figure className="site-container max-w-3xl mt-8 lg:mt-10">
+          <div className="relative h-[220px] sm:h-[300px] lg:h-[340px] rounded-lg overflow-hidden bg-muted border border-border">
             <PortfolioImage
               src={activeStory.coverImage}
               alt={activeStory.title}
               fill
-              sizes="(max-width: 1024px) 100vw, 1024px"
+              sizes="(max-width: 768px) 100vw, 768px"
               priority
               className="object-cover"
             />
           </div>
         </figure>
 
-        {/* Tiptap Editorial Body + Natural Story Photographs */}
-        <div className="site-container max-w-3xl py-12 lg:py-16 space-y-12">
+        {/* Tiptap Editorial Body + Compact Story Photographs */}
+        <div className="site-container max-w-3xl py-10 lg:py-14 space-y-10">
           <div
             className="article-prose"
             dangerouslySetInnerHTML={{ __html: sanitizedBody }}
           />
 
           {storyImages.length > 0 && (
-            <section aria-label="Story photographs" className="space-y-6 pt-4 border-t border-border">
+            <section aria-label="Story photographs" className="space-y-4 pt-6 border-t border-border">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground font-medium">
+                Field Photographs ({storyImages.length})
+              </p>
               <div
-                className={`grid gap-4 sm:gap-6 ${
-                  storyImages.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'
+                className={`grid gap-3 sm:gap-4 ${
+                  storyImages.length === 1
+                    ? 'grid-cols-1 max-w-xs'
+                    : storyImages.length === 2
+                      ? 'grid-cols-2 max-w-lg'
+                      : 'grid-cols-2 sm:grid-cols-3'
                 }`}
               >
                 {storyImages.map((imgUrl, idx) => (
@@ -155,18 +162,14 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({ stories, slug }) => {
                     key={`${imgUrl}-${idx}`}
                     type="button"
                     onClick={() => setZoomImage(imgUrl)}
-                    className={`group relative rounded-lg overflow-hidden bg-muted border border-border text-left focus:outline-none cursor-pointer ${
-                      storyImages.length > 2 && idx === 0
-                        ? 'sm:col-span-2 aspect-[16/10]'
-                        : 'aspect-[4/3]'
-                    }`}
+                    className="group relative aspect-[4/3] rounded-lg overflow-hidden bg-muted border border-border text-left focus:outline-none cursor-pointer"
                     aria-label={`Inspect story photograph ${idx + 1}`}
                   >
                     <PortfolioImage
                       src={imgUrl}
                       alt={`${activeStory.title} — Photograph ${idx + 1}`}
                       fill
-                      sizes="(max-width: 640px) 100vw, 720px"
+                      sizes="(max-width: 640px) 50vw, 240px"
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                     />
                   </button>
