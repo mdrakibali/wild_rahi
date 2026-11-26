@@ -141,21 +141,29 @@ async function seed() {
       const slideDefs = [
         {
           file: 'bird_pied_kingfisher_flight_1795067901863.jpg',
+          headline: 'Wildlife of North Bengal.',
+          subtitle: 'Birds, mammals, wetlands, and flora photographed in natural light by Razaul Hafiz Rahi.',
           altText: 'Pied Kingfisher hovering in morning light over northern river waters',
           sortOrder: 1,
         },
         {
           file: 'mammal_fishing_cat_wetland_1795067902865.jpg',
+          headline: 'Along Northern Wetlands.',
+          subtitle: 'Shy wetland mammals documented quietly at dusk among seasonal reeds.',
           altText: 'Fishing Cat moving along northern wetland reeds',
           sortOrder: 2,
         },
         {
           file: 'bird_kingfisher_sylhet_1795067903243.jpg',
+          headline: 'Rivers & Woodland Edges.',
+          subtitle: 'Resident birds photographed along shaded rural streams in Thakurgaon and nearby districts.',
           altText: 'Common Kingfisher perched over a shaded northern brook',
           sortOrder: 3,
         },
         {
           file: 'landscape_tanguar_haor_1795067901551.jpg',
+          headline: 'Dawn Over Still Water.',
+          subtitle: 'Winter mist, water lilies, and quiet wetland habitats across northern plains.',
           altText: 'Morning mist over northern wetlands and water lilies',
           sortOrder: 4,
         },
@@ -166,6 +174,8 @@ async function seed() {
         await db.insert(heroSlides).values({
           image: uploaded.imageUrl,
           storagePath: uploaded.storagePath,
+          headline: s.headline,
+          subtitle: s.subtitle,
           altText: s.altText,
           sortOrder: s.sortOrder,
           isPublished: true,

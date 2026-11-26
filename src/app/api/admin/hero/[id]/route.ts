@@ -30,6 +30,8 @@ export async function PUT(
     const slideValues = {
       image: body.image.trim(),
       storagePath: body.storagePath || null,
+      headline: typeof body.headline === 'string' ? body.headline.trim() : '',
+      subtitle: typeof body.subtitle === 'string' ? body.subtitle.trim() : '',
       altText: typeof body.altText === 'string' ? body.altText.trim() : '',
       sortOrder: Number(body.sortOrder ?? 10),
       isPublished: body.isPublished !== false,

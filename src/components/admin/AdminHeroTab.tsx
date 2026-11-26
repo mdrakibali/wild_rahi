@@ -17,6 +17,8 @@ interface AdminHeroTabProps {
 const emptySlide = (count: number): HeroSlide => ({
   id: '',
   image: '',
+  headline: '',
+  subtitle: '',
   altText: '',
   sortOrder: count + 1,
   isPublished: true,
@@ -89,7 +91,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
   };
 
   const inputCls =
-    'w-full bg-card border border-border rounded-md px-3.5 py-2 text-sm text-foreground focus:outline-none focus:border-primary';
+    'w-full bg-card border border-border rounded-lg px-3.5 py-2 text-sm text-foreground focus:outline-none focus:border-primary';
   const labelCls = 'block text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold mb-1.5';
 
   return (
@@ -103,7 +105,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-card border border-border rounded-md p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-card border border-border rounded-lg p-6 space-y-5">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-serif font-bold text-foreground">
             {editingId ? 'Edit Hero Image' : 'Add Hero Image'}
@@ -115,7 +117,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
                 setEditingId(null);
                 setDraft(emptySlide(slides.length));
               }}
-              className="rounded-md border border-border hover:bg-secondary px-3.5 py-1 text-xs cursor-pointer"
+              className="rounded-lg border border-border hover:bg-secondary px-3.5 py-1 text-xs cursor-pointer"
             >
               + New Slide
             </button>
@@ -130,14 +132,14 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
           helperText="Upload a high-resolution wildlife photograph for the homepage hero."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-          <div className="md:col-span-2">
-            <label className={labelCls}>Alt Text / Caption (Optional)</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>Slide Headline (Optional)</label>
             <input
               className={inputCls}
-              value={draft.altText}
-              onChange={(e) => setDraft((s) => ({ ...s, altText: e.target.value }))}
-              placeholder="e.g. Pied Kingfisher hovering over morning river mist in North Bengal"
+              value={draft.headline ?? ''}
+              onChange={(e) => setDraft((s) => ({ ...s, headline: e.target.value }))}
+              placeholder="Leave blank to use Profile hero headline"
             />
           </div>
           <div>
@@ -149,6 +151,27 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
               onChange={(e) => setDraft((s) => ({ ...s, sortOrder: Number(e.target.value) || 1 }))}
             />
           </div>
+        </div>
+
+        <div>
+          <label className={labelCls}>Slide Subtitle (Optional)</label>
+          <textarea
+            rows={2}
+            className={inputCls}
+            value={draft.subtitle ?? ''}
+            onChange={(e) => setDraft((s) => ({ ...s, subtitle: e.target.value }))}
+            placeholder="Leave blank to use Profile hero subtitle"
+          />
+        </div>
+
+        <div>
+          <label className={labelCls}>Photo Note / Alt Text (Optional)</label>
+          <input
+            className={inputCls}
+            value={draft.altText}
+            onChange={(e) => setDraft((s) => ({ ...s, altText: e.target.value }))}
+            placeholder="e.g. Pied Kingfisher hovering over river mist, Thakurgaon"
+          />
         </div>
 
         <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
@@ -164,7 +187,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
           <button
             type="submit"
             disabled={busy}
-            className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 text-sm font-medium disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 text-xs font-semibold disabled:opacity-50 cursor-pointer"
           >
             <Save className="w-4 h-4" />
             {editingId ? 'Update Hero Image' : 'Save Hero Image'}
@@ -172,7 +195,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
         </div>
       </form>
 
-      <div className="bg-card border border-border divide-y divide-border rounded-md overflow-hidden">
+      <div className="bg-card border border-border divide-y divide-border rounded-lg overflow-hidden">
         {slides.length === 0 ? (
           <div className="p-8 text-center text-sm text-muted-foreground">
             No hero images configured yet.
@@ -187,12 +210,17 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
                 <img
                   src={slide.image}
                   alt={slide.altText || 'Hero slide'}
-                  className="w-24 h-14 object-cover rounded bg-muted shrink-0"
+                  className="w-24 h-14 object-cover rounded-lg bg-muted shrink-0"
                 />
                 <div className="min-w-0 space-y-1">
                   <p className="text-sm font-semibold truncate">
-                    {slide.altText || `Hero Slide #${index + 1}`}
+                    {slide.headline || slide.altText || `Hero Slide #${index + 1}`}
                   </p>
+                  {slide.subtitle && (
+                    <p className="text-xs text-muted-foreground truncate max-w-md">
+                      {slide.subtitle}
+                    </p>
+                  )}
                   <p className="text-xs text-muted-foreground">
                     Order #{slide.sortOrder} &middot;{' '}
                     <span className={slide.isPublished ? 'text-primary font-medium' : ''}>
@@ -207,7 +235,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
                   type="button"
                   onClick={() => handleTogglePublish(slide)}
                   disabled={busy}
-                  className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary cursor-pointer"
+                  className="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-border hover:bg-secondary cursor-pointer"
                   title={slide.isPublished ? 'Unpublish' : 'Publish'}
                 >
                   {slide.isPublished ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -216,7 +244,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
                   type="button"
                   onClick={() => handleReorder(index, -1)}
                   disabled={index === 0 || busy}
-                  className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary disabled:opacity-30 cursor-pointer"
+                  className="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-border hover:bg-secondary disabled:opacity-30 cursor-pointer"
                   aria-label="Move up"
                 >
                   <ArrowUp className="w-3.5 h-3.5" />
@@ -225,7 +253,7 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
                   type="button"
                   onClick={() => handleReorder(index, 1)}
                   disabled={index === slides.length - 1 || busy}
-                  className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-secondary disabled:opacity-30 cursor-pointer"
+                  className="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-border hover:bg-secondary disabled:opacity-30 cursor-pointer"
                   aria-label="Move down"
                 >
                   <ArrowDown className="w-3.5 h-3.5" />
@@ -234,17 +262,23 @@ export const AdminHeroTab: React.FC<AdminHeroTabProps> = ({
                   type="button"
                   onClick={() => {
                     setEditingId(slide.id);
-                    setDraft(slide);
+                    setDraft({
+                      ...slide,
+                      headline: slide.headline || '',
+                      subtitle: slide.subtitle || '',
+                    });
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="rounded-md border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium cursor-pointer"
+                  className="rounded-lg border border-border hover:bg-secondary px-3.5 py-1.5 text-xs font-medium cursor-pointer"
                 >
                   Edit
                 </button>
                 <button
                   type="button"
-                  onClick={() => onDelete(slide.id, slide.altText || `Hero Slide #${index + 1}`)}
-                  className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-border hover:bg-red-50 text-red-600 cursor-pointer"
+                  onClick={() =>
+                    onDelete(slide.id, slide.headline || slide.altText || `Hero Slide #${index + 1}`)
+                  }
+                  className="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-border hover:bg-red-50 text-red-600 cursor-pointer"
                   aria-label="Delete hero slide"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

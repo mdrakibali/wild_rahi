@@ -50,3 +50,4 @@ test('resolveOriginFromContext falls back cleanly when headers are unavailable',
   );
   assert.equal(resolveOriginFromContext(null, {}), 'http://localhost:3000');
 });
+

@@ -9,6 +9,8 @@ export interface HeroSlide {
   id: string;
   image: string;
   storagePath?: string;
+  headline?: string;
+  subtitle?: string;
   altText: string;
   sortOrder: number;
   isPublished: boolean;

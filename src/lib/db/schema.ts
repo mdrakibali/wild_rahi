@@ -23,6 +23,8 @@ export const heroSlides = pgTable('hero_slides', {
   id: uuid('id').defaultRandom().primaryKey(),
   image: text('image').notNull(),
   storagePath: text('storage_path'),
+  headline: text('headline'),
+  subtitle: text('subtitle'),
   altText: text('alt_text'),
   sortOrder: integer('sort_order').default(10).notNull(),
   isPublished: boolean('is_published').default(true).notNull(),

@@ -32,6 +32,8 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides, profile })
   }, [publishedSlides.length]);
 
   const activeSlide = publishedSlides[safeIndex];
+  const activeHeadline = activeSlide?.headline?.trim() || profile.heroHeadline;
+  const activeSubtitle = activeSlide?.subtitle?.trim() || profile.heroSubheadline;
 
   return (
     <section className="relative min-h-[88vh] lg:min-h-screen w-full bg-obsidian text-white flex flex-col justify-end overflow-hidden">
@@ -77,24 +79,34 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides, profile })
             {profile.brandName} &mdash; {profile.location}
           </p>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-serif font-semibold tracking-tight leading-[1.05] text-white">
-            {profile.heroHeadline}
-          </h1>
+          <div
+            key={activeSlide?.id || 'hero-copy-default'}
+            className="space-y-4 sm:space-y-5 hero-copy-fade"
+          >
+            <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-serif font-semibold tracking-tight leading-[1.05] text-white">
+              {activeHeadline}
+            </h1>
 
-          <p className="text-sm sm:text-base lg:text-lg text-white/80 max-w-xl leading-relaxed font-normal">
-            {profile.heroSubheadline}
-          </p>
+            {activeSubtitle && (
+              <p className="text-sm sm:text-base lg:text-lg text-white/80 max-w-xl leading-relaxed font-normal">
+                {activeSubtitle}
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Subtle Auto Slide Indicators */}
+        {/* Subtle Auto Slide Indicators (interactive click to switch slide too) */}
         {publishedSlides.length > 1 && (
           <div className="mt-8 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2" aria-hidden="true">
+            <div className="flex items-center gap-2">
               {publishedSlides.map((slide, idx) => (
-                <span
+                <button
                   key={slide.id}
-                  className={`h-1 rounded-full transition-all duration-500 ${
-                    idx === safeIndex ? 'w-8 bg-white' : 'w-2 bg-white/30'
+                  type="button"
+                  onClick={() => setActiveIndex(idx)}
+                  aria-label={`View slide ${idx + 1}${slide.headline ? `: ${slide.headline}` : ''}`}
+                  className={`h-1.5 rounded-full transition-all duration-500 cursor-pointer ${
+                    idx === safeIndex ? 'w-8 bg-white' : 'w-2.5 bg-white/30 hover:bg-white/60'
                   }`}
                 />
               ))}

@@ -69,3 +69,4 @@ export async function resolveSiteOrigin(): Promise<string> {
     return resolveOriginFromContext(null);
   }
 }
+
