@@ -1,12 +1,13 @@
 import type { VideoPlatform } from '../lib/videoEmbed';
 
 export type WildlifeCategory =
-  | 'mammals'
   | 'birds'
+  | 'mammals'
   | 'reptiles'
   | 'amphibians'
   | 'insects'
-  | 'landscapes';
+  | 'landscapes'
+  | 'others';
 
 export type EnquiryStatus = 'new' | 'reviewed' | 'replied' | 'archived';
 

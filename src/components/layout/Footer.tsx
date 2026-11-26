@@ -130,28 +130,28 @@ export const Footer: React.FC<{ profile: SiteProfile }> = ({ profile }) => {
             </p>
             <ul className="space-y-2.5 text-sm text-white/80">
               <li>
-                <Link href="/gallery?category=mammals" className="hover:text-white transition-colors">
-                  Mammals
+                <Link href="/gallery?category=birds" className="hover:text-white transition-colors">
+                  Birds of Bangladesh
                 </Link>
               </li>
               <li>
-                <Link href="/gallery?category=birds" className="hover:text-white transition-colors">
-                  Birds
+                <Link href="/gallery?category=mammals" className="hover:text-white transition-colors">
+                  Bengal Mammals
                 </Link>
               </li>
               <li>
                 <Link href="/gallery?category=reptiles" className="hover:text-white transition-colors">
-                  Reptiles
-                </Link>
-              </li>
-              <li>
-                <Link href="/gallery?category=amphibians" className="hover:text-white transition-colors">
-                  Amphibians
+                  Reptiles &amp; Snakes
                 </Link>
               </li>
               <li>
                 <Link href="/gallery?category=landscapes" className="hover:text-white transition-colors">
-                  Landscapes
+                  Sundarbans &amp; Haors
+                </Link>
+              </li>
+              <li>
+                <Link href="/gallery?category=others" className="hover:text-white transition-colors">
+                  Others
                 </Link>
               </li>
             </ul>

@@ -40,7 +40,7 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
   };
 
   const inputCls =
-    'w-full bg-card border border-border rounded-md px-3.5 py-2 text-sm text-foreground focus:outline-none focus:border-primary';
+    'w-full bg-card border border-border rounded-lg px-3.5 py-2 text-sm text-foreground focus:outline-none focus:border-primary';
   const labelCls = 'block text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold mb-1.5';
 
   return (
@@ -58,7 +58,7 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
         <button
           type="submit"
           disabled={busy}
-          className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 text-xs font-semibold tracking-wide disabled:opacity-50 cursor-pointer self-start sm:self-auto"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 text-xs font-semibold tracking-wide disabled:opacity-50 cursor-pointer self-start sm:self-auto"
         >
           <Save className="w-4 h-4" />
           Save Profile
@@ -66,45 +66,49 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
       </div>
 
       {/* Identity */}
-      <div className="bg-card border border-border rounded-md p-6 space-y-5">
+      <div className="bg-card border border-border rounded-lg p-6 space-y-5">
         <h3 className="text-base font-serif font-bold text-foreground border-b border-border pb-3">
           Photographer Identity &amp; Portrait
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className={labelCls}>Photographer Name</label>
-            <input
-              className={inputCls}
-              value={draft.photographerName}
-              onChange={(e) => setDraft((p) => ({ ...p, photographerName: e.target.value }))}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+          <div className="md:col-span-4 lg:col-span-3 max-w-[200px]">
+            <ImageDropzone
+              label="Portrait Photograph"
+              value={draft.portraitUrl}
+              onChange={(url) => setDraft((p) => ({ ...p, portraitUrl: url }))}
+              folder="profile"
+              aspectRatio="portrait"
             />
           </div>
-          <div>
-            <label className={labelCls}>Brand / Studio Name</label>
-            <input
-              className={inputCls}
-              value={draft.brandName}
-              onChange={(e) => setDraft((p) => ({ ...p, brandName: e.target.value }))}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>Location</label>
-            <input
-              className={inputCls}
-              value={draft.location}
-              onChange={(e) => setDraft((p) => ({ ...p, location: e.target.value }))}
-            />
+
+          <div className="md:col-span-8 lg:col-span-9 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
+              <label className={labelCls}>Photographer Name</label>
+              <input
+                className={inputCls}
+                value={draft.photographerName}
+                onChange={(e) => setDraft((p) => ({ ...p, photographerName: e.target.value }))}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Brand / Studio Name</label>
+              <input
+                className={inputCls}
+                value={draft.brandName}
+                onChange={(e) => setDraft((p) => ({ ...p, brandName: e.target.value }))}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Location</label>
+              <input
+                className={inputCls}
+                value={draft.location}
+                onChange={(e) => setDraft((p) => ({ ...p, location: e.target.value }))}
+              />
+            </div>
           </div>
         </div>
-
-        <ImageDropzone
-          label="Portrait Photograph"
-          value={draft.portraitUrl}
-          onChange={(url) => setDraft((p) => ({ ...p, portraitUrl: url }))}
-          folder="profile"
-          aspectRatio="portrait"
-        />
 
         <div>
           <label className={labelCls}>About Page Headline</label>

@@ -38,7 +38,7 @@ export const photographs = pgTable('photographs', {
   imageUrl: text('image_url').notNull(),
   storagePath: text('storage_path'),
   thumbnailUrl: text('thumbnail_url'),
-  category: text('category').default('birds').notNull(),
+  category: text('category').default('others').notNull(),
   isFeatured: boolean('is_featured').default(false).notNull(),
   isPublished: boolean('is_published').default(true).notNull(),
   sortOrder: integer('sort_order').default(10).notNull(),

@@ -1,12 +1,13 @@
 import type { Photograph, WildlifeCategory } from '../types/portfolio';
 
 export const WILDLIFE_CATEGORIES: ReadonlyArray<{ id: WildlifeCategory; label: string }> = [
-  { id: 'mammals', label: 'Mammals' },
-  { id: 'birds', label: 'Birds' },
-  { id: 'reptiles', label: 'Reptiles' },
-  { id: 'amphibians', label: 'Amphibians' },
-  { id: 'insects', label: 'Insects & Macro' },
-  { id: 'landscapes', label: 'Landscapes & Habitats' },
+  { id: 'birds', label: 'Birds of Bangladesh' },
+  { id: 'mammals', label: 'Bengal Mammals' },
+  { id: 'reptiles', label: 'Reptiles & Snakes' },
+  { id: 'amphibians', label: 'Frogs & Amphibians' },
+  { id: 'insects', label: 'Butterflies & Macro' },
+  { id: 'landscapes', label: 'Sundarbans & Haors' },
+  { id: 'others', label: 'Others' },
 ] as const;
 
 export const ALLOWED_WILDLIFE_CATEGORIES: readonly WildlifeCategory[] = WILDLIFE_CATEGORIES.map(
@@ -28,22 +29,40 @@ export function isValidDocumentId(id: string): boolean {
 
 export function normalizeWildlifeCategory(input?: string | null): WildlifeCategory {
   const val = (input || '').trim().toLowerCase();
+  if (!val) return 'others';
   if (ALLOWED_WILDLIFE_CATEGORIES.includes(val as WildlifeCategory)) {
     return val as WildlifeCategory;
   }
-  if (val.includes('mammal')) return 'mammals';
-  if (val.includes('bird') || val.includes('avian')) return 'birds';
-  if (val.includes('reptile')) return 'reptiles';
-  if (val.includes('amphib')) return 'amphibians';
-  if (val.includes('insect') || val.includes('macro')) return 'insects';
-  if (val.includes('landscape') || val.includes('habitat') || val.includes('wetland')) {
+  if (val.includes('mammal') || val.includes('tiger') || val.includes('bengal') || val.includes('cat')) {
+    return 'mammals';
+  }
+  if (val.includes('bird') || val.includes('avian') || val.includes('waterfowl') || val.includes('kingfisher')) {
+    return 'birds';
+  }
+  if (val.includes('reptile') || val.includes('snake') || val.includes('viper')) {
+    return 'reptiles';
+  }
+  if (val.includes('amphib') || val.includes('frog')) {
+    return 'amphibians';
+  }
+  if (val.includes('insect') || val.includes('macro') || val.includes('butterfl')) {
+    return 'insects';
+  }
+  if (
+    val.includes('landscape') ||
+    val.includes('habitat') ||
+    val.includes('wetland') ||
+    val.includes('sundarban') ||
+    val.includes('haor') ||
+    val.includes('mangrove')
+  ) {
     return 'landscapes';
   }
-  return 'birds';
+  return 'others';
 }
 
 export function getWildlifeCategoryLabel(category: WildlifeCategory): string {
-  return WILDLIFE_CATEGORIES.find((c) => c.id === category)?.label || 'Wildlife';
+  return WILDLIFE_CATEGORIES.find((c) => c.id === category)?.label || 'Others';
 }
 
 export function toSafeSlug(input: string, maxLength = 72): string {

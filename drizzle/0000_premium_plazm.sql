@@ -36,7 +36,7 @@ CREATE TABLE "photographs" (
 	"image_url" text NOT NULL,
 	"storage_path" text,
 	"thumbnail_url" text,
-	"category" text DEFAULT 'birds' NOT NULL,
+	"category" text DEFAULT 'others' NOT NULL,
 	"is_featured" boolean DEFAULT false NOT NULL,
 	"is_published" boolean DEFAULT true NOT NULL,
 	"sort_order" integer DEFAULT 10 NOT NULL,

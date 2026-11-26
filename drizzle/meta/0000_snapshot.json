@@ -1,5 +1,5 @@
 {
-  "id": "b49a7c8c-0576-4a34-94ad-0798a3301f6d",
+  "id": "55f314d7-c79f-4645-832a-6083a3f0092b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -234,7 +234,7 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "'birds'"
+          "default": "'others'"
         },
         "is_featured": {
           "name": "is_featured",

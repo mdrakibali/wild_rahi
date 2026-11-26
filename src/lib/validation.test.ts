@@ -64,7 +64,11 @@ test('normalizeWildlifeCategory and getWildlifeCategoryLabel map categories accu
   assert.equal(normalizeWildlifeCategory('Birds'), 'birds');
   assert.equal(normalizeWildlifeCategory('amphibians'), 'amphibians');
   assert.equal(normalizeWildlifeCategory('Macro World'), 'insects');
-  assert.equal(getWildlifeCategoryLabel('insects'), 'Insects & Macro');
+  assert.equal(normalizeWildlifeCategory('Sundarbans Mangrove'), 'landscapes');
+  assert.equal(normalizeWildlifeCategory(''), 'others');
+  assert.equal(normalizeWildlifeCategory('Unclassified wildlife'), 'others');
+  assert.equal(getWildlifeCategoryLabel('insects'), 'Butterflies & Macro');
+  assert.equal(getWildlifeCategoryLabel('others'), 'Others');
 });
 
 test('validateEnquiryInput enforces required fields and length bounds', () => {

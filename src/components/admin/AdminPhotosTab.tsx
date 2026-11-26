@@ -21,7 +21,7 @@ const emptyPhoto = (count: number): Photograph => ({
   title: '',
   description: '',
   image: '',
-  category: 'birds',
+  category: 'others',
   isFeatured: false,
   isPublished: true,
   sortOrder: count + 1,
@@ -37,7 +37,7 @@ export const AdminPhotosTab: React.FC<AdminPhotosTabProps> = ({
 }) => {
   const [draft, setDraft] = useState<Photograph>(() => emptyPhoto(photographs.length));
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [batchCategory, setBatchCategory] = useState<WildlifeCategory>('birds');
+  const [batchCategory, setBatchCategory] = useState<WildlifeCategory>('others');
 
   const handleBatchUpload = async (
     items: Array<{ imageUrl: string; storagePath: string; fileName: string }>
