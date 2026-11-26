@@ -154,3 +154,4 @@ export const AboutFieldMarquee: React.FC<{ photographs: Photograph[] }> = ({ pho
     </section>
   );
 };
+

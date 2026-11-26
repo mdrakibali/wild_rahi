@@ -143,7 +143,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !isUploading && fileInputRef.current?.click()}
-        className={`relative group rounded-md border-2 border-dashed transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center p-6 text-center ${getAspectClass()} ${
+        className={`relative group rounded-xl border-2 border-dashed transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center p-6 text-center ${getAspectClass()} ${
           isDragging
             ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
             : error
@@ -169,16 +169,16 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             <img
               src={value}
               alt="Uploaded preview"
-              className="w-full h-full object-cover rounded-md"
+              className="w-full h-full object-cover rounded-xl"
             />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center gap-3 p-4">
-              <span className="text-xs font-medium text-white bg-black/60 px-3 py-1.5 rounded-md backdrop-blur-sm">
+              <span className="text-xs font-medium text-white bg-black/60 px-3 py-1.5 rounded-xl backdrop-blur-sm">
                 Click or Drop to Replace
               </span>
               <button
                 type="button"
                 onClick={handleClear}
-                className="p-1.5 rounded-md bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+                className="p-1.5 rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
                 title="Remove Image"
                 aria-label="Remove Image"
               >

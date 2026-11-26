@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { Photograph } from '@/types/portfolio';
 
 interface LightboxContextValue {
@@ -22,6 +22,7 @@ export const LightboxProvider: React.FC<{
   );
   const [modalList, setModalList] = useState<Photograph[]>(publishedPhotos);
   const [activePhotoId, setActivePhotoId] = useState<string | null>(null);
+  const returnUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     const sorted = photographs
@@ -31,33 +32,6 @@ export const LightboxProvider: React.FC<{
     setModalList((prev) => (prev.length === 0 ? sorted : prev));
   }, [photographs]);
 
-  // Support deep-link ?photo=<id> on initial mount without triggering Next router reloads
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const paramId = params.get('photo');
-    if (paramId) {
-      setActivePhotoId(paramId);
-    }
-    const onPopState = () => {
-      const next = new URLSearchParams(window.location.search).get('photo');
-      setActivePhotoId(next);
-    };
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
-
-  const syncQueryParam = useCallback((photoId: string | null) => {
-    if (typeof window === 'undefined') return;
-    const url = new URL(window.location.href);
-    if (photoId) {
-      url.searchParams.set('photo', photoId);
-    } else {
-      url.searchParams.delete('photo');
-    }
-    window.history.replaceState(null, '', url.toString());
-  }, []);
-
   const openPhotoModal = useCallback(
     (photo: Photograph, customList?: Photograph[]) => {
       if (customList && customList.length > 0) {
@@ -65,16 +39,22 @@ export const LightboxProvider: React.FC<{
       } else {
         setModalList(publishedPhotos);
       }
+      if (typeof window !== 'undefined' && returnUrlRef.current === null) {
+        returnUrlRef.current = window.location.pathname + window.location.search;
+        window.history.replaceState(null, '', `/gallery/${encodeURIComponent(photo.id)}`);
+      }
       setActivePhotoId(photo.id);
-      syncQueryParam(photo.id);
     },
-    [publishedPhotos, syncQueryParam]
+    [publishedPhotos]
   );
 
   const closePhotoModal = useCallback(() => {
     setActivePhotoId(null);
-    syncQueryParam(null);
-  }, [syncQueryParam]);
+    if (typeof window !== 'undefined' && returnUrlRef.current !== null) {
+      window.history.replaceState(null, '', returnUrlRef.current);
+      returnUrlRef.current = null;
+    }
+  }, []);
 
   const activeModalPhoto = useMemo(() => {
     if (!activePhotoId) return null;
@@ -95,10 +75,12 @@ export const LightboxProvider: React.FC<{
       const target = list[nextIdx];
       if (target) {
         setActivePhotoId(target.id);
-        syncQueryParam(target.id);
+        if (typeof window !== 'undefined') {
+          window.history.replaceState(null, '', `/gallery/${encodeURIComponent(target.id)}`);
+        }
       }
     },
-    [activePhotoId, modalList, publishedPhotos, syncQueryParam]
+    [activePhotoId, modalList, publishedPhotos]
   );
 
   const value = useMemo<LightboxContextValue>(

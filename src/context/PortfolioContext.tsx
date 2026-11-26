@@ -100,10 +100,6 @@ interface PortfolioContextValue {
   updateEnquiry: (id: string, status: EnquiryStatus) => Promise<void>;
   deleteEnquiry: (id: string) => Promise<void>;
   downloadArchiveBackup: () => Promise<void>;
-  activeModalPhoto: Photograph | null;
-  openPhotoModal: (photo: Photograph) => void;
-  closePhotoModal: () => void;
-  navigateModalPhoto: (direction: -1 | 1) => void;
 }
 
 const PortfolioContext = createContext<PortfolioContextValue | null>(null);
@@ -408,57 +404,6 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     URL.revokeObjectURL(url);
   }, []);
 
-  // Preserved URL-synced Photo Modal Lightbox state & navigation
-  const [activeModalPhoto, setActiveModalPhoto] = useState<Photograph | null>(null);
-
-  const publishedPhotos = useMemo(
-    () => photographs.filter((p) => p.isPublished).sort((a, b) => a.sortOrder - b.sortOrder),
-    [photographs]
-  );
-
-  const openPhotoModal = useCallback((photo: Photograph) => {
-    setActiveModalPhoto(photo);
-    if (typeof window !== 'undefined') {
-      const slug = encodeURIComponent(photo.id);
-      window.history.pushState({ photoModal: true, photoId: photo.id }, '', `/gallery/${slug}`);
-    }
-  }, []);
-
-  const closePhotoModal = useCallback(() => {
-    setActiveModalPhoto(null);
-    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/gallery/')) {
-      window.history.back();
-    }
-  }, []);
-
-  const navigateModalPhoto = useCallback(
-    (direction: -1 | 1) => {
-      if (!activeModalPhoto) return;
-      const list = publishedPhotos.length > 0 ? publishedPhotos : photographs;
-      const idx = list.findIndex((p) => p.id === activeModalPhoto.id);
-      if (idx === -1) return;
-      const nextIdx = idx + direction;
-      if (nextIdx < 0 || nextIdx >= list.length) return;
-      const nextPhoto = list[nextIdx];
-      setActiveModalPhoto(nextPhoto);
-      if (typeof window !== 'undefined') {
-        const slug = encodeURIComponent(nextPhoto.id);
-        window.history.replaceState({ photoModal: true, photoId: nextPhoto.id }, '', `/gallery/${slug}`);
-      }
-    },
-    [activeModalPhoto, publishedPhotos, photographs]
-  );
-
-  useEffect(() => {
-    const handlePopState = () => {
-      if (!window.location.pathname.startsWith('/gallery/')) {
-        setActiveModalPhoto(null);
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
   const isAdmin = Boolean(adminUser);
 
   const value = useMemo<PortfolioContextValue>(
@@ -492,10 +437,6 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       updateEnquiry,
       deleteEnquiry,
       downloadArchiveBackup,
-      activeModalPhoto,
-      openPhotoModal,
-      closePhotoModal,
-      navigateModalPhoto,
     }),
     [
       heroSlides,
@@ -527,10 +468,6 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       updateEnquiry,
       deleteEnquiry,
       downloadArchiveBackup,
-      activeModalPhoto,
-      openPhotoModal,
-      closePhotoModal,
-      navigateModalPhoto,
     ]
   );
 

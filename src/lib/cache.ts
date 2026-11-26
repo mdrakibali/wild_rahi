@@ -31,3 +31,4 @@ export function revalidatePortfolioCache(): void {
   revalidatePath('/about');
   revalidatePath('/contact');
 }
+

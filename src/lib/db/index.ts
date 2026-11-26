@@ -4,11 +4,13 @@ import * as schema from './schema';
 
 export * from './schema';
 
-let client: postgres.Sql | null = null;
-let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
+const globalForDb = globalThis as unknown as {
+  __wildRahiSql?: postgres.Sql;
+  __wildRahiDb?: ReturnType<typeof drizzle<typeof schema>>;
+};
 
 export function getDb() {
-  if (dbInstance) return dbInstance;
+  if (globalForDb.__wildRahiDb) return globalForDb.__wildRahiDb;
 
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
@@ -17,16 +19,23 @@ export function getDb() {
     );
   }
 
-  // Disable prefetch as it is not supported for "Transaction" pool mode in Supabase
-  client = postgres(connectionString || 'postgresql://postgres:postgres@localhost:5432/postgres', {
-    prepare: false,
-    max: 10,
-    idle_timeout: 20,
-    connect_timeout: 10,
-  });
+  const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+  const poolMax = isBuildPhase ? 1 : 3;
 
-  dbInstance = drizzle(client, { schema });
-  return dbInstance;
+  // Cache client on globalThis to prevent HMR connection leaks in dev and keep Supabase pool usage minimal
+  const client =
+    globalForDb.__wildRahiSql ||
+    postgres(connectionString || 'postgresql://postgres:postgres@localhost:5432/postgres', {
+      prepare: false,
+      max: poolMax,
+      idle_timeout: 15,
+      max_lifetime: 300,
+      connect_timeout: 10,
+    });
+
+  globalForDb.__wildRahiSql = client;
+  globalForDb.__wildRahiDb = drizzle(client, { schema });
+  return globalForDb.__wildRahiDb;
 }
 
 export const db = new Proxy({} as ReturnType<typeof drizzle<typeof schema>>, {
@@ -36,4 +45,3 @@ export const db = new Proxy({} as ReturnType<typeof drizzle<typeof schema>>, {
     return instance[prop];
   },
 });
-
