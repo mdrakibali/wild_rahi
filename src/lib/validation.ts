@@ -118,6 +118,23 @@ export interface EnquiryValidationResult {
   sanitized: EnquiryInput;
 }
 
+export function sanitizeImageUrlList(input: unknown, maxItems = 24): string[] {
+  if (!Array.isArray(input)) return [];
+  const seen = new Set<string>();
+  const cleaned: string[] = [];
+
+  for (const entry of input) {
+    if (typeof entry !== 'string') continue;
+    const url = entry.trim();
+    if (!url || seen.has(url)) continue;
+    seen.add(url);
+    cleaned.push(url);
+    if (cleaned.length >= maxItems) break;
+  }
+
+  return cleaned;
+}
+
 export function validateEnquiryInput(input: EnquiryInput): EnquiryValidationResult {
   const sanitized: EnquiryInput = {
     name: input.name.trim().slice(0, 120),

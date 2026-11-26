@@ -75,6 +75,7 @@ export interface SiteProfile {
   journeyNote: string;
   philosophy: string;
   portraitUrl: string;
+  aboutImages: string[];
   contactEmail: string;
   facebookUrl: string;
   instagramUrl: string;

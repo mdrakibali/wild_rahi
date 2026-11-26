@@ -6,6 +6,7 @@ import {
   isValidDocumentId,
   isValidUuid,
   normalizeWildlifeCategory,
+  sanitizeImageUrlList,
   toSafeSlug,
   validateEnquiryInput,
 } from './validation';
@@ -104,4 +105,16 @@ test('toSafeSlug, isValidUuid, and isValidDocumentId enforce expected patterns',
   assert.equal(isValidDocumentId('../bad/id'), false);
   assert.equal(isValidUuid('431aa573-1e8d-4cb8-853e-d653c0ff8d7b'), true);
   assert.equal(isValidUuid('not-a-uuid'), false);
+});
+
+test('sanitizeImageUrlList trims, deduplicates, and caps image URL lists', () => {
+  assert.deepEqual(sanitizeImageUrlList(null), []);
+  assert.deepEqual(sanitizeImageUrlList('not-an-array'), []);
+  assert.deepEqual(
+    sanitizeImageUrlList(
+      ['  /a.jpg ', '', 42, '/b.jpg', '/a.jpg', ' /c.jpg ', '/d.jpg'],
+      3
+    ),
+    ['/a.jpg', '/b.jpg', '/c.jpg']
+  );
 });

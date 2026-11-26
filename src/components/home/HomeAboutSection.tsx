@@ -67,10 +67,31 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
   const { openPhotoModal } = useLightbox();
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  // Build 10-frame 2 - 3 - 3 - 2 bento collage strictly from published/project wildlife frames
+  // Build 10-frame 2 - 3 - 3 - 2 bento collage: prioritize admin-curated aboutImages, then published photographs, then fallbacks
   const bentoRows = useMemo(() => {
     const items: Array<{ id: string; src: string; alt: string; photo?: Photograph }> = [];
     const used = new Set<string>();
+    const photoByImage = new Map<string, Photograph>();
+
+    for (const p of photographs) {
+      if (p.image && !photoByImage.has(p.image)) {
+        photoByImage.set(p.image, p);
+      }
+    }
+
+    const customImages = profile.aboutImages ?? [];
+    for (let i = 0; i < customImages.length && items.length < 10; i++) {
+      const imgUrl = customImages[i];
+      if (!imgUrl || used.has(imgUrl)) continue;
+      used.add(imgUrl);
+      const matchedPhoto = photoByImage.get(imgUrl);
+      items.push({
+        id: `about-custom-${i}`,
+        src: imgUrl,
+        alt: matchedPhoto?.title || `${profile.photographerName} portfolio frame ${i + 1}`,
+        photo: matchedPhoto,
+      });
+    }
 
     for (const p of photographs) {
       if (items.length >= 10) break;
@@ -94,7 +115,7 @@ export const HomeAboutSection: React.FC<HomeAboutSectionProps> = ({
     }
 
     return splitIntoBentoRows(items.slice(0, 10));
-  }, [photographs]);
+  }, [photographs, profile.aboutImages, profile.photographerName]);
 
   useEffect(() => {
     const mm = gsap.matchMedia();

@@ -17,6 +17,7 @@ export const DEFAULT_PROFILE: SiteProfile = {
   philosophy:
     'The welfare and serenity of the living subject always precedes the photograph. No baiting, no artificial playback calls during nesting seasons, and never disclosing sensitive breeding sites.',
   portraitUrl: '/assets/images/portrait_photographer_field_1795067902652.jpg',
+  aboutImages: [],
   contactEmail: 'contact@wildrahi.com',
   facebookUrl: 'https://www.facebook.com/WildRahi',
   instagramUrl: 'https://www.instagram.com/wildrahi',

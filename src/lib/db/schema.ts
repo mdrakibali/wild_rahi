@@ -84,7 +84,7 @@ export const siteProfiles = pgTable('site_profiles', {
   biography: text('biography'),
   profileImage: text('profile_image'),
   email: text('email'),
-  socialLinks: jsonb('social_links').$type<Record<string, string>>().default({}),
+  socialLinks: jsonb('social_links').$type<Record<string, unknown>>().default({}),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 

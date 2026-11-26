@@ -10,7 +10,7 @@ import {
 } from './schema';
 import { DEFAULT_HERO_SLIDES, DEFAULT_PROFILE } from '../defaults';
 import { tiptapContentToHtml } from '../sanitizeHtml';
-import { normalizeWildlifeCategory } from '../validation';
+import { normalizeWildlifeCategory, sanitizeImageUrlList } from '../validation';
 import { parseVideoUrl } from '../videoEmbed';
 import type {
   Enquiry,
@@ -103,25 +103,28 @@ export class DatabaseRepository {
       }));
 
       const profile = profilesList[0];
-      const social = (profile?.socialLinks as Record<string, string>) || {};
+      const social = (profile?.socialLinks as Record<string, unknown>) || {};
+      const asText = (value: unknown): string => (typeof value === 'string' ? value : '');
       const mappedProfile: SiteProfile = profile
         ? {
             photographerName: profile.name || DEFAULT_PROFILE.photographerName,
-            brandName: social.brandName || DEFAULT_PROFILE.brandName,
-            location: social.location || DEFAULT_PROFILE.location,
-            heroHeadline: social.heroHeadline || DEFAULT_PROFILE.heroHeadline,
-            heroSubheadline: social.heroSubheadline || DEFAULT_PROFILE.heroSubheadline,
-            bioHeadline: social.bioHeadline || profile.name || DEFAULT_PROFILE.bioHeadline,
+            brandName: asText(social.brandName) || DEFAULT_PROFILE.brandName,
+            location: asText(social.location) || DEFAULT_PROFILE.location,
+            heroHeadline: asText(social.heroHeadline) || DEFAULT_PROFILE.heroHeadline,
+            heroSubheadline: asText(social.heroSubheadline) || DEFAULT_PROFILE.heroSubheadline,
+            bioHeadline: asText(social.bioHeadline) || profile.name || DEFAULT_PROFILE.bioHeadline,
             bioSummary: profile.biography || DEFAULT_PROFILE.bioSummary,
-            passionNote: social.passionNote || social.introBody || DEFAULT_PROFILE.passionNote,
-            journeyNote: social.journeyNote || DEFAULT_PROFILE.journeyNote,
-            philosophy: social.philosophy || DEFAULT_PROFILE.philosophy,
+            passionNote:
+              asText(social.passionNote) || asText(social.introBody) || DEFAULT_PROFILE.passionNote,
+            journeyNote: asText(social.journeyNote) || DEFAULT_PROFILE.journeyNote,
+            philosophy: asText(social.philosophy) || DEFAULT_PROFILE.philosophy,
             portraitUrl: profile.profileImage || DEFAULT_PROFILE.portraitUrl,
+            aboutImages: sanitizeImageUrlList(social.aboutImages, 24),
             contactEmail: profile.email || DEFAULT_PROFILE.contactEmail,
-            facebookUrl: social.facebook || DEFAULT_PROFILE.facebookUrl,
-            instagramUrl: social.instagram || '',
-            youtubeUrl: social.youtube || '',
-            tiktokUrl: social.tiktok || '',
+            facebookUrl: asText(social.facebook) || DEFAULT_PROFILE.facebookUrl,
+            instagramUrl: asText(social.instagram),
+            youtubeUrl: asText(social.youtube),
+            tiktokUrl: asText(social.tiktok),
           }
         : DEFAULT_PROFILE;
 
