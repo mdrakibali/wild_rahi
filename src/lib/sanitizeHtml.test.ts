@@ -62,6 +62,36 @@ test('tiptapContentToHtml converts Tiptap JSON formatting and figures without DO
   assert.ok(html.includes('<figcaption>Katka riverbank</figcaption>'));
 });
 
+test('tiptapContentToHtml renders blockquote, bulletList, and Bangla editorialFigure cleanly', () => {
+  const doc = {
+    type: 'doc',
+    content: [
+      { type: 'blockquote', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'শীতের সকাল' }] }] },
+      {
+        type: 'bulletList',
+        content: [
+          { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'পয়েন্ট ১' }] }] },
+        ],
+      },
+      {
+        type: 'editorialFigure',
+        attrs: {
+          src: 'https://demo.supabase.co/storage/v1/object/public/wild_rahi/stories/test.webp',
+          alt: 'কাঞ্চনজঙ্ঘা',
+          caption: 'ভোরের আলো',
+          layout: 'wide',
+        },
+      },
+    ],
+  };
+
+  const html = tiptapContentToHtml(doc);
+  assert.ok(html.includes('<blockquote><p>শীতের সকাল</p></blockquote>'));
+  assert.ok(html.includes('<ul><li><p>পয়েন্ট ১</p></li></ul>'));
+  assert.ok(html.includes('<figure data-layout="wide"><img src="https://demo.supabase.co/storage/v1/object/public/wild_rahi/stories/test.webp"'));
+  assert.ok(html.includes('<figcaption>ভোরের আলো</figcaption>'));
+});
+
 test('estimateReadingTimeMinutes computes reading time cleanly', () => {
   const words = Array.from({ length: 360 }, () => 'wildlife').join(' ');
   assert.equal(estimateReadingTimeMinutes(`<p>${words}</p>`), 2);

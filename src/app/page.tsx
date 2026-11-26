@@ -1,8 +1,9 @@
-import { getCachedPublicPortfolio } from '@/lib/cache';
-import { HomePage } from '@/views/HomePage';
+import { getCachedPublicPortfolio } from "@/lib/cache";
+import { HomePage } from "@/views/HomePage";
 
 export default async function Page() {
-  const { heroSlides, photographs, videos, stories, profile } = await getCachedPublicPortfolio();
+  const { heroSlides, photographs, videos, stories, profile } =
+    await getCachedPublicPortfolio();
 
   return (
     <HomePage
