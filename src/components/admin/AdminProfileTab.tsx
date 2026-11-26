@@ -283,7 +283,7 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({
           </div>
         ) : (
           <p className="text-xs text-muted-foreground rounded-lg border border-dashed border-border bg-muted/30 px-4 py-3">
-            No personal collage photos uploaded yet — upload images above and click Save Profile to replace the placeholder grid.
+            No personal photos uploaded yet — Homepage About shows bio text only until you upload photos here and click Save Profile.
           </p>
         )}
       </div>

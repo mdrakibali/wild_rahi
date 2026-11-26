@@ -1,11 +1,14 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 dotenv.config();
+import fs from 'node:fs';
+import path from 'node:path';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { eq } from 'drizzle-orm';
 import { hashPassword } from '../src/lib/auth';
-import { DEFAULT_HERO_SLIDES, DEFAULT_PROFILE } from '../src/lib/defaults';
+import { DEFAULT_PROFILE } from '../src/lib/defaults';
+import { uploadImage, deleteMediaAssets, type UploadResult } from '../src/lib/storage';
 import {
   adminUsers,
   heroSlides,
@@ -17,6 +20,18 @@ import {
 
 const connectionString =
   process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/postgres';
+
+const isResetMode = process.argv.includes('--reset');
+
+async function seedAsset(fileName: string, folder: string): Promise<UploadResult> {
+  const filePath = path.resolve(process.cwd(), 'public', 'assets', 'images', fileName);
+  const buffer = fs.readFileSync(filePath);
+  return uploadImage(buffer, fileName, 'image/jpeg', {
+    folder,
+    generateThumbnail: true,
+    maxWidth: 1920,
+  });
+}
 
 async function seed() {
   console.log('[Seed] Connecting to PostgreSQL:', connectionString.replace(/:[^:@]+@/, ':****@'));
@@ -38,13 +53,58 @@ async function seed() {
       console.log(`[Seed] Created admin: ${adminEmail}`);
     }
 
-    console.log('[Seed] 2. Photographer profile...');
+    if (isResetMode) {
+      console.log('[Seed --reset] Cleaning existing sample media and resetting seeded tables...');
+      const [oldSlides, oldPhotos, oldVideos, oldStories, oldProfiles] = await Promise.all([
+        db.select().from(heroSlides),
+        db.select().from(photographs),
+        db.select().from(videos),
+        db.select().from(stories),
+        db.select().from(siteProfiles),
+      ]);
+
+      const oldTargets: Array<string | null | undefined> = [];
+      for (const s of oldSlides) oldTargets.push(s.storagePath, s.image);
+      for (const p of oldPhotos) oldTargets.push(p.storagePath, p.imageUrl, p.thumbnailUrl);
+      for (const v of oldVideos) oldTargets.push(v.thumbnailPath, v.thumbnail);
+      for (const st of oldStories) {
+        oldTargets.push(st.coverImagePath, st.coverImage, ...(Array.isArray(st.images) ? st.images : []));
+      }
+      for (const pr of oldProfiles) {
+        const social = (pr.socialLinks as Record<string, unknown>) || {};
+        const aboutImgs = Array.isArray(social.aboutImages) ? (social.aboutImages as string[]) : [];
+        oldTargets.push(pr.profileImage, ...aboutImgs);
+      }
+      await deleteMediaAssets(oldTargets);
+
+      await db.delete(heroSlides);
+      await db.delete(photographs);
+      await db.delete(videos);
+      await db.delete(stories);
+    }
+
+    console.log('[Seed] 2. Photographer profile, portrait & personal About images...');
     const existingProfile = await db.select().from(siteProfiles).limit(1);
-    if (existingProfile.length === 0) {
-      await db.insert(siteProfiles).values({
+    if (existingProfile.length === 0 || isResetMode) {
+      const portraitUpload = await seedAsset('portrait_photographer_field_1795067902652.jpg', 'profile');
+      const aboutSources = [
+        'portrait_photographer_field_1795067902652.jpg',
+        'landscape_tanguar_haor_1795067901551.jpg',
+        'bird_pied_kingfisher_flight_1795067901863.jpg',
+        'bird_kingfisher_sylhet_1795067903243.jpg',
+        'mammal_fishing_cat_wetland_1795067902865.jpg',
+        'reptile_green_pit_viper_1795067904040.jpg',
+        'insect_swallowtail_butterfly_1795067901756.jpg',
+      ];
+      const aboutUploads = await Promise.all(
+        aboutSources.map((file) => seedAsset(file, 'profile/about'))
+      );
+      const aboutUrls = aboutUploads.map((u) => u.imageUrl);
+
+      const profileData = {
         name: DEFAULT_PROFILE.photographerName,
         biography: DEFAULT_PROFILE.bioSummary,
-        profileImage: DEFAULT_PROFILE.portraitUrl,
+        profileImage: portraitUpload.imageUrl,
         email: DEFAULT_PROFILE.contactEmail,
         socialLinks: {
           brandName: DEFAULT_PROFILE.brandName,
@@ -55,106 +115,144 @@ async function seed() {
           passionNote: DEFAULT_PROFILE.passionNote,
           journeyNote: DEFAULT_PROFILE.journeyNote,
           philosophy: DEFAULT_PROFILE.philosophy,
-          aboutImages: DEFAULT_PROFILE.aboutImages,
+          aboutImages: aboutUrls,
           facebook: DEFAULT_PROFILE.facebookUrl,
           instagram: DEFAULT_PROFILE.instagramUrl,
           youtube: DEFAULT_PROFILE.youtubeUrl,
           tiktok: DEFAULT_PROFILE.tiktokUrl,
         },
-      });
+        updatedAt: new Date(),
+      };
+
+      if (existingProfile.length > 0) {
+        await db
+          .update(siteProfiles)
+          .set(profileData)
+          .where(eq(siteProfiles.id, existingProfile[0].id));
+      } else {
+        await db.insert(siteProfiles).values(profileData);
+      }
+      console.log(`[Seed] Seeded profile portrait + ${aboutUrls.length} About collage frames`);
     }
 
     console.log('[Seed] 3. Hero slides...');
     const existingSlides = await db.select().from(heroSlides).limit(1);
     if (existingSlides.length === 0) {
-      for (const slide of DEFAULT_HERO_SLIDES) {
+      const slideDefs = [
+        {
+          file: 'bird_pied_kingfisher_flight_1795067901863.jpg',
+          altText: 'Pied Kingfisher hovering in morning light over northern river waters',
+          sortOrder: 1,
+        },
+        {
+          file: 'mammal_fishing_cat_wetland_1795067902865.jpg',
+          altText: 'Fishing Cat moving along northern wetland reeds',
+          sortOrder: 2,
+        },
+        {
+          file: 'bird_kingfisher_sylhet_1795067903243.jpg',
+          altText: 'Common Kingfisher perched over a shaded northern brook',
+          sortOrder: 3,
+        },
+        {
+          file: 'landscape_tanguar_haor_1795067901551.jpg',
+          altText: 'Morning mist over northern wetlands and water lilies',
+          sortOrder: 4,
+        },
+      ];
+
+      for (const s of slideDefs) {
+        const uploaded = await seedAsset(s.file, 'hero');
         await db.insert(heroSlides).values({
-          image: slide.image,
-          altText: slide.altText,
-          sortOrder: slide.sortOrder,
-          isPublished: slide.isPublished,
+          image: uploaded.imageUrl,
+          storagePath: uploaded.storagePath,
+          altText: s.altText,
+          sortOrder: s.sortOrder,
+          isPublished: true,
         });
       }
-      console.log(`[Seed] Seeded ${DEFAULT_HERO_SLIDES.length} hero slides`);
+      console.log(`[Seed] Seeded ${slideDefs.length} hero slides`);
     }
 
     console.log('[Seed] 4. Photographs...');
     const existingPhotos = await db.select().from(photographs).limit(1);
     if (existingPhotos.length === 0) {
-      const seedPhotos = [
+      const photoDefs = [
         {
+          file: 'bird_pied_kingfisher_flight_1795067901863.jpg',
           title: 'Pied Kingfisher in Flight',
           description: 'Hovering above early morning water along the Atrai River in North Bengal.',
-          imageUrl: '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
-          thumbnailUrl: '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
           category: 'birds',
-          isFeatured: true,
-          isPublished: true,
           sortOrder: 1,
         },
         {
+          file: 'bird_kingfisher_sylhet_1795067903243.jpg',
           title: 'Common Kingfisher Perch',
-          description: 'Perched quietly over a shaded stream in Thakurgaon.',
-          imageUrl: '/assets/images/bird_kingfisher_sylhet_1795067903243.jpg',
-          thumbnailUrl: '/assets/images/bird_kingfisher_sylhet_1795067903243.jpg',
+          description: 'Perched over a shaded stream in Thakurgaon.',
           category: 'birds',
-          isFeatured: true,
-          isPublished: true,
           sortOrder: 2,
         },
         {
+          file: 'mammal_fishing_cat_wetland_1795067902865.jpg',
           title: 'Fishing Cat in Wetland Reeds',
           description: 'A fishing cat moving through reedbeds near a northern beel at dusk.',
-          imageUrl: '/assets/images/mammal_fishing_cat_wetland_1795067902865.jpg',
-          thumbnailUrl: '/assets/images/mammal_fishing_cat_wetland_1795067902865.jpg',
           category: 'mammals',
-          isFeatured: true,
-          isPublished: true,
           sortOrder: 3,
         },
         {
+          file: 'landscape_tanguar_haor_1795067901551.jpg',
           title: 'Winter Mist Over Northern Wetland',
           description: 'Still morning water and water lilies across seasonal beels in North Bengal.',
-          imageUrl: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
-          thumbnailUrl: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
           category: 'wetlands',
-          isFeatured: true,
-          isPublished: true,
           sortOrder: 4,
         },
         {
+          file: 'reptile_green_pit_viper_1795067904040.jpg',
           title: 'Green Pit Viper',
           description: 'Resting among fern leaves near a northern woodland edge.',
-          imageUrl: '/assets/images/reptile_green_pit_viper_1795067904040.jpg',
-          thumbnailUrl: '/assets/images/reptile_green_pit_viper_1795067904040.jpg',
           category: 'reptiles',
-          isFeatured: true,
-          isPublished: true,
           sortOrder: 5,
         },
         {
+          file: 'insect_swallowtail_butterfly_1795067901756.jpg',
           title: 'Common Mormon Butterfly',
           description: 'Feeding on wild blooms during warm afternoon light.',
-          imageUrl: '/assets/images/insect_swallowtail_butterfly_1795067901756.jpg',
-          thumbnailUrl: '/assets/images/insect_swallowtail_butterfly_1795067901756.jpg',
           category: 'insects',
-          isFeatured: true,
-          isPublished: true,
           sortOrder: 6,
         },
       ];
-      await db.insert(photographs).values(seedPhotos);
+
+      for (const p of photoDefs) {
+        const uploaded = await seedAsset(p.file, 'photographs');
+        await db.insert(photographs).values({
+          title: p.title,
+          description: p.description,
+          imageUrl: uploaded.imageUrl,
+          thumbnailUrl: uploaded.thumbnailUrl || uploaded.imageUrl,
+          storagePath: uploaded.storagePath,
+          category: p.category,
+          isFeatured: true,
+          isPublished: true,
+          sortOrder: p.sortOrder,
+        });
+      }
+      console.log(`[Seed] Seeded ${photoDefs.length} photographs`);
     }
 
     console.log('[Seed] 5. Stories...');
     const existingStories = await db.select().from(stories).limit(1);
     if (existingStories.length === 0) {
+      const coverUpload = await seedAsset('landscape_tanguar_haor_1795067901551.jpg', 'stories');
+      const inline1 = await seedAsset('bird_pied_kingfisher_flight_1795067901863.jpg', 'stories/gallery');
+      const inline2 = await seedAsset('mammal_fishing_cat_wetland_1795067902865.jpg', 'stories/gallery');
+
       await db.insert(stories).values({
         title: 'উত্তরবঙ্গের কুয়াশাচ্ছন্ন বিল ও মাছরাঙার ডাইভ: একটি শীতকালীন মাঠের গল্প',
         slug: 'north-bengal-winter-wetlands-kingfisher-dispatch',
         shortDescription:
           'ঠাকুরগাঁও ও সংলগ্ন বিলের ভোরবেলা—কুয়াশা ভেদ করে শিকার খোঁজা মাছরাঙা আর নিস্তব্ধ জলাভূমির গল্প।',
-        coverImage: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
+        coverImage: coverUpload.imageUrl,
+        coverImagePath: coverUpload.storagePath,
         content: {
           type: 'doc',
           content: [
@@ -183,10 +281,7 @@ async function seed() {
             },
           ],
         },
-        images: [
-          '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
-          '/assets/images/mammal_fishing_cat_wetland_1795067902865.jpg',
-        ],
+        images: [inline1.imageUrl, inline2.imageUrl],
         isPublished: true,
         isFeatured: true,
       });
@@ -195,21 +290,26 @@ async function seed() {
     console.log('[Seed] 6. Videos...');
     const existingVideos = await db.select().from(videos).limit(1);
     if (existingVideos.length === 0) {
+      const thumb1 = await seedAsset('bird_pied_kingfisher_flight_1795067901863.jpg', 'videos');
+      const thumb2 = await seedAsset('landscape_tanguar_haor_1795067901551.jpg', 'videos');
+
       await db.insert(videos).values([
         {
           title: 'Flight of the Pied Kingfisher',
-          description: 'Slow-motion hovering sequence above quiet northern wetland waters.',
+          description: 'Slow-motion hovering sequence above northern wetland waters.',
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-          thumbnail: '/assets/images/bird_pied_kingfisher_flight_1795067901863.jpg',
+          thumbnail: thumb1.imageUrl,
+          thumbnailPath: thumb1.storagePath,
           isFeatured: true,
           isPublished: true,
           sortOrder: 1,
         },
         {
-          title: 'Dawn Mist Over Northern Wetlands',
-          description: 'Early morning ambient wildlife scenes from Thakurgaon and nearby beels.',
+          title: 'Morning Mist Over Northern Wetlands',
+          description: 'Early morning wildlife scenes from Thakurgaon and nearby beels.',
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-          thumbnail: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
+          thumbnail: thumb2.imageUrl,
+          thumbnailPath: thumb2.storagePath,
           isFeatured: true,
           isPublished: true,
           sortOrder: 2,

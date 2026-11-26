@@ -11,7 +11,7 @@ export const getCachedPublicPortfolio = unstable_cache(
   async () => {
     return repository.getPublicPortfolio();
   },
-  ['public-portfolio-v1'],
+  ['public-portfolio-v2'],
   {
     tags: [PORTFOLIO_CACHE_TAG],
     revalidate: 3600,
