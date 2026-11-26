@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { db, enquiries } from '@/lib/db';
 import { eq } from 'drizzle-orm';
+import { db, enquiries } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
+import { isValidUuid } from '@/lib/validation';
 
 export async function PATCH(
   request: Request,
@@ -13,6 +14,10 @@ export async function PATCH(
   }
 
   const { id } = await params;
+  if (!isValidUuid(id)) {
+    return NextResponse.json({ error: 'Invalid enquiry ID.' }, { status: 400 });
+  }
+
   try {
     const body = await request.json();
     const [updated] = await db
@@ -38,6 +43,10 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  if (!isValidUuid(id)) {
+    return NextResponse.json({ error: 'Invalid enquiry ID.' }, { status: 400 });
+  }
+
   try {
     await db.delete(enquiries).where(eq(enquiries.id, id));
     return NextResponse.json({ ok: true });
@@ -46,4 +55,3 @@ export async function DELETE(
     return NextResponse.json({ error: 'Failed to delete enquiry.' }, { status: 500 });
   }
 }
-

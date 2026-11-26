@@ -1,217 +1,135 @@
 import { desc, eq } from 'drizzle-orm';
 import { db } from './index';
 import {
-  adminUsers,
-  articleCategories,
-  articles,
-  categories,
-  collectionPhotos,
-  collections,
   enquiries,
-  locations,
+  heroSlides,
   photographs,
   siteProfiles,
-  species,
+  stories,
   videos,
 } from './schema';
-import { DEFAULT_PROFILE } from '../defaults';
+import { DEFAULT_HERO_SLIDES, DEFAULT_PROFILE } from '../defaults';
+import { tiptapContentToHtml } from '../sanitizeHtml';
+import { normalizeWildlifeCategory } from '../validation';
+import { parseVideoUrl } from '../videoEmbed';
 import type {
-  Article,
-  Collection,
   Enquiry,
-  HabitatLocation,
+  HeroSlide,
   Photograph,
   SiteProfile,
-  Species as SpeciesType,
+  Story,
   VideoItem,
 } from '../../types/portfolio';
 
 export class DatabaseRepository {
-  // --- Public Portfolio Data ---
   async getPublicPortfolio() {
     try {
       const [
+        slidesList,
         photosList,
-        colsList,
-        speciesList,
-        locsList,
-        articlesList,
         videosList,
+        storiesList,
         profilesList,
-        categoriesList,
       ] = await Promise.all([
-        db.select().from(photographs).orderBy(photographs.sortOrder),
-        db.select().from(collections).orderBy(collections.sortOrder),
-        db.select().from(species),
-        db.select().from(locations).orderBy(locations.sortOrder),
-        db.select().from(articles).orderBy(desc(articles.publishedAt)),
-        db.select().from(videos).orderBy(videos.sortOrder),
+        db.select().from(heroSlides).orderBy(heroSlides.sortOrder, heroSlides.createdAt),
+        db.select().from(photographs).orderBy(photographs.sortOrder, photographs.createdAt),
+        db.select().from(videos).orderBy(videos.sortOrder, videos.createdAt),
+        db.select().from(stories).orderBy(desc(stories.createdAt)),
         db.select().from(siteProfiles).limit(1),
-        db.select().from(categories),
       ]);
 
-      // Map to frontend types
-      const mappedPhotos: Photograph[] = photosList.map((p) => {
-        const spec = speciesList.find((s) => s.id === p.speciesId);
-        const loc = locsList.find((l) => l.id === p.locationId);
-        const cat = categoriesList.find((c) => c.id === p.categoryId);
-        return {
-          id: p.id,
-          slug: p.slug || p.id,
-          title: p.title,
-          caption: p.description || '',
-          imageUrl: p.imageUrl,
-          aspectRatio: '4:3',
-          collectionId: p.categoryId || '',
-          categorySlug: cat?.slug || '',
-          categoryName: cat?.name || '',
-          speciesSlug: spec ? spec.scientificName.toLowerCase().replace(/\s+/g, '-') : '',
-          speciesName: spec?.commonName || spec?.scientificName || '',
-          locationSlug: loc ? loc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '',
-          locationName: loc?.name || '',
-          camera: p.camera || '',
-          lens: p.lens || '',
-          focalLength: (p.settings as Record<string, string>)?.focalLength || '',
-          aperture: (p.settings as Record<string, string>)?.aperture || '',
-          shutterSpeed: (p.settings as Record<string, string>)?.shutterSpeed || '',
-          iso: (p.settings as Record<string, string>)?.iso || '',
-          year: p.photographedAt
-            ? `${new Date(p.photographedAt).toLocaleString('en-US', { month: 'short' })} ${new Date(p.photographedAt).getFullYear()}`
-            : 'Feb 2026',
-          month: p.photographedAt
-            ? new Date(p.photographedAt).toLocaleString('en-US', { month: 'long', year: 'numeric' })
-            : 'February 2026',
-          createdAt: p.createdAt ? p.createdAt.toISOString() : undefined,
-          featured: p.isFeatured,
-          inHorizontalJourney: p.isFeatured,
-          published: p.status === 'published',
-          isPlaceholder: false,
-          sortOrder: p.sortOrder,
-        };
-      });
-
-      const mappedCollections: Collection[] = colsList.map((c) => ({
-        id: c.id,
-        slug: c.slug,
-        title: c.title,
-        description: c.description || '',
-        coverImageUrl: c.coverImage,
-        sortOrder: c.sortOrder,
-      }));
-
-      const mappedSpecies: SpeciesType[] = speciesList.map((s) => ({
+      const mappedSlides: HeroSlide[] = slidesList.map((s) => ({
         id: s.id,
-        slug: s.scientificName.toLowerCase().replace(/\s+/g, '-'),
-        commonName: s.commonName,
-        scientificName: s.scientificName,
-        bengaliName: s.banglaName || '',
-        habitat: s.habitat || '',
-        habitatRegion: '',
-        description: s.description || '',
-        conservationStatus: (s.conservationStatus as SpeciesType['conservationStatus']) || 'Least Concern',
-        conservationSource: 'IUCN Red List of Threatened Species',
-        coverImageUrl: s.coverImage || '',
-        isPlaceholder: false,
+        image: s.image,
+        storagePath: s.storagePath || undefined,
+        altText: s.altText || 'Wildlife of Bangladesh',
+        sortOrder: s.sortOrder,
+        isPublished: s.isPublished,
+        createdAt: s.createdAt?.toISOString(),
+        updatedAt: s.updatedAt?.toISOString(),
       }));
 
-      const mappedLocations: HabitatLocation[] = locsList.map((l) => ({
-        id: l.id,
-        slug: l.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        name: l.name,
-        region: l.region || '',
-        ecosystem: l.description || '',
-        description: l.description || '',
-        coverImageUrl: '/assets/images/landscape_tanguar_haor_1795067901551.jpg',
-        isPlaceholder: false,
-        sortOrder: 10,
+      const mappedPhotos: Photograph[] = photosList.map((p) => ({
+        id: p.id,
+        title: p.title,
+        description: p.description || '',
+        image: p.imageUrl,
+        thumbnailUrl: p.thumbnailUrl || p.imageUrl,
+        storagePath: p.storagePath || undefined,
+        category: normalizeWildlifeCategory(p.category),
+        isFeatured: p.isFeatured,
+        isPublished: p.isPublished,
+        sortOrder: p.sortOrder,
+        createdAt: p.createdAt?.toISOString(),
+        updatedAt: p.updatedAt?.toISOString(),
       }));
 
-      const mappedArticles: Article[] = articlesList.map((a) => {
-        let contentHtml = '';
-        if (typeof a.content === 'object' && a.content !== null) {
-          // If Tiptap JSON, extract basic paragraphs for text-view
-          const doc = a.content as { content?: Array<{ content?: Array<{ text?: string }> }> };
-          if (Array.isArray(doc.content)) {
-            contentHtml = doc.content
-              .map((node) => node.content?.map((c) => c.text || '').join('') || '')
-              .filter(Boolean)
-              .map((p) => `<p>${p}</p>`)
-              .join('');
-          }
-        }
+      const mappedVideos: VideoItem[] = videosList.map((v) => {
+        const parsed = parseVideoUrl(v.videoUrl);
         return {
-          id: a.id,
-          slug: a.slug,
-          title: a.title,
-          excerpt: a.excerpt || '',
-          contentHtml: contentHtml || `<p>${a.excerpt || ''}</p>`,
-          coverImageUrl: a.coverImage,
-          coverCaption: '',
-          category: 'Field Notes',
-          tags: [],
-          language: a.language === 'bn' ? 'bn' : 'en',
-          authorName: a.author,
-          locationName: '',
-          published: a.status === 'published',
-          publishedDate: a.publishedAt ? new Date(a.publishedAt).toISOString().split('T')[0] : '2025-01-01',
-          readTimeMinutes: 4,
-          featured: a.isFeatured,
-          seoTitle: a.seoTitle || undefined,
-          seoDescription: a.seoDescription || undefined,
+          id: v.id,
+          title: v.title,
+          description: v.description || '',
+          videoUrl: v.videoUrl,
+          thumbnail:
+            v.thumbnail ||
+            parsed.thumbnailUrl ||
+            '/assets/images/hero_sundarbans_tiger_1795067902199.jpg',
+          thumbnailPath: v.thumbnailPath || undefined,
+          platform: parsed.platform || 'youtube',
+          embedUrl: parsed.embedUrl,
+          isFeatured: v.isFeatured,
+          isPublished: v.isPublished,
+          sortOrder: v.sortOrder,
+          createdAt: v.createdAt?.toISOString(),
+          updatedAt: v.updatedAt?.toISOString(),
         };
       });
 
-      const mappedVideos: VideoItem[] = videosList.map((v) => ({
-        id: v.id,
-        title: v.title,
-        description: v.description || '',
-        videoUrl: v.videoUrl,
-        platform: (v.platform as VideoItem['platform']) || 'youtube',
-        category: (v.category as VideoItem['category']) || 'Field Dispatches',
-        thumbnailUrl: v.thumbnailUrl || '/assets/images/hero_sundarbans_tiger_1795067902199.jpg',
-        publishedDate: v.createdAt ? v.createdAt.toISOString().slice(0, 10) : '2025-01-01',
-        featured: v.isFeatured,
-        published: v.status === 'published',
-        sortOrder: v.sortOrder,
+      const mappedStories: Story[] = storiesList.map((st) => ({
+        id: st.id,
+        title: st.title,
+        slug: st.slug,
+        shortDescription: st.shortDescription || '',
+        coverImage: st.coverImage,
+        coverImagePath: st.coverImagePath || undefined,
+        content: (st.content as Record<string, unknown>) || {},
+        contentHtml: tiptapContentToHtml(st.content, st.shortDescription || ''),
+        images: Array.isArray(st.images) ? st.images.filter((u) => typeof u === 'string' && u.length > 0) : [],
+        isPublished: st.isPublished,
+        isFeatured: st.isFeatured,
+        createdAt: st.createdAt?.toISOString(),
+        updatedAt: st.updatedAt?.toISOString(),
       }));
 
       const profile = profilesList[0];
       const social = (profile?.socialLinks as Record<string, string>) || {};
       const mappedProfile: SiteProfile = profile
         ? {
-            ...DEFAULT_PROFILE,
-            photographerName: profile.name,
+            photographerName: profile.name || DEFAULT_PROFILE.photographerName,
+            brandName: social.brandName || DEFAULT_PROFILE.brandName,
+            location: social.location || DEFAULT_PROFILE.location,
+            heroHeadline: social.heroHeadline || DEFAULT_PROFILE.heroHeadline,
+            heroSubheadline: social.heroSubheadline || DEFAULT_PROFILE.heroSubheadline,
+            bioHeadline: social.bioHeadline || profile.name || DEFAULT_PROFILE.bioHeadline,
             bioSummary: profile.biography || DEFAULT_PROFILE.bioSummary,
+            passionNote: social.passionNote || social.introBody || DEFAULT_PROFILE.passionNote,
+            journeyNote: social.journeyNote || DEFAULT_PROFILE.journeyNote,
+            philosophy: social.philosophy || DEFAULT_PROFILE.philosophy,
             portraitUrl: profile.profileImage || DEFAULT_PROFILE.portraitUrl,
             contactEmail: profile.email || DEFAULT_PROFILE.contactEmail,
             facebookUrl: social.facebook || DEFAULT_PROFILE.facebookUrl,
             instagramUrl: social.instagram || '',
             youtubeUrl: social.youtube || '',
             tiktokUrl: social.tiktok || '',
-            bioHeadline: social.bioHeadline || DEFAULT_PROFILE.bioHeadline,
-            location: social.location || DEFAULT_PROFILE.location,
-            born: social.born || DEFAULT_PROFILE.born,
-            equipmentNote: social.equipmentNote || DEFAULT_PROFILE.equipmentNote,
-            journeyNote: social.journeyNote || DEFAULT_PROFILE.journeyNote,
-            whyWildlifeMatters: social.whyWildlifeMatters || DEFAULT_PROFILE.whyWildlifeMatters,
-            philosophy: social.philosophy || DEFAULT_PROFILE.philosophy,
-            achievementsNote: social.achievementsNote || DEFAULT_PROFILE.achievementsNote,
-            printSpecsNote: social.printSpecsNote || DEFAULT_PROFILE.printSpecsNote,
-            licensingNote: social.licensingNote || DEFAULT_PROFILE.licensingNote,
-            heroHeadline: social.heroHeadline || DEFAULT_PROFILE.heroHeadline,
-            heroSubheadline: social.heroSubheadline || DEFAULT_PROFILE.heroSubheadline,
-            introBody: social.introBody || DEFAULT_PROFILE.introBody,
-            conservationStatement: profile.conservationContent || DEFAULT_PROFILE.conservationStatement,
           }
         : DEFAULT_PROFILE;
 
       return {
+        heroSlides: mappedSlides.length > 0 ? mappedSlides : DEFAULT_HERO_SLIDES,
         photographs: mappedPhotos,
-        collections: mappedCollections,
-        species: mappedSpecies,
-        locations: mappedLocations,
-        articles: mappedArticles,
         videos: mappedVideos,
+        stories: mappedStories,
         profile: mappedProfile,
         databaseInfo: {
           mode: 'supabase-postgresql',
@@ -222,12 +140,10 @@ export class DatabaseRepository {
     } catch (err) {
       console.warn('[DatabaseRepository] Failed to fetch from database, returning defaults:', err);
       return {
+        heroSlides: DEFAULT_HERO_SLIDES,
         photographs: [],
-        collections: [],
-        species: [],
-        locations: [],
-        articles: [],
         videos: [],
+        stories: [],
         profile: DEFAULT_PROFILE,
         databaseInfo: {
           mode: 'local-fallback',
@@ -238,7 +154,6 @@ export class DatabaseRepository {
     }
   }
 
-  // --- Enquiries ---
   async createEnquiry(data: { name: string; email: string; subject: string; message: string }) {
     const [inserted] = await db
       .insert(enquiries)
@@ -262,10 +177,7 @@ export class DatabaseRepository {
         email: e.email,
         subject: e.subject,
         message: e.message,
-        organization: '',
-        enquiryType: 'General',
         status: (e.status as Enquiry['status']) || 'new',
-        adminNotes: '',
         createdAt: e.createdAt.toISOString(),
       }));
     } catch {

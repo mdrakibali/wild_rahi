@@ -33,8 +33,6 @@ export async function POST(request: Request) {
     const validated = validateEnquiryInput({
       name: typeof body.name === 'string' ? body.name : '',
       email: typeof body.email === 'string' ? body.email : '',
-      organization: typeof body.organization === 'string' ? body.organization : '',
-      enquiryType: body.enquiryType || 'General',
       subject: typeof body.subject === 'string' ? body.subject : '',
       message: typeof body.message === 'string' ? body.message : '',
     });
@@ -44,12 +42,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: firstError, errors: validated.errors }, { status: 400 });
     }
 
-    const inserted = await repository.createEnquiry({
-      name: validated.sanitized.name,
-      email: validated.sanitized.email,
-      subject: validated.sanitized.subject,
-      message: validated.sanitized.message,
-    });
+    const inserted = await repository.createEnquiry(validated.sanitized);
 
     return NextResponse.json({
       ok: true,

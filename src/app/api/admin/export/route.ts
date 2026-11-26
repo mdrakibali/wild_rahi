@@ -2,17 +2,11 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import {
   adminUsers,
-  articleCategories,
-  articles,
-  categories,
-  collectionPhotos,
-  collections,
   enquiries,
-  locations,
+  heroSlides,
   photographs,
   siteProfiles,
-  siteSettings,
-  species,
+  stories,
   videos,
 } from '@/lib/db/schema';
 import { getAdminSessionFromRequest } from '@/lib/auth';
@@ -24,54 +18,29 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [
-      adminsData,
-      photosData,
-      catsData,
-      colsData,
-      colPhotosData,
-      speciesData,
-      locsData,
-      artsData,
-      artCatsData,
-      videosData,
-      enquiriesData,
-      profilesData,
-      settingsData,
-    ] = await Promise.all([
-      db.select({ id: adminUsers.id, email: adminUsers.email, name: adminUsers.name }).from(adminUsers),
-      db.select().from(photographs),
-      db.select().from(categories),
-      db.select().from(collections),
-      db.select().from(collectionPhotos),
-      db.select().from(species),
-      db.select().from(locations),
-      db.select().from(articles),
-      db.select().from(articleCategories),
-      db.select().from(videos),
-      db.select().from(enquiries),
-      db.select().from(siteProfiles),
-      db.select().from(siteSettings),
-    ]);
+    const [adminsData, slidesData, photosData, videosData, storiesData, enquiriesData, profilesData] =
+      await Promise.all([
+        db.select({ id: adminUsers.id, email: adminUsers.email, name: adminUsers.name }).from(adminUsers),
+        db.select().from(heroSlides),
+        db.select().from(photographs),
+        db.select().from(videos),
+        db.select().from(stories),
+        db.select().from(enquiries),
+        db.select().from(siteProfiles),
+      ]);
 
     const backup = {
-      version: '1.0.0',
+      version: '2.0.0',
       exportedAt: new Date().toISOString(),
       source: 'Wild Rahi Supabase PostgreSQL',
       data: {
         adminUsers: adminsData,
+        heroSlides: slidesData,
         photographs: photosData,
-        categories: catsData,
-        collections: colsData,
-        collectionPhotos: colPhotosData,
-        species: speciesData,
-        locations: locsData,
-        articles: artsData,
-        articleCategories: artCatsData,
         videos: videosData,
+        stories: storiesData,
         enquiries: enquiriesData,
         siteProfiles: profilesData,
-        siteSettings: settingsData,
       },
     };
 
@@ -86,4 +55,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Failed to export database backup.' }, { status: 500 });
   }
 }
-

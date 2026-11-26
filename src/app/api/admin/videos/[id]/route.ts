@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
-import { db, videos } from '@/lib/db';
 import { eq } from 'drizzle-orm';
+import { db, videos } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
+import { deleteStorageFile } from '@/lib/storage';
+import { isValidUuid } from '@/lib/validation';
 import { parseVideoUrl } from '@/lib/videoEmbed';
 
 export async function PUT(
@@ -14,28 +16,37 @@ export async function PUT(
   }
 
   const { id } = await params;
+  const isNew = id === 'new';
+  if (!isNew && !isValidUuid(id)) {
+    return NextResponse.json({ error: 'Invalid video ID.' }, { status: 400 });
+  }
+
   try {
     const body = await request.json();
-    const existing = await db.select().from(videos).where(eq(videos.id, id));
+    const videoUrl = String(body.videoUrl || '').trim();
+    const parsed = parseVideoUrl(videoUrl);
+    if (!parsed.valid) {
+      return NextResponse.json(
+        { error: parsed.error || 'Please provide a valid video URL.' },
+        { status: 400 }
+      );
+    }
 
-    const parsed = parseVideoUrl(body.videoUrl || '');
-    const platform = parsed ? parsed.platform : body.platform || 'youtube';
-    const embedUrl = parsed ? parsed.embedUrl : body.embedUrl || body.videoUrl;
+    const thumbnail = String(body.thumbnail || body.thumbnailUrl || parsed.thumbnailUrl || '').trim();
 
     const videoValues = {
-      title: body.title || 'Untitled Video',
-      description: body.description || '',
-      videoUrl: body.videoUrl,
-      platform,
-      embedUrl,
-      thumbnailUrl: body.thumbnailUrl || (parsed ? parsed.thumbnailUrl : null),
+      title: String(body.title || 'Untitled Video').trim(),
+      description: String(body.description || '').trim(),
+      videoUrl,
+      thumbnail: thumbnail || null,
       thumbnailPath: body.thumbnailPath || null,
-      category: body.category || 'Field Dispatches',
-      isFeatured: Boolean(body.featured),
+      isFeatured: Boolean(body.isFeatured),
       sortOrder: Number(body.sortOrder ?? 10),
-      status: body.published === false ? 'draft' : 'published',
+      isPublished: body.isPublished !== false,
       updatedAt: new Date(),
     };
+
+    const existing = isNew ? [] : await db.select().from(videos).where(eq(videos.id, id));
 
     let result;
     if (existing.length > 0) {
@@ -48,7 +59,7 @@ export async function PUT(
     } else {
       const [inserted] = await db
         .insert(videos)
-        .values({ id, ...videoValues })
+        .values(isNew ? videoValues : { id, ...videoValues })
         .returning();
       result = inserted;
     }
@@ -70,12 +81,21 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  if (!isValidUuid(id)) {
+    return NextResponse.json({ error: 'Invalid video ID.' }, { status: 400 });
+  }
+
   try {
-    await db.delete(videos).where(eq(videos.id, id));
+    const existing = await db.select().from(videos).where(eq(videos.id, id));
+    if (existing.length > 0) {
+      if (existing[0].thumbnailPath) {
+        await deleteStorageFile(existing[0].thumbnailPath);
+      }
+      await db.delete(videos).where(eq(videos.id, id));
+    }
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[Admin Video DELETE] Error:', err);
     return NextResponse.json({ error: 'Failed to delete video.' }, { status: 500 });
   }
 }
-

@@ -1,21 +1,19 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { DEFAULT_PROFILE } from '../lib/defaults';
+import { DEFAULT_HERO_SLIDES, DEFAULT_PROFILE } from '../lib/defaults';
 import type {
   AdminUser,
-  Article,
-  Collection,
   DatabaseInfo,
   Enquiry,
   EnquiryStatus,
-  HabitatLocation,
+  HeroSlide,
   Photograph,
   SiteProfile,
-  Species,
+  Story,
   VideoItem,
 } from '../types/portfolio';
-import { toSafeSlug, validateEnquiryInput, type EnquiryInput } from '../lib/validation';
+import { isValidUuid, toSafeSlug, validateEnquiryInput, type EnquiryInput } from '../lib/validation';
 
 const TOKEN_STORAGE_KEY = 'wildrahi_admin_token';
 
@@ -50,6 +48,7 @@ async function apiRequest<T>(url: string, options: RequestInit = {}): Promise<T>
     ...options,
     headers,
     credentials: 'include',
+    cache: 'no-store',
   });
 
   const text = await res.text();
@@ -72,12 +71,10 @@ async function apiRequest<T>(url: string, options: RequestInit = {}): Promise<T>
 }
 
 interface PortfolioContextValue {
+  heroSlides: HeroSlide[];
   photographs: Photograph[];
-  collections: Collection[];
-  species: Species[];
-  locations: HabitatLocation[];
-  articles: Article[];
   videos: VideoItem[];
+  stories: Story[];
   profile: SiteProfile;
   enquiries: Enquiry[];
   databaseInfo: DatabaseInfo | null;
@@ -86,25 +83,21 @@ interface PortfolioContextValue {
   adminUser: AdminUser | null;
   authReady: boolean;
   isAdmin: boolean;
-  refreshPortfolio: () => Promise<void>;
+  refreshPortfolio: (authenticated?: boolean) => Promise<void>;
   signInAdmin: (email: string, password: string) => Promise<void>;
   signOutAdmin: () => Promise<void>;
   changeAdminPassword: (currentPassword: string, newPassword: string) => Promise<void>;
   submitEnquiry: (input: EnquiryInput) => Promise<void>;
+  saveHeroSlide: (slide: HeroSlide) => Promise<void>;
+  deleteHeroSlide: (id: string) => Promise<void>;
   savePhotograph: (photo: Photograph) => Promise<void>;
   deletePhotograph: (id: string) => Promise<void>;
-  saveCollection: (item: Collection) => Promise<void>;
-  deleteCollection: (id: string) => Promise<void>;
-  saveSpecies: (item: Species) => Promise<void>;
-  deleteSpecies: (id: string) => Promise<void>;
-  saveLocation: (item: HabitatLocation) => Promise<void>;
-  deleteLocation: (id: string) => Promise<void>;
-  saveArticle: (item: Article) => Promise<void>;
-  deleteArticle: (id: string) => Promise<void>;
   saveVideo: (item: VideoItem) => Promise<void>;
   deleteVideo: (id: string) => Promise<void>;
+  saveStory: (item: Story) => Promise<void>;
+  deleteStory: (id: string) => Promise<void>;
   saveProfile: (nextProfile: SiteProfile) => Promise<void>;
-  updateEnquiry: (id: string, status: EnquiryStatus, adminNotes: string) => Promise<void>;
+  updateEnquiry: (id: string, status: EnquiryStatus) => Promise<void>;
   deleteEnquiry: (id: string) => Promise<void>;
   downloadArchiveBackup: () => Promise<void>;
   activeModalPhoto: Photograph | null;
@@ -116,24 +109,19 @@ interface PortfolioContextValue {
 const PortfolioContext = createContext<PortfolioContextValue | null>(null);
 
 interface PortfolioResponse {
+  heroSlides: HeroSlide[];
   photographs: Photograph[];
-  collections: Collection[];
-  species: Species[];
-  locations: HabitatLocation[];
-  articles: Article[];
   videos: VideoItem[];
+  stories: Story[];
   profile: SiteProfile;
-  enquiries?: Enquiry[];
   databaseInfo?: DatabaseInfo;
 }
 
 export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(DEFAULT_HERO_SLIDES);
   const [photographs, setPhotographs] = useState<Photograph[]>([]);
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [species, setSpecies] = useState<Species[]>([]);
-  const [locations, setLocations] = useState<HabitatLocation[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
   const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
   const [profile, setProfile] = useState<SiteProfile>(DEFAULT_PROFILE);
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [databaseInfo, setDatabaseInfo] = useState<DatabaseInfo | null>(null);
@@ -143,58 +131,65 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
   const [authReady, setAuthReady] = useState(false);
 
-  const refreshPortfolio = useCallback(async () => {
+  const refreshPortfolio = useCallback(async (authenticatedOverride?: boolean) => {
     try {
       const data = await apiRequest<PortfolioResponse>('/api/portfolio');
+      if (Array.isArray(data.heroSlides)) {
+        setHeroSlides([...data.heroSlides].sort((a, b) => a.sortOrder - b.sortOrder));
+      }
       if (Array.isArray(data.photographs)) {
         setPhotographs([...data.photographs].sort((a, b) => a.sortOrder - b.sortOrder));
-      }
-      if (Array.isArray(data.collections)) {
-        setCollections([...data.collections].sort((a, b) => a.sortOrder - b.sortOrder));
-      }
-      if (Array.isArray(data.species)) {
-        setSpecies(data.species);
-      }
-      if (Array.isArray(data.locations)) {
-        setLocations([...data.locations].sort((a, b) => a.sortOrder - b.sortOrder));
-      }
-      if (Array.isArray(data.articles)) {
-        setArticles(data.articles);
       }
       if (Array.isArray(data.videos)) {
         setVideos([...data.videos].sort((a, b) => a.sortOrder - b.sortOrder));
       }
+      if (Array.isArray(data.stories)) {
+        setStories(data.stories);
+      }
       if (data.profile) {
         setProfile({ ...DEFAULT_PROFILE, ...data.profile });
-      }
-      if (Array.isArray(data.enquiries)) {
-        setEnquiries(data.enquiries);
-      } else {
-        setEnquiries([]);
       }
       if (data.databaseInfo) {
         setDatabaseInfo(data.databaseInfo);
         setUsingDefaultCredentials(Boolean(data.databaseInfo.usingDefaultCredentials));
+      }
+
+      const shouldFetchEnquiries =
+        typeof authenticatedOverride === 'boolean' ? authenticatedOverride : Boolean(adminUser);
+
+      if (shouldFetchEnquiries) {
+        try {
+          const enqRes = await apiRequest<{ enquiries: Enquiry[] }>('/api/enquiries');
+          setEnquiries(Array.isArray(enqRes.enquiries) ? enqRes.enquiries : []);
+        } catch {
+          setEnquiries([]);
+        }
+      } else {
+        setEnquiries([]);
       }
     } catch (err) {
       console.warn('Portfolio fetch fallback:', err instanceof Error ? err.message : err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [adminUser]);
 
   useEffect(() => {
     let active = true;
     (async () => {
+      let isAuth = false;
       try {
         const authRes = await apiRequest<{
           authenticated: boolean;
-          user: AdminUser | null;
+          user?: AdminUser | null;
+          admin?: AdminUser | null;
           databaseInfo?: DatabaseInfo;
           usingDefaultCredentials?: boolean;
         }>('/api/auth/me');
         if (!active) return;
-        setAdminUser(authRes.authenticated ? authRes.user : null);
+        const resolvedUser = authRes.authenticated ? authRes.user || authRes.admin || null : null;
+        setAdminUser(resolvedUser);
+        isAuth = Boolean(resolvedUser);
         if (authRes.databaseInfo) setDatabaseInfo(authRes.databaseInfo);
         if (typeof authRes.usingDefaultCredentials === 'boolean') {
           setUsingDefaultCredentials(authRes.usingDefaultCredentials);
@@ -207,14 +202,15 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
 
       if (active) {
-        await refreshPortfolio();
+        await refreshPortfolio(isAuth);
       }
     })();
 
     return () => {
       active = false;
     };
-  }, [refreshPortfolio]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const signInAdmin = useCallback(
     async (email: string, password: string) => {
@@ -232,7 +228,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setDatabaseInfo(res.databaseInfo);
         setUsingDefaultCredentials(Boolean(res.databaseInfo.usingDefaultCredentials));
       }
-      await refreshPortfolio();
+      await refreshPortfolio(true);
     },
     [refreshPortfolio]
   );
@@ -246,8 +242,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setStoredToken(null);
     setAdminUser(null);
     setEnquiries([]);
-    setDatabaseInfo(null);
-    await refreshPortfolio();
+    await refreshPortfolio(false);
   }, [refreshPortfolio]);
 
   const changeAdminPassword = useCallback(async (currentPassword: string, newPassword: string) => {
@@ -269,20 +264,42 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         body: JSON.stringify(validation.sanitized),
       });
       if (adminUser) {
-        await refreshPortfolio();
+        await refreshPortfolio(true);
       }
     },
     [adminUser, refreshPortfolio]
   );
 
+  const saveHeroSlide = useCallback(
+    async (slide: HeroSlide) => {
+      const targetId = isValidUuid(slide.id) ? slide.id : 'new';
+      await apiRequest(`/api/admin/hero/${encodeURIComponent(targetId)}`, {
+        method: 'PUT',
+        body: JSON.stringify(slide),
+      });
+      await refreshPortfolio(true);
+    },
+    [refreshPortfolio]
+  );
+
+  const deleteHeroSlide = useCallback(
+    async (id: string) => {
+      await apiRequest(`/api/admin/hero/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+      await refreshPortfolio(true);
+    },
+    [refreshPortfolio]
+  );
+
   const savePhotograph = useCallback(
     async (photo: Photograph) => {
-      const safeId = toSafeSlug(photo.id || photo.title, 100);
-      await apiRequest(`/api/admin/photographs/${encodeURIComponent(safeId)}`, {
+      const targetId = isValidUuid(photo.id) ? photo.id : 'new';
+      await apiRequest(`/api/admin/photographs/${encodeURIComponent(targetId)}`, {
         method: 'PUT',
-        body: JSON.stringify({ ...photo, id: safeId }),
+        body: JSON.stringify(photo),
       });
-      await refreshPortfolio();
+      await refreshPortfolio(true);
     },
     [refreshPortfolio]
   );
@@ -292,107 +309,19 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       await apiRequest(`/api/admin/photographs/${encodeURIComponent(id)}`, {
         method: 'DELETE',
       });
-      await refreshPortfolio();
-    },
-    [refreshPortfolio]
-  );
-
-  const saveCollection = useCallback(
-    async (item: Collection) => {
-      const safeId = toSafeSlug(item.id || item.title, 64);
-      await apiRequest(`/api/admin/collections/${encodeURIComponent(safeId)}`, {
-        method: 'PUT',
-        body: JSON.stringify({ ...item, id: safeId }),
-      });
-      await refreshPortfolio();
-    },
-    [refreshPortfolio]
-  );
-
-  const deleteCollection = useCallback(
-    async (id: string) => {
-      await apiRequest(`/api/admin/collections/${encodeURIComponent(id)}`, {
-        method: 'DELETE',
-      });
-      await refreshPortfolio();
-    },
-    [refreshPortfolio]
-  );
-
-  const saveSpecies = useCallback(
-    async (item: Species) => {
-      const safeId = toSafeSlug(item.id || item.commonName, 100);
-      await apiRequest(`/api/admin/species/${encodeURIComponent(safeId)}`, {
-        method: 'PUT',
-        body: JSON.stringify({ ...item, id: safeId }),
-      });
-      await refreshPortfolio();
-    },
-    [refreshPortfolio]
-  );
-
-  const deleteSpecies = useCallback(
-    async (id: string) => {
-      await apiRequest(`/api/admin/species/${encodeURIComponent(id)}`, {
-        method: 'DELETE',
-      });
-      await refreshPortfolio();
-    },
-    [refreshPortfolio]
-  );
-
-  const saveLocation = useCallback(
-    async (item: HabitatLocation) => {
-      const safeId = toSafeSlug(item.id || item.name, 100);
-      await apiRequest(`/api/admin/locations/${encodeURIComponent(safeId)}`, {
-        method: 'PUT',
-        body: JSON.stringify({ ...item, id: safeId }),
-      });
-      await refreshPortfolio();
-    },
-    [refreshPortfolio]
-  );
-
-  const deleteLocation = useCallback(
-    async (id: string) => {
-      await apiRequest(`/api/admin/locations/${encodeURIComponent(id)}`, {
-        method: 'DELETE',
-      });
-      await refreshPortfolio();
-    },
-    [refreshPortfolio]
-  );
-
-  const saveArticle = useCallback(
-    async (item: Article) => {
-      const safeId = toSafeSlug(item.id || item.slug || item.title, 100);
-      await apiRequest(`/api/admin/articles/${encodeURIComponent(safeId)}`, {
-        method: 'PUT',
-        body: JSON.stringify({ ...item, id: safeId }),
-      });
-      await refreshPortfolio();
-    },
-    [refreshPortfolio]
-  );
-
-  const deleteArticle = useCallback(
-    async (id: string) => {
-      await apiRequest(`/api/admin/articles/${encodeURIComponent(id)}`, {
-        method: 'DELETE',
-      });
-      await refreshPortfolio();
+      await refreshPortfolio(true);
     },
     [refreshPortfolio]
   );
 
   const saveVideo = useCallback(
     async (item: VideoItem) => {
-      const safeId = toSafeSlug(item.id || item.title, 100);
-      await apiRequest(`/api/admin/videos/${encodeURIComponent(safeId)}`, {
+      const targetId = isValidUuid(item.id) ? item.id : 'new';
+      await apiRequest(`/api/admin/videos/${encodeURIComponent(targetId)}`, {
         method: 'PUT',
-        body: JSON.stringify({ ...item, id: safeId }),
+        body: JSON.stringify(item),
       });
-      await refreshPortfolio();
+      await refreshPortfolio(true);
     },
     [refreshPortfolio]
   );
@@ -402,7 +331,30 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       await apiRequest(`/api/admin/videos/${encodeURIComponent(id)}`, {
         method: 'DELETE',
       });
-      await refreshPortfolio();
+      await refreshPortfolio(true);
+    },
+    [refreshPortfolio]
+  );
+
+  const saveStory = useCallback(
+    async (item: Story) => {
+      const targetId = isValidUuid(item.id) ? item.id : 'new';
+      const safeSlug = toSafeSlug(item.slug || item.title, 72);
+      await apiRequest(`/api/admin/stories/${encodeURIComponent(targetId)}`, {
+        method: 'PUT',
+        body: JSON.stringify({ ...item, slug: safeSlug }),
+      });
+      await refreshPortfolio(true);
+    },
+    [refreshPortfolio]
+  );
+
+  const deleteStory = useCallback(
+    async (id: string) => {
+      await apiRequest(`/api/admin/stories/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+      await refreshPortfolio(true);
     },
     [refreshPortfolio]
   );
@@ -413,18 +365,18 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         method: 'PUT',
         body: JSON.stringify(nextProfile),
       });
-      await refreshPortfolio();
+      await refreshPortfolio(true);
     },
     [refreshPortfolio]
   );
 
   const updateEnquiry = useCallback(
-    async (id: string, status: EnquiryStatus, adminNotes: string) => {
+    async (id: string, status: EnquiryStatus) => {
       await apiRequest(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
         method: 'PATCH',
-        body: JSON.stringify({ status, adminNotes }),
+        body: JSON.stringify({ status }),
       });
-      await refreshPortfolio();
+      await refreshPortfolio(true);
     },
     [refreshPortfolio]
   );
@@ -434,7 +386,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       await apiRequest(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
         method: 'DELETE',
       });
-      await refreshPortfolio();
+      await refreshPortfolio(true);
     },
     [refreshPortfolio]
   );
@@ -449,20 +401,25 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `wildrahi-mongodb-archive-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `wildrahi-database-backup-${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(link);
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
   }, []);
 
-  // Instagram-style URL-synced Photo Modal state & methods
+  // Preserved URL-synced Photo Modal Lightbox state & navigation
   const [activeModalPhoto, setActiveModalPhoto] = useState<Photograph | null>(null);
+
+  const publishedPhotos = useMemo(
+    () => photographs.filter((p) => p.isPublished).sort((a, b) => a.sortOrder - b.sortOrder),
+    [photographs]
+  );
 
   const openPhotoModal = useCallback((photo: Photograph) => {
     setActiveModalPhoto(photo);
     if (typeof window !== 'undefined') {
-      const slug = encodeURIComponent(photo.slug || photo.id);
+      const slug = encodeURIComponent(photo.id);
       window.history.pushState({ photoModal: true, photoId: photo.id }, '', `/gallery/${slug}`);
     }
   }, []);
@@ -477,18 +434,19 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const navigateModalPhoto = useCallback(
     (direction: -1 | 1) => {
       if (!activeModalPhoto) return;
-      const idx = photographs.findIndex((p) => p.id === activeModalPhoto.id);
+      const list = publishedPhotos.length > 0 ? publishedPhotos : photographs;
+      const idx = list.findIndex((p) => p.id === activeModalPhoto.id);
       if (idx === -1) return;
       const nextIdx = idx + direction;
-      if (nextIdx < 0 || nextIdx >= photographs.length) return;
-      const nextPhoto = photographs[nextIdx];
+      if (nextIdx < 0 || nextIdx >= list.length) return;
+      const nextPhoto = list[nextIdx];
       setActiveModalPhoto(nextPhoto);
       if (typeof window !== 'undefined') {
-        const slug = encodeURIComponent(nextPhoto.slug || nextPhoto.id);
+        const slug = encodeURIComponent(nextPhoto.id);
         window.history.replaceState({ photoModal: true, photoId: nextPhoto.id }, '', `/gallery/${slug}`);
       }
     },
-    [activeModalPhoto, photographs]
+    [activeModalPhoto, publishedPhotos, photographs]
   );
 
   useEffect(() => {
@@ -505,12 +463,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const value = useMemo<PortfolioContextValue>(
     () => ({
+      heroSlides,
       photographs,
-      collections,
-      species,
-      locations,
-      articles,
       videos,
+      stories,
       profile,
       enquiries,
       databaseInfo,
@@ -524,18 +480,14 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       signOutAdmin,
       changeAdminPassword,
       submitEnquiry,
+      saveHeroSlide,
+      deleteHeroSlide,
       savePhotograph,
       deletePhotograph,
-      saveCollection,
-      deleteCollection,
-      saveSpecies,
-      deleteSpecies,
-      saveLocation,
-      deleteLocation,
-      saveArticle,
-      deleteArticle,
       saveVideo,
       deleteVideo,
+      saveStory,
+      deleteStory,
       saveProfile,
       updateEnquiry,
       deleteEnquiry,
@@ -546,12 +498,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       navigateModalPhoto,
     }),
     [
+      heroSlides,
       photographs,
-      collections,
-      species,
-      locations,
-      articles,
       videos,
+      stories,
       profile,
       enquiries,
       databaseInfo,
@@ -565,18 +515,14 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       signOutAdmin,
       changeAdminPassword,
       submitEnquiry,
+      saveHeroSlide,
+      deleteHeroSlide,
       savePhotograph,
       deletePhotograph,
-      saveCollection,
-      deleteCollection,
-      saveSpecies,
-      deleteSpecies,
-      saveLocation,
-      deleteLocation,
-      saveArticle,
-      deleteArticle,
       saveVideo,
       deleteVideo,
+      saveStory,
+      deleteStory,
       saveProfile,
       updateEnquiry,
       deleteEnquiry,

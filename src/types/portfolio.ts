@@ -1,198 +1,99 @@
 import type { VideoPlatform } from '../lib/videoEmbed';
 
-export type AspectRatio = '16:9' | '4:3' | '3:4' | '1:1';
-
-export type ConservationStatus =
-  | 'Least Concern'
-  | 'Near Threatened'
-  | 'Vulnerable'
-  | 'Endangered'
-  | 'Critically Endangered'
-  | 'Data Deficient';
-
-export type ArticleLanguage = 'en' | 'bn';
-
-export type ArticleCategory =
-  | 'Field Notes'
-  | 'Biodiversity'
-  | 'Conservation'
-  | 'Photography Craft'
-  | 'Habitat Documentation';
-
-// Backward-compatible alias
-export type StoryCategory = ArticleCategory;
-
-export type VideoCategory =
-  | 'Field Dispatches'
-  | 'Birds in Motion'
-  | 'Behind the Lens'
-  | 'Conservation Reels'
-  | 'Habitats of Bangladesh';
-
-export type EnquiryType =
-  | 'Professional Photography'
-  | 'Image Licensing'
-  | 'Conservation Collaboration'
-  | 'Print Enquiry'
-  | 'General';
+export type WildlifeCategory =
+  | 'mammals'
+  | 'birds'
+  | 'reptiles'
+  | 'amphibians'
+  | 'insects'
+  | 'landscapes';
 
 export type EnquiryStatus = 'new' | 'reviewed' | 'replied' | 'archived';
 
-export interface Photograph {
+export interface HeroSlide {
   id: string;
-  slug?: string;
-  title: string;
-  caption: string;
-  imageUrl: string;
-  aspectRatio: AspectRatio;
-  collectionId: string;
-  categorySlug?: string;
-  categoryName?: string;
-  albumId?: string;
-  speciesSlug: string;
-  speciesName: string;
-  locationSlug: string;
-  locationName: string;
-  camera: string;
-  lens: string;
-  focalLength: string;
-  aperture: string;
-  shutterSpeed: string;
-  iso: string;
-  year: string;
-  month?: string;
-  createdAt?: string;
+  image: string;
   storagePath?: string;
-  featured: boolean;
-  inHorizontalJourney: boolean;
-  published: boolean;
-  isPlaceholder: boolean;
+  altText: string;
   sortOrder: number;
-}
-
-export interface Collection {
-  id: string;
-  slug: string;
-  title: string;
-  description: string;
-  coverImageUrl: string;
-  sortOrder: number;
-}
-
-// Backward-compatible alias for Albums
-export type Album = Collection;
-
-export interface Species {
-  id: string;
-  slug: string;
-  commonName: string;
-  scientificName: string;
-  bengaliName: string;
-  habitat: string;
-  habitatRegion: string;
-  description: string;
-  seasonality?: string;
-  dietAndBehavior?: string;
-  keyThreats?: string;
-  conservationStatus: ConservationStatus;
-  conservationSource: string;
-  coverImageUrl: string;
-  isPlaceholder: boolean;
-}
-
-export interface HabitatLocation {
-  id: string;
-  slug: string;
-  name: string;
-  region: string;
-  ecosystem: string;
-  description: string;
-  coverImageUrl: string;
-  isPlaceholder: boolean;
-  sortOrder: number;
-}
-
-export interface Article {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string;
-  contentHtml: string;
-  coverImageUrl: string;
-  coverCaption?: string;
-  category: ArticleCategory;
-  tags: string[];
-  language: ArticleLanguage;
-  translationGroupId?: string;
-  authorName: string;
-  locationName: string;
-  publishedDate: string;
-  readTimeMinutes: number;
-  featured: boolean;
-  published: boolean;
-  seoTitle?: string;
-  seoDescription?: string;
+  isPublished: boolean;
+  createdAt?: string;
   updatedAt?: string;
 }
 
-// Backward-compatible alias
-export type FieldStory = Article;
+export interface Photograph {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  thumbnailUrl?: string;
+  storagePath?: string;
+  category: WildlifeCategory;
+  isFeatured: boolean;
+  isPublished: boolean;
+  sortOrder: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 export interface VideoItem {
   id: string;
   title: string;
   description: string;
   videoUrl: string;
+  thumbnail: string;
+  thumbnailPath?: string;
   platform: VideoPlatform;
-  category: VideoCategory;
-  thumbnailUrl: string;
-  publishedDate: string;
-  featured: boolean;
-  published: boolean;
+  embedUrl: string | null;
+  isFeatured: boolean;
+  isPublished: boolean;
   sortOrder: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Story {
+  id: string;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  coverImage: string;
+  coverImagePath?: string;
+  content: Record<string, unknown>;
+  contentHtml: string;
+  images: string[];
+  isPublished: boolean;
+  isFeatured: boolean;
+  createdAt?: string;
   updatedAt?: string;
 }
 
 export interface SiteProfile {
   photographerName: string;
   brandName: string;
-  born?: string;
   location: string;
-  locationBase?: string;
-  fieldExperienceYears?: string;
   heroHeadline: string;
   heroSubheadline: string;
-  introHeading: string;
-  introBody: string;
   bioHeadline: string;
   bioSummary: string;
+  passionNote: string;
   journeyNote: string;
-  whyWildlifeMatters: string;
   philosophy: string;
-  equipmentNote: string;
-  achievementsNote: string;
-  printSpecsNote?: string;
-  licensingNote?: string;
   portraitUrl: string;
   contactEmail: string;
   facebookUrl: string;
   instagramUrl: string;
-  youtubeUrl?: string;
-  tiktokUrl?: string;
-  conservationHeadline: string;
-  conservationStatement: string;
+  youtubeUrl: string;
+  tiktokUrl: string;
 }
 
 export interface Enquiry {
   id: string;
   name: string;
   email: string;
-  organization: string;
-  enquiryType: EnquiryType;
   subject: string;
   message: string;
   status: EnquiryStatus;
-  adminNotes: string;
   createdAt?: string;
 }
 
@@ -204,24 +105,8 @@ export interface AdminUser {
 }
 
 export interface DatabaseInfo {
-  engine: 'mongodb' | 'local-store';
-  databaseName: string;
-  connected: boolean;
-  usingDefaultCredentials: boolean;
-  collections: {
-    photographs: number;
-    collections: number;
-    species: number;
-    locations: number;
-    articles: number;
-    videos: number;
-    enquiries: number;
-  };
-}
-
-export interface GalleryFilterState {
-  collectionId: string;
-  locationSlug: string;
-  speciesQuery: string;
-  includeUnpublished?: boolean;
+  mode: string;
+  dbName: string;
+  storage: string;
+  usingDefaultCredentials?: boolean;
 }

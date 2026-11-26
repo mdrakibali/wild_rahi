@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db, siteProfiles } from '@/lib/db';
 import { eq } from 'drizzle-orm';
+import { db, siteProfiles } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
 
 export async function PUT(request: Request) {
@@ -14,31 +14,24 @@ export async function PUT(request: Request) {
     const existing = await db.select().from(siteProfiles).limit(1);
 
     const profileValues = {
-      name: body.photographerName || body.name || 'Razaul Hafiz Rahi',
-      biography: body.bioSummary || body.biography || '',
-      biographyBn: body.bioSummaryBn || body.biographyBn || '',
-      profileImage: body.portraitUrl || body.profileImage || '',
-      email: body.contactEmail || body.email || 'contact@wildrahi.com',
+      name: String(body.photographerName || 'Razaul Hafiz Rahi').trim(),
+      biography: String(body.bioSummary || '').trim(),
+      profileImage: String(body.portraitUrl || '').trim(),
+      email: String(body.contactEmail || 'contact@wildrahi.com').trim(),
       socialLinks: {
-        facebook: body.facebookUrl || '',
-        instagram: body.instagramUrl || '',
-        youtube: body.youtubeUrl || '',
-        tiktok: body.tiktokUrl || '',
-        bioHeadline: body.bioHeadline || '',
-        location: body.location || '',
-        born: body.born || '',
-        equipmentNote: body.equipmentNote || '',
-        journeyNote: body.journeyNote || '',
-        whyWildlifeMatters: body.whyWildlifeMatters || '',
-        philosophy: body.philosophy || '',
-        achievementsNote: body.achievementsNote || '',
-        printSpecsNote: body.printSpecsNote || '',
-        licensingNote: body.licensingNote || '',
-        heroHeadline: body.heroHeadline || '',
-        heroSubheadline: body.heroSubheadline || '',
-        introBody: body.introBody || '',
+        brandName: String(body.brandName || 'Wild Rahi').trim(),
+        location: String(body.location || 'Bangladesh').trim(),
+        heroHeadline: String(body.heroHeadline || '').trim(),
+        heroSubheadline: String(body.heroSubheadline || '').trim(),
+        bioHeadline: String(body.bioHeadline || '').trim(),
+        passionNote: String(body.passionNote || '').trim(),
+        journeyNote: String(body.journeyNote || '').trim(),
+        philosophy: String(body.philosophy || '').trim(),
+        facebook: String(body.facebookUrl || '').trim(),
+        instagram: String(body.instagramUrl || '').trim(),
+        youtube: String(body.youtubeUrl || '').trim(),
+        tiktok: String(body.tiktokUrl || '').trim(),
       },
-      conservationContent: body.conservationStatement || body.conservationContent || '',
       updatedAt: new Date(),
     };
 
@@ -61,4 +54,3 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Failed to save profile.' }, { status: 500 });
   }
 }
-

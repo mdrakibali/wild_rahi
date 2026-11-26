@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { db, photographs } from '@/lib/db';
 import { eq } from 'drizzle-orm';
+import { db, photographs } from '@/lib/db';
 import { getAdminSessionFromRequest } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storage';
+import { isValidUuid, normalizeWildlifeCategory } from '@/lib/validation';
 
 export async function PUT(
   request: Request,
@@ -14,31 +15,32 @@ export async function PUT(
   }
 
   const { id } = await params;
+  const isNew = id === 'new';
+  if (!isNew && !isValidUuid(id)) {
+    return NextResponse.json({ error: 'Invalid photograph ID.' }, { status: 400 });
+  }
+
   try {
     const body = await request.json();
-    const existing = await db.select().from(photographs).where(eq(photographs.id, id));
+    const imageUrl = String(body.image || body.imageUrl || '').trim();
+    if (!imageUrl) {
+      return NextResponse.json({ error: 'Photograph image URL is required.' }, { status: 400 });
+    }
 
     const photoValues = {
-      title: body.title || 'Untitled',
-      slug: body.slug || `photo-${Date.now()}`,
-      description: body.caption || body.description || '',
-      imageUrl: body.imageUrl,
-      thumbnailUrl: body.thumbnailUrl || body.imageUrl,
+      title: String(body.title || 'Untitled').trim(),
+      description: String(body.description || '').trim(),
+      imageUrl,
+      thumbnailUrl: String(body.thumbnailUrl || imageUrl).trim(),
       storagePath: body.storagePath || null,
-      categoryId: body.collectionId || body.categoryId || null,
-      camera: body.camera || '',
-      lens: body.lens || '',
-      settings: {
-        focalLength: body.focalLength || '',
-        aperture: body.aperture || '',
-        shutterSpeed: body.shutterSpeed || '',
-        iso: body.iso || '',
-      },
-      isFeatured: Boolean(body.featured ?? body.inHorizontalJourney),
+      category: normalizeWildlifeCategory(body.category),
+      isFeatured: Boolean(body.isFeatured),
       sortOrder: Number(body.sortOrder ?? 10),
-      status: body.published === false ? 'draft' : 'published',
+      isPublished: body.isPublished !== false,
       updatedAt: new Date(),
     };
+
+    const existing = isNew ? [] : await db.select().from(photographs).where(eq(photographs.id, id));
 
     let result;
     if (existing.length > 0) {
@@ -51,7 +53,7 @@ export async function PUT(
     } else {
       const [inserted] = await db
         .insert(photographs)
-        .values({ id, ...photoValues })
+        .values(isNew ? photoValues : { id, ...photoValues })
         .returning();
       result = inserted;
     }
@@ -73,6 +75,10 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  if (!isValidUuid(id)) {
+    return NextResponse.json({ error: 'Invalid photograph ID.' }, { status: 400 });
+  }
+
   try {
     const existing = await db.select().from(photographs).where(eq(photographs.id, id));
     if (existing.length > 0) {
@@ -87,4 +93,3 @@ export async function DELETE(
     return NextResponse.json({ error: 'Failed to delete photograph.' }, { status: 500 });
   }
 }
-

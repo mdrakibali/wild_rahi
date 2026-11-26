@@ -1,57 +1,52 @@
-import type {
-  AspectRatio,
-  ConservationStatus,
-  EnquiryType,
-  GalleryFilterState,
-  Photograph,
-  Species,
-  StoryCategory,
-} from '../types/portfolio';
+import type { Photograph, WildlifeCategory } from '../types/portfolio';
 
-export const ALLOWED_ASPECT_RATIOS: readonly AspectRatio[] = ['16:9', '4:3', '3:4', '1:1'];
-
-export const ALLOWED_CONSERVATION_STATUSES: readonly ConservationStatus[] = [
-  'Least Concern',
-  'Near Threatened',
-  'Vulnerable',
-  'Endangered',
-  'Critically Endangered',
-  'Data Deficient',
-];
-
-export const ALLOWED_ARTICLE_CATEGORIES: readonly StoryCategory[] = [
-  'Field Notes',
-  'Biodiversity',
-  'Conservation',
-  'Photography Craft',
-  'Habitat Documentation',
-];
-
-export const ALLOWED_STORY_CATEGORIES = ALLOWED_ARTICLE_CATEGORIES;
-
-export const ALLOWED_VIDEO_CATEGORIES = [
-  'Field Dispatches',
-  'Birds in Motion',
-  'Behind the Lens',
-  'Conservation Reels',
-  'Habitats of Bangladesh',
+export const WILDLIFE_CATEGORIES: ReadonlyArray<{ id: WildlifeCategory; label: string }> = [
+  { id: 'mammals', label: 'Mammals' },
+  { id: 'birds', label: 'Birds' },
+  { id: 'reptiles', label: 'Reptiles' },
+  { id: 'amphibians', label: 'Amphibians' },
+  { id: 'insects', label: 'Insects & Macro' },
+  { id: 'landscapes', label: 'Landscapes & Habitats' },
 ] as const;
 
-export const ALLOWED_ENQUIRY_TYPES: readonly EnquiryType[] = [
-  'Professional Photography',
-  'Image Licensing',
-  'Conservation Collaboration',
-  'Print Enquiry',
-  'General',
-];
+export const ALLOWED_WILDLIFE_CATEGORIES: readonly WildlifeCategory[] = WILDLIFE_CATEGORIES.map(
+  (c) => c.id
+);
 
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ID_PATTERN = /^[a-zA-Z0-9_-]{1,128}$/;
 const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-/**
- * Generates a URL-safe, Firestore-ID-compliant slug matching ^[a-z0-9-]+$.
- */
-export function toSafeSlug(input: string, maxLength = 64): string {
+export function isValidUuid(value: string): boolean {
+  return UUID_PATTERN.test(value);
+}
+
+export function isValidDocumentId(id: string): boolean {
+  return ID_PATTERN.test(id);
+}
+
+export function normalizeWildlifeCategory(input?: string | null): WildlifeCategory {
+  const val = (input || '').trim().toLowerCase();
+  if (ALLOWED_WILDLIFE_CATEGORIES.includes(val as WildlifeCategory)) {
+    return val as WildlifeCategory;
+  }
+  if (val.includes('mammal')) return 'mammals';
+  if (val.includes('bird') || val.includes('avian')) return 'birds';
+  if (val.includes('reptile')) return 'reptiles';
+  if (val.includes('amphib')) return 'amphibians';
+  if (val.includes('insect') || val.includes('macro')) return 'insects';
+  if (val.includes('landscape') || val.includes('habitat') || val.includes('wetland')) {
+    return 'landscapes';
+  }
+  return 'birds';
+}
+
+export function getWildlifeCategoryLabel(category: WildlifeCategory): string {
+  return WILDLIFE_CATEGORIES.find((c) => c.id === category)?.label || 'Wildlife';
+}
+
+export function toSafeSlug(input: string, maxLength = 72): string {
   const cleaned = input
     .toLowerCase()
     .trim()
@@ -60,117 +55,36 @@ export function toSafeSlug(input: string, maxLength = 64): string {
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
     .slice(0, maxLength);
-  return cleaned || `entry-${Date.now()}`;
+  return cleaned || `story-${Date.now()}`;
 }
 
-export function isValidDocumentId(id: string): boolean {
-  return ID_PATTERN.test(id);
-}
-
-/**
- * Filters photographs deterministically by published flag, collection, location, and species/title search.
- */
 export function filterPhotographs(
   photographs: readonly Photograph[],
-  filters: GalleryFilterState
+  options: { category?: string; includeUnpublished?: boolean; featuredOnly?: boolean }
 ): Photograph[] {
-  const query = filters.speciesQuery.trim().toLowerCase();
-
   return photographs
     .filter((photo) => {
-      if (!filters.includeUnpublished && !photo.published) {
+      if (!options.includeUnpublished && !photo.isPublished) {
         return false;
       }
-      if (filters.collectionId && filters.collectionId !== 'all' && photo.collectionId !== filters.collectionId) {
+      if (options.featuredOnly && !photo.isFeatured) {
         return false;
       }
-      if (filters.locationSlug && filters.locationSlug !== 'all' && photo.locationSlug !== filters.locationSlug) {
+      if (
+        options.category &&
+        options.category !== 'all' &&
+        photo.category !== options.category
+      ) {
         return false;
-      }
-      if (query) {
-        const haystack = [
-          photo.speciesName,
-          photo.title,
-          photo.locationName,
-          photo.caption,
-        ]
-          .join(' ')
-          .toLowerCase();
-        if (!haystack.includes(query)) {
-          return false;
-        }
       }
       return true;
     })
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-/**
- * Counts published photographs per collection ID.
- */
-export function countPhotosByCollection(photographs: readonly Photograph[]): Record<string, number> {
-  const counts: Record<string, number> = {};
-  for (const photo of photographs) {
-    if (!photo.published) continue;
-    counts[photo.collectionId] = (counts[photo.collectionId] ?? 0) + 1;
-  }
-  return counts;
-}
-
-/**
- * Filters species records by habitat region, conservation status, or search term.
- */
-export function filterSpeciesArchive(
-  speciesList: readonly Species[],
-  options: { region?: string; status?: string; search?: string }
-): Species[] {
-  const q = (options.search ?? '').trim().toLowerCase();
-  return speciesList.filter((item) => {
-    if (options.region && options.region !== 'all' && item.habitatRegion !== options.region) {
-      return false;
-    }
-    if (options.status && options.status !== 'all' && item.conservationStatus !== options.status) {
-      return false;
-    }
-    if (q) {
-      const text = [
-        item.commonName,
-        item.scientificName,
-        item.bengaliName,
-        item.habitat,
-        item.habitatRegion,
-      ]
-        .join(' ')
-        .toLowerCase();
-      if (!text.includes(q)) return false;
-    }
-    return true;
-  });
-}
-
-/**
- * Formats EXIF technical camera metadata cleanly without empty tokens.
- */
-export function formatExifMetadata(photo: Pick<Photograph, 'camera' | 'lens' | 'focalLength' | 'aperture' | 'shutterSpeed' | 'iso'>): string {
-  const parts = [
-    photo.camera,
-    photo.lens,
-    photo.focalLength,
-    photo.aperture,
-    photo.shutterSpeed,
-    photo.iso ? (photo.iso.toUpperCase().startsWith('ISO') ? photo.iso : `ISO ${photo.iso}`) : '',
-  ]
-    .map((p) => p.trim())
-    .filter(Boolean);
-
-  return parts.join(' · ');
-}
-
 export interface EnquiryInput {
   name: string;
   email: string;
-  organization: string;
-  enquiryType: EnquiryType;
   subject: string;
   message: string;
 }
@@ -181,17 +95,10 @@ export interface EnquiryValidationResult {
   sanitized: EnquiryInput;
 }
 
-/**
- * Validates and sanitizes enquiry submissions in strict sync with firebase-blueprint.json bounds.
- */
 export function validateEnquiryInput(input: EnquiryInput): EnquiryValidationResult {
   const sanitized: EnquiryInput = {
     name: input.name.trim().slice(0, 120),
     email: input.email.trim().slice(0, 160),
-    organization: input.organization.trim().slice(0, 160),
-    enquiryType: ALLOWED_ENQUIRY_TYPES.includes(input.enquiryType)
-      ? input.enquiryType
-      : 'General',
     subject: input.subject.trim().slice(0, 200),
     message: input.message.trim().slice(0, 4000),
   };
@@ -216,21 +123,4 @@ export function validateEnquiryInput(input: EnquiryInput): EnquiryValidationResu
     errors,
     sanitized,
   };
-}
-
-/**
- * Returns Tailwind aspect-ratio class corresponding to natural photo ratio.
- */
-export function getAspectRatioClass(ratio: AspectRatio): string {
-  switch (ratio) {
-    case '16:9':
-      return 'aspect-[16/9]';
-    case '3:4':
-      return 'aspect-[3/4]';
-    case '1:1':
-      return 'aspect-square';
-    case '4:3':
-    default:
-      return 'aspect-[4/3]';
-  }
 }
