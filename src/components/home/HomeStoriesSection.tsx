@@ -21,7 +21,6 @@ export const HomeStoriesSection: React.FC<HomeStoriesSectionProps> = ({ stories 
       eyebrow="04 · Field Notes"
       title="Field Stories"
       description="Notes and photo essays written from time spent outdoors."
-      viewAllHref="/stories"
       prevAriaLabel="Previous stories"
       nextAriaLabel="Next stories"
       surfaceClass="bg-secondary"

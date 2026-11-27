@@ -24,7 +24,6 @@ export const HomeVideosSection: React.FC<HomeVideosSectionProps> = ({ videos }) 
         eyebrow="03 · Field Motion"
         title="Videos"
         description="Short wildlife clips filmed along rivers, wetlands, and rural trees."
-        viewAllHref="/videos"
         prevAriaLabel="Previous videos"
         nextAriaLabel="Next videos"
         surfaceClass="bg-card"
