@@ -58,6 +58,16 @@ export function resolveOriginFromContext(
 }
 
 /**
+ * Static/build-safe origin resolver using platform env variables without reading request headers,
+ * allowing public App Router pages and RootLayout to use ISR / Full Route Cache cleanly.
+ */
+export function resolveStaticSiteOrigin(
+  env: Record<string, string | undefined> = process.env
+): string {
+  return resolveOriginFromContext(null, env);
+}
+
+/**
  * Resolves the active site origin dynamically on the server from the current request host,
  * with automatic Vercel / Render / optional APP_URL fallbacks.
  */

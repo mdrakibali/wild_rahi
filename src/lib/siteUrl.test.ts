@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveOriginFromContext } from './siteUrl';
+import { resolveOriginFromContext, resolveStaticSiteOrigin } from './siteUrl';
 
 function mockHeaders(values: Record<string, string>) {
   return {
@@ -49,5 +49,9 @@ test('resolveOriginFromContext falls back cleanly when headers are unavailable',
     'https://wild-rahi.onrender.com'
   );
   assert.equal(resolveOriginFromContext(null, {}), 'http://localhost:3000');
+  assert.equal(
+    resolveStaticSiteOrigin({ VERCEL_PROJECT_PRODUCTION_URL: 'wildrahi.com' }),
+    'https://wildrahi.com'
+  );
 });
 

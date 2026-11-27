@@ -36,7 +36,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides, profile })
   const activeSubtitle = activeSlide?.subtitle?.trim() || profile.heroSubheadline;
 
   return (
-    <section className="relative min-h-[88vh] lg:min-h-screen w-full bg-obsidian text-white flex flex-col justify-end overflow-hidden">
+    <section className="relative min-h-svh w-full bg-obsidian text-white flex flex-col justify-end overflow-hidden">
       {/* Stacked Crossfading Photography Layers */}
       <div className="absolute inset-0 overflow-hidden">
         {publishedSlides.map((slide, index) => {
@@ -49,16 +49,42 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides, profile })
                 isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
               }`}
             >
-              <PortfolioImage
-                src={slide.image}
-                alt={slide.altText || profile.brandName || 'Wild Rahi Wildlife Photography'}
-                fill
-                sizes="100vw"
-                priority={index === 0}
-                className={`object-cover object-center transition-transform duration-[6000ms] ease-out ${
-                  isActive ? 'scale-100' : 'scale-105'
-                }`}
-              />
+              {/* Mobile (< lg): soft ambient backdrop fills 100svh while sharp frame shows unzoomed full image */}
+              <div className="lg:hidden absolute inset-0 overflow-hidden">
+                <PortfolioImage
+                  src={slide.image}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  priority={index === 0}
+                  hideLoader
+                  className="object-cover object-center scale-110 blur-2xl opacity-45 brightness-75"
+                />
+                <div className="absolute inset-x-0 top-16 bottom-44 sm:top-20 sm:bottom-48">
+                  <PortfolioImage
+                    src={slide.image}
+                    alt={slide.altText || profile.brandName || 'Wild Rahi Wildlife Photography'}
+                    fill
+                    sizes="100vw"
+                    priority={index === 0}
+                    hideLoader
+                    className="object-contain object-center"
+                  />
+                </div>
+              </div>
+
+              {/* Desktop (>= lg): crisp full-bleed viewport frame */}
+              <div className="hidden lg:block absolute inset-0">
+                <PortfolioImage
+                  src={slide.image}
+                  alt={slide.altText || profile.brandName || 'Wild Rahi Wildlife Photography'}
+                  fill
+                  sizes="100vw"
+                  priority={index === 0}
+                  hideLoader
+                  className="object-cover object-center"
+                />
+              </div>
             </div>
           );
         })}
@@ -67,23 +93,23 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides, profile })
           className="absolute inset-0 z-20 pointer-events-none"
           style={{
             background:
-              'linear-gradient(180deg, rgba(9,9,11,0.52) 0%, rgba(9,9,11,0.12) 40%, rgba(9,9,11,0.68) 78%, rgba(9,9,11,0.94) 100%)',
+              'linear-gradient(180deg, rgba(9,9,11,0.55) 0%, rgba(9,9,11,0.06) 38%, rgba(9,9,11,0.68) 76%, rgba(9,9,11,0.95) 100%)',
           }}
         />
       </div>
 
-      {/* Minimal Editorial Foreground Content */}
-      <div className="relative z-30 site-container pt-32 pb-12 sm:pb-16 lg:pb-20">
-        <div className="max-w-3xl space-y-4 sm:space-y-5">
+      {/* Editorial Foreground Content */}
+      <div className="relative z-30 site-container pt-28 pb-10 sm:pt-32 sm:pb-14 lg:pb-20">
+        <div className="max-w-3xl space-y-3 sm:space-y-4 lg:space-y-5">
           <p className="text-[11px] sm:text-xs uppercase tracking-[0.24em] text-white/75 font-medium">
             {profile.brandName} &mdash; {profile.location}
           </p>
 
           <div
             key={activeSlide?.id || 'hero-copy-default'}
-            className="space-y-4 sm:space-y-5 hero-copy-fade"
+            className="space-y-3 sm:space-y-4 lg:space-y-5 hero-copy-fade"
           >
-            <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-serif font-semibold tracking-tight leading-[1.05] text-white">
+            <h1 className="text-3xl sm:text-5xl lg:text-[64px] font-serif font-semibold tracking-tight leading-[1.06] text-white">
               {activeHeadline}
             </h1>
 
@@ -95,9 +121,9 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides, profile })
           </div>
         </div>
 
-        {/* Subtle Auto Slide Indicators (interactive click to switch slide too) */}
+        {/* Interactive Slide Indicators */}
         {publishedSlides.length > 1 && (
-          <div className="mt-8 flex items-center justify-between gap-4">
+          <div className="mt-6 sm:mt-8 flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               {publishedSlides.map((slide, idx) => (
                 <button

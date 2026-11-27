@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
     cpus: 1,
     staticGenerationMaxConcurrency: 1,
     staticGenerationMinPagesPerWorker: 100,
+    staleTimes: {
+      dynamic: 60,
+      static: 300,
+    },
   },
   images: {
     formats: ['image/avif', 'image/webp'],

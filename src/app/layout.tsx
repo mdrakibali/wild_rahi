@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { getCachedPublicPortfolio } from '@/lib/cache';
-import { resolveSiteOrigin } from '@/lib/siteUrl';
+import { resolveStaticSiteOrigin } from '@/lib/siteUrl';
 import { AppShell } from '@/components/layout/AppShell';
 
+export const revalidate = 3600;
+
 export async function generateMetadata(): Promise<Metadata> {
-  const [{ profile, heroSlides }, baseUrl] = await Promise.all([
-    getCachedPublicPortfolio(),
-    resolveSiteOrigin(),
-  ]);
+  const { profile, heroSlides } = await getCachedPublicPortfolio();
+  const baseUrl = resolveStaticSiteOrigin();
   const primaryImage =
     heroSlides.find((s) => s.isPublished && s.image)?.image ||
     profile.portraitUrl ||
@@ -48,10 +48,8 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [{ profile, photographs }, baseUrl] = await Promise.all([
-    getCachedPublicPortfolio(),
-    resolveSiteOrigin(),
-  ]);
+  const { profile, photographs } = await getCachedPublicPortfolio();
+  const baseUrl = resolveStaticSiteOrigin();
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',

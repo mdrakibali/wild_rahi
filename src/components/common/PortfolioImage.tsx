@@ -21,6 +21,7 @@ export function isOptimizableImageSrc(src: string): boolean {
 
 export interface PortfolioImageProps extends Omit<ImageProps, 'src'> {
   src: string;
+  hideLoader?: boolean;
 }
 
 /**
@@ -36,6 +37,7 @@ export const PortfolioImage: React.FC<PortfolioImageProps> = ({
   fill,
   className,
   priority,
+  hideLoader = false,
   ...rest
 }) => {
   const safeSrc = typeof src === 'string' ? src.trim() : '';
@@ -63,7 +65,7 @@ export const PortfolioImage: React.FC<PortfolioImageProps> = ({
   const shouldUnoptimize =
     typeof unoptimized === 'boolean' ? unoptimized : !isOptimizableImageSrc(safeSrc);
   const isLightboxContain = Boolean(className?.includes('object-contain'));
-  const showLoadingOverlay = isLightboxContain || !priority;
+  const showLoadingOverlay = !hideLoader && (isLightboxContain || !priority);
 
   return (
     <>
@@ -81,20 +83,16 @@ export const PortfolioImage: React.FC<PortfolioImageProps> = ({
         {...rest}
       />
 
-      {showLoadingOverlay && (
+      {showLoadingOverlay && !isLoaded && (
         <span
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-0 z-[1] flex items-center justify-center transition-opacity duration-300 ${
-            isLoaded ? 'opacity-0' : 'opacity-100'
-          } ${isLightboxContain ? 'bg-black/30' : 'portfolio-shimmer'}`}
+          className={`pointer-events-none absolute inset-0 z-[1] flex items-center justify-center portfolio-loader-delay ${
+            isLightboxContain ? 'bg-black/30' : 'portfolio-shimmer'
+          }`}
         >
-          <span
-            className={`w-4 h-4 rounded-full border-2 animate-spin ${
-              isLightboxContain
-                ? 'border-white/25 border-t-white/80'
-                : 'border-foreground/15 border-t-foreground/55'
-            }`}
-          />
+          {isLightboxContain && (
+            <span className="w-5 h-5 rounded-full border-2 border-white/25 border-t-white/80 animate-spin" />
+          )}
         </span>
       )}
     </>

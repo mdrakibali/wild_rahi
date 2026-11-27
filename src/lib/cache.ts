@@ -11,7 +11,7 @@ export const getCachedPublicPortfolio = unstable_cache(
   async () => {
     return repository.getPublicPortfolio();
   },
-  ['public-portfolio-v5'],
+  ['public-portfolio-v6'],
   {
     tags: [PORTFOLIO_CACHE_TAG],
     revalidate: 3600,
@@ -26,8 +26,10 @@ export function revalidatePortfolioCache(): void {
   revalidatePath('/', 'layout');
   revalidatePath('/');
   revalidatePath('/gallery');
+  revalidatePath('/gallery/[slug]', 'page');
   revalidatePath('/videos');
   revalidatePath('/stories');
+  revalidatePath('/stories/[slug]', 'page');
   revalidatePath('/about');
   revalidatePath('/contact');
 }
