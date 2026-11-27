@@ -7,6 +7,7 @@ import {
   isValidUuid,
   normalizeWildlifeCategory,
   sanitizeImageUrlList,
+  selectHomeShowcaseItems,
   toSafeSlug,
   validateEnquiryInput,
 } from './validation';
@@ -117,4 +118,22 @@ test('sanitizeImageUrlList trims, deduplicates, and caps image URL lists', () =>
     ),
     ['/a.jpg', '/b.jpg', '/c.jpg']
   );
+});
+
+test('selectHomeShowcaseItems prioritizes featured items, excludes unpublished, and caps at 10', () => {
+  const sample = Array.from({ length: 14 }, (_, idx) => ({
+    id: `item-${idx + 1}`,
+    isPublished: idx !== 0, // item-1 unpublished
+    isFeatured: idx === 5 || idx === 10,
+    sortOrder: 14 - idx,
+  }));
+
+  const selected = selectHomeShowcaseItems(sample);
+  assert.equal(selected.length, 10);
+  assert.equal(selected.some((item) => item.id === 'item-1'), false);
+  assert.deepEqual(
+    selected.slice(0, 2).map((item) => item.id),
+    ['item-11', 'item-6']
+  );
+  assert.equal(selectHomeShowcaseItems(sample, 0).length, 0);
 });

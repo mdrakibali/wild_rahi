@@ -5,6 +5,7 @@ import { HomeAboutSection } from '@/components/home/HomeAboutSection';
 import { HomeStoriesSection } from '@/components/home/HomeStoriesSection';
 import { HomeVideosSection } from '@/components/home/HomeVideosSection';
 import { HomeHabitatsCta } from '@/components/home/HomeHabitatsCta';
+import { selectHomeShowcaseItems } from '@/lib/validation';
 import type { HeroSlide, Photograph, SiteProfile, Story, VideoItem } from '@/types/portfolio';
 
 interface HomePageProps {
@@ -26,15 +27,8 @@ export const HomePage: React.FC<HomePageProps> = ({
     .filter((p) => p.isPublished)
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
-  const pubVideos = videos
-    .filter((v) => v.isPublished)
-    .sort((a, b) => a.sortOrder - b.sortOrder);
-  const featVideos = pubVideos.filter((v) => v.isFeatured);
-  const displayVideos = (featVideos.length >= 2 ? featVideos : pubVideos).slice(0, 3);
-
-  const pubStories = stories.filter((s) => s.isPublished);
-  const featStories = pubStories.filter((s) => s.isFeatured);
-  const displayStories = (featStories.length >= 2 ? featStories : pubStories).slice(0, 3);
+  const displayVideos = selectHomeShowcaseItems(videos);
+  const displayStories = selectHomeShowcaseItems(stories);
 
   return (
     <div className="bg-background text-foreground">
@@ -47,10 +41,10 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* 3. Featured Visual Sequence (Horizontal Journey) */}
       <FeaturedVisualSequence photographs={publishedPhotos} />
 
-      {/* 4. Featured Videos (3-Card Grid) */}
+      {/* 4. Featured Videos Slider (up to 10 items) */}
       <HomeVideosSection videos={displayVideos} />
 
-      {/* 5. Featured Stories (3-Card Grid) */}
+      {/* 5. Featured Field Stories Slider (up to 10 items) */}
       <HomeStoriesSection stories={displayStories} />
 
       {/* 6. North Bengal Habitats & Collaboration CTA */}

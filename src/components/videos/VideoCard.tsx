@@ -10,7 +10,7 @@ interface VideoCardProps {
 
 export const VideoCard: React.FC<VideoCardProps> = ({ video, onPlay }) => {
   return (
-    <article className="group flex flex-col rounded-lg bg-card border border-border overflow-hidden transition-all duration-300 hover:border-foreground/25 hover:shadow-md">
+    <article className="w-full h-full group flex flex-col rounded-lg bg-card border border-border overflow-hidden transition-all duration-300 hover:border-foreground/25 hover:shadow-md">
       <button
         type="button"
         onClick={onPlay}

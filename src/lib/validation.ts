@@ -118,6 +118,34 @@ export interface EnquiryValidationResult {
   sanitized: EnquiryInput;
 }
 
+export const HOME_SECTION_LIMIT = 10;
+
+export interface PublishableItem {
+  isPublished: boolean;
+  isFeatured: boolean;
+  sortOrder?: number;
+}
+
+/**
+ * Selects published items for home-page sliders: featured items appear first,
+ * followed by regular published entries, capped at maxItems (up to 10 by default).
+ */
+export function selectHomeShowcaseItems<T extends PublishableItem>(
+  items: readonly T[],
+  maxItems = HOME_SECTION_LIMIT
+): T[] {
+  if (maxItems <= 0) return [];
+  const published = items.filter((item) => item.isPublished);
+  const ordered = published.some((item) => typeof item.sortOrder === 'number')
+    ? [...published].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    : published;
+
+  return [
+    ...ordered.filter((item) => item.isFeatured),
+    ...ordered.filter((item) => !item.isFeatured),
+  ].slice(0, maxItems);
+}
+
 export function sanitizeImageUrlList(input: unknown, maxItems = 24): string[] {
   if (!Array.isArray(input)) return [];
   const seen = new Set<string>();
