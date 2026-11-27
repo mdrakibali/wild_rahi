@@ -39,7 +39,7 @@ export const HomeStoriesSection: React.FC<HomeStoriesSectionProps> = ({ stories 
                   src={story.coverImage}
                   alt={story.title}
                   fill
-                  sizes="(max-width: 640px) 84vw, (max-width: 1024px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 92vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
               </div>

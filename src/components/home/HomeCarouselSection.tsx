@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const HOME_CAROUSEL_SLIDE_CLASS =
-  'shrink-0 w-[84%] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3.5rem)/3)] snap-start flex';
+  'shrink-0 w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3.5rem)/3)] snap-start flex';
 
 interface SlideMetrics {
   canPrev: boolean;

@@ -120,12 +120,12 @@ export const FeaturedVisualSequence: React.FC<FeaturedVisualSequenceProps> = ({
 
         <div
           ref={trackRef}
-          className="flex gap-5 lg:gap-7 pl-5 sm:pl-8 lg:pl-[max(2.5rem,calc((100vw-1280px)/2+2.5rem))] overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none pb-2 lg:pb-0 no-scrollbar will-change-transform"
+          className="flex gap-0 sm:gap-5 lg:gap-7 pl-0 sm:pl-8 lg:pl-[max(2.5rem,calc((100vw-1280px)/2+2.5rem))] overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none pb-2 lg:pb-0 no-scrollbar will-change-transform"
         >
           {featuredPlates.map((photo, index) => (
             <article
               key={photo.id}
-              className="shrink-0 w-[82vw] sm:w-[62vw] lg:w-[44vw] xl:w-[38vw] snap-start group"
+              className="shrink-0 w-full px-5 sm:px-0 sm:w-[62vw] lg:w-[44vw] xl:w-[38vw] snap-start group"
             >
               <a
                 href={`/gallery/${encodeURIComponent(photo.id)}`}
@@ -143,7 +143,7 @@ export const FeaturedVisualSequence: React.FC<FeaturedVisualSequenceProps> = ({
                     src={photo.image}
                     alt={photo.title}
                     fill
-                    sizes="(max-width: 640px) 82vw, (max-width: 1024px) 62vw, 38vw"
+                    sizes="(max-width: 640px) 92vw, (max-width: 1024px) 62vw, 38vw"
                     className="object-cover rounded-lg transition-transform duration-500 ease-out group-hover:scale-105"
                   />
                   <span className="absolute bottom-3.5 right-3.5 inline-flex items-center gap-1.5 rounded-lg bg-black/70 backdrop-blur-md text-white px-3 py-1.5 text-xs font-medium opacity-90 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity border border-white/20">
@@ -170,7 +170,7 @@ export const FeaturedVisualSequence: React.FC<FeaturedVisualSequenceProps> = ({
             </article>
           ))}
           <div
-            className="shrink-0 w-1 sm:w-4 lg:w-[max(0.5rem,calc((100vw-1280px)/2+0.5rem))]"
+            className="hidden sm:block shrink-0 sm:w-4 lg:w-[max(0.5rem,calc((100vw-1280px)/2+0.5rem))]"
             aria-hidden="true"
           />
         </div>
